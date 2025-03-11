@@ -1,20 +1,29 @@
 import pygame as pg
+
 from cnc_config import Config
+from cnc_herbs import *
+
+pg.init()
 
 
 class Map:
     def __init__(self):
-        self.map = pg.Rect((Config.SCREEN_WIDTH - Config.MAP_WIDTH) / 2,
-                           (Config.SCREEN_HEIGHT - Config.SCREEN_HEIGHT) / 2,
-                           Config.MAP_WIDTH, Config.MAP_HEIGHT)
+
         self.__path = []
         self.__distance = 0
         self.__bottle = [0, 0]
+        self.__originX = (Config.MAP_WIDTH/2) + ((Config.SCREEN_WIDTH - Config.MAP_WIDTH) / 2)
+        self.__originY = Config.MAP_HEIGHT/2 + (Config.SCREEN_HEIGHT - Config.MAP_HEIGHT) / 4
 
-    @staticmethod
-    def get_position(coordinate: tuple[float, float], mod_x: float = 0, mod_y: float = 0):
-        return (Config.ORIGIN_X + coordinate[0] + mod_x,
-                Config.ORIGIN_Y - coordinate[1] + mod_y)
+    def get_position(self, coordinate: tuple[float, float], mod_x: float = 0, mod_y: float = 0):
+        return (self.__originX + coordinate[0] + mod_x,
+                self.__originY - coordinate[1] + mod_y)
+
+    def get_origin(self):
+        return self.__originX, self.__originY
+
+    def get_bottle_pos(self):
+        return self.get_position(self.__bottle)
 
     def back_to_origin(self):
         factor_x = Config.FACTOR_x
@@ -37,37 +46,21 @@ class Map:
             self.__bottle[1] += k
 
 
-class Herb:
-    def __init__(self, name, direction, func, file, x, y):
-        self.name = name
-        self.direction = direction
-        self.func = func
-        self.picture = file
-        self.size_x = x
-        self.size_y = y
-        self.factor_x = []
-        self.factor_y = []
 
 
-class Horizontal_Herb(Herb):
-    # E or W
-    def __init__(self, name, direction, func, file, x, y):
-        super().__init__(name, direction, func, file, x, y)
-        if self.direction == 'E':
-            self.factor_x = [i / 10 for i in range(x * 10)]
-        if self.direction == 'W':
-            self.factor_x = [-i / 10 for i in range(x * 10)]
+class Drawer:
+    def __init__(self, m: Map):
+        self.__gameinfo = None
+        self.__screen = pg.display.set_mode((Config.SCREEN_WIDTH, Config.SCREEN_HEIGHT))
+        self.__mapsize = pg.Rect((Config.SCREEN_WIDTH - Config.MAP_WIDTH) / 2,
+                                 (Config.SCREEN_HEIGHT - Config.MAP_HEIGHT) / 4,
+                                 Config.MAP_WIDTH, Config.MAP_HEIGHT)
+        self.__screen.fill(Config.COLOR['background'])
+        self.__clock = pg.time.Clock()
+        self.__map = m
 
-    def get_path(self, distance):
-        path = []
-        if distance < len(self.factor_x):
-            for i in range(distance, len(self.factor_x)):
-                path.append([self.factor_x[0] / 10, self.func(self.factor_x[i]) - self.factor_x[i - 1]])
-        return path
-
-    def get_coordinate(self, distance):
-        line = []
-        if distance < len(self.factor_x):
-            for i in range(distance, len(self.factor_x)):
-                line.append([self.factor_x[i], self.func(self.factor_x[i]) + self.size_y / 2])
-        return line
+    def draw_brewing_screen(self):
+        self.__screen.fill((Config.COLOR['background']))
+        pg.draw.rect(self.__screen, (Config.COLOR['black']), self.__mapsize, width=2)
+        # origin
+        pg.draw.circle(self.__screen, (Config.COLOR['black']), self.__map.get_position((0, 0)), 10, width=2)

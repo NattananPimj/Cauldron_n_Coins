@@ -1,6 +1,9 @@
 import pygame as pg
 from cnc_herbs import *
 from cnc_classes import *
+from cnc_config import Config
+from cnc_map import Map
+from cnc_herbManager import HerbManager
 
 pg.init()
 
@@ -23,11 +26,14 @@ class Game:
                 if self.__state == 'map':
                     if ev.key == pg.K_LEFT:
                         self.__state = 'shop'
-                if ev.key == pg.K_p:
-                    # herb = Horizontal_Herb("a", "E", lambda x: 10 * math.sin(x / 5), '', 200, 50)
-                    herb = Vertical_Herb("a", "N", lambda x: 5*(10*math.log10(x/50) + 2*math.sin(x/5))-100, '',
-                                         50, 200)
-                    self.__map.add_herb(herb)
+                    if ev.key == pg.K_p:
+                        # herb = Horizontal_Herb("a", "E", lambda x: 10*(abs((x/10)%5 - 2.5)), '', 200, 50)
+                        # herb = Horizontal_Herb("a", "E", lambda x: 10 * math.sin(x / 5), '', 200, 50)
+                        # herb = Vertical_Herb("a", "N", lambda x: 5*(10*math.log10(x/50) + 2*math.sin(x/5))-100, '',
+                                             # 50, 200)
+                        self.__map.add_herb(herb)
+                    if ev.key == pg.K_o:
+                        self.__map.done_brewing()
                 if self.__state == 'shop':
                     if ev.key == pg.K_RIGHT:
                         self.__state = 'map'

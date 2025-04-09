@@ -1,6 +1,5 @@
 import pygame as pg
 
-from cnc_classes import Map
 from cnc_config import Config
 import math
 
@@ -28,9 +27,9 @@ class Horizontal_Herb(Herb):
     # E or W
     def __init__(self, name, direction, func, file, x, y):
         super().__init__(name, direction, func, file, x, y)
-        if self.direction == 'E':
+        if 'E' in self.direction:
             self.factor_x = [i / 10 for i in range(x * 10)]
-        if self.direction == 'W':
+        if 'W' in self.direction:
             self.factor_x = [-i / 10 for i in range(x * 10)]
         self.last_pos = [self.factor_x[-1], func(self.factor_x[-1]) - self.size_y / 2]
 
@@ -45,9 +44,9 @@ class Vertical_Herb(Herb):
     # W / S
     def __init__(self, name, direction, func, file, x, y):
         super().__init__(name, direction, func, file, x, y)
-        if self.direction == 'N':
+        if 'N' in self.direction:
             self.factor_y = [(i + 1) / 10 for i in range(y * 10)]
-        if self.direction == 'S':
+        if 'S' in self.direction:
             self.factor_y = [-(i + 1) / 10 for i in range(y * 10)]
         self.last_pos = [func(self.factor_y[-1]) - self.size_x / 2, self.factor_y[-1]]
 
@@ -57,47 +56,3 @@ class Vertical_Herb(Herb):
             path.append([self.func(self.factor_y[i]) - self.func(self.factor_y[i - 1]), self.factor_y[1]])
         return path
 
-
-class HerbManager:
-    __HERB_INFO = {
-        'Snowy Galangal': {
-            'name': 'Snowy Galangal',
-            'direction': 'W',
-            'func': '',
-            'file': '',
-            'x': 200,
-            'y': 40
-        },
-        'Dragon Pepper': {
-
-        },
-        'Spark Angelica': {
-            'name': 'Spark Angelica',
-            'direction': 'E',
-            'func': lambda x: 10 * math.sin(x / 5),
-            'file': '',
-            'x': 200,
-            'y': 50
-        },
-        'Ivory Mint':
-            {
-
-            },
-
-    }
-
-    def __init__(self, m:Map):
-        self.surface = pg.Surface((150, 630))
-        self.__map = m
-
-    def add_herb(self, herb_name):
-        info = self.__HERB_INFO[herb_name]
-        herb = Herb(
-            info['name'],
-            info['direction'],
-            info['func'],
-            info['file'],
-            info['x'],
-            info['y']
-        )
-        self.__map.add_herb(herb)

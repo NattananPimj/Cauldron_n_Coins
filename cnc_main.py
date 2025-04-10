@@ -23,6 +23,7 @@ class Game:
                 pg.quit()
                 self.__running = False
             if ev.type == pg.KEYDOWN:
+
                 if self.__state == 'map':
                     if ev.key == pg.K_LEFT:
                         self.__state = 'shop'
@@ -32,6 +33,9 @@ class Game:
                         self.__map.get_path_line()
                     if ev.key == pg.K_o:
                         self.__map.done_brewing()
+
+
+
                 if self.__state == 'shop':
                     if ev.key == pg.K_RIGHT:
                         self.__state = 'map'
@@ -42,11 +46,16 @@ class Game:
             self.__map.move_along()
         self.__map.move_map(key)
 
+
+
     def run(self):
         while self.__running:
+            mouse = pg.mouse.get_pos()
             self.user_event()
             if self.__state == 'map':
                 self.__drawer.draw_brewing_screen()
+                for block in self.__herbs.herb_blocks:
+                    block.check_click(mouse)
             if self.__state == 'shop':
                 self.__drawer.draw_shop_screen()
             pg.display.update()

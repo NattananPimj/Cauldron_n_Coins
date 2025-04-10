@@ -2,8 +2,41 @@ import pygame as pg
 
 from cnc_config import Config
 from cnc_map import Map
-from cnc_herbs import *
+from cnc_herbs import Herb
 import math
+
+
+class HerbCabinet:
+    def __init__(self, id, x, y, m):
+        info = Config.HERB_INFO[id]
+        self.name = info['name']
+        self.funcX = info['funcX']
+        self.funcY = info['funcY']
+        self.t = info['t']
+        self.direction = info['direction']
+        self.__map = m
+
+        self.image = pg.image.load('IngamePic/' + info['pic'])
+        self.image = pg.transform.scale(self.image, (Config.HERB_WIDTH // 2 - 2, Config.HERB_HEIGHT // 8 - 2))
+        self.hitbox = self.image.get_rect()
+        self.hitbox.topleft = (x, y)
+        self.enable = True
+
+    def check_click(self, mouse_pos):
+        if self.hitbox.collidepoint(mouse_pos):
+            if pg.mouse.get_pressed()[0] == 1 and self.enable:
+                self.enable = False
+                print(self.name, 1)
+                self.sent_herb()
+            if pg.mouse.get_pressed()[0] == 0:
+                self.enable = True
+
+    def sent_herb(self):
+        herb = Herb(self.name, self.funcX, self.funcY, self.t)
+        self.__map.add_herb(herb)
+
+    def draw(self, screen):
+        screen.blit(self.image, (self.hitbox.x, self.hitbox.y))
 
 
 class HerbManager:
@@ -17,17 +50,11 @@ class HerbManager:
         self.add_herb_block()
 
     def add_herb_block(self):
-        for i in range(1, Config.HERB_HEIGHT + 2, Config.HERB_HEIGHT // 8):
-            for j in range(1, Config.HERB_WIDTH + 2, Config.HERB_WIDTH // 2):
-                tmpR = pg.Rect(j, i, Config.HERB_WIDTH // 2 - 2, Config.HERB_HEIGHT // 8 - 2)  # 98, 78
+        ids = list(Config.HERB_INFO.keys())
+        i = 0
+        for y in range(1, Config.HERB_HEIGHT + 1, Config.HERB_HEIGHT // 8):
+            for x in range(1, Config.HERB_WIDTH + 1, Config.HERB_WIDTH // 2):
+                tmpR = HerbCabinet(ids[i], x, y, self.__map)
+                i += 1
                 self.herb_blocks.append(tmpR)
 
-    def add_herb(self, herb_name):
-        info = self.__HERB_INFO[herb_name]
-        herb = Herb(
-            info['name'],
-            info['funcX'],
-            info['funcY'],
-            info['t']
-        )
-        self.__map.add_herb(herb)

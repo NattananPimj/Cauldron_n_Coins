@@ -48,6 +48,73 @@ class Config:
         "RAGE": (-500, 600)
     }
 
+    POTION_info = {
+        "SWIFTNESS": {
+            'pic': '',
+            'price': 0,
+        },
+        "DEXITY": {
+            'pic': '',
+            'price': 0,
+        },
+        "MANA": {
+            'pic': '',
+            'price': 0,
+        },
+        "EXPLOSION": {
+            'pic': '',
+            'price': 0,
+        },
+        "FIRE":{
+            'pic': '',
+            'price': 0,
+        },
+        "LIGHT": {
+            'pic': '',
+            'price': 0,
+        },
+        "HEAL": {
+            'pic': '',
+            'price': 0,
+        },
+        "GROWTH": {
+            'pic': '',
+            'price': 0,
+        },
+        "STRENGTH": {
+            'pic': '',
+            'price': 0,
+        },
+        "STONE": {
+            'pic': '',
+            'price': 0,
+        },
+        "SLEEP": {
+            'pic': '',
+            'price': 0,
+        },
+        "SLOW":{
+            'pic': '',
+            'price': 0,
+        },
+        "FROST": {
+            'pic': '',
+            'price': 0,
+        },
+        "LIGHTNING": {
+            'pic': '',
+            'price': 0,
+        },
+        "POISON": {
+            'pic': '',
+            'price': 0,
+        },
+        "RAGE":{
+            'pic': '',
+            'price': 0,
+        }
+    }
+
     HERB_INFO = {
         '01': {
             'name': '',
@@ -55,7 +122,7 @@ class Config:
             'funcY': lambda t: 10 * math.sin(t),
             't': 75,
             'direction': 'E',
-            'pic': ''
+            'pic': 'H01.JPG'
         },
 
         '02': {
@@ -64,7 +131,7 @@ class Config:
             'funcY': lambda t: 10 * math.sin(t/2),
             't': 50,
             'direction': 'E',
-            'pic': ''
+            'pic': 'H02.JPG'
         },
 
         '03': {
@@ -73,7 +140,7 @@ class Config:
             'funcY': lambda t: 10 * (t/2 + abs((t/2 % 5) - 2.5)),
             't': 40,
             'direction': 'NE',
-            'pic': ''
+            'pic': 'H03.JPG'
         },
 
         '04': {
@@ -82,7 +149,7 @@ class Config:
             'funcY': lambda t: (5 * t) + -15 * math.sin(t),
             't': 40,
             'direction': 'NE',
-            'pic': ''
+            'pic': 'H04.JPG'
         },
 
         '05': {
@@ -91,7 +158,7 @@ class Config:
             'funcY': lambda t: 5 * (t + math.cos(t)),
             't': 50,
             'direction': 'N',
-            'pic': ''
+            'pic': 'H05.JPG'
         },
 
         '06': {
@@ -100,7 +167,7 @@ class Config:
             'funcY': lambda t: 5 * t,
             't': 40,
             'direction': 'N',
-            'pic': ''
+            'pic': 'H06.JPG'
         },
 
         '07': {
@@ -109,7 +176,7 @@ class Config:
             'funcY': lambda t: (2*t) - 10*abs(math.sin(t/5)),
             't': int(15*math.pi),
             'direction': 'NW',
-            'pic': ''
+            'pic': 'H07.JPG'
         },
 
         '08': {
@@ -118,7 +185,7 @@ class Config:
             'funcY': lambda t: (5 * t) + -15 * math.sin(t),
             't': 50,
             'direction': 'NW',
-            'pic': ''
+            'pic': 'H08.JPG'
         },
 
         '09': {
@@ -127,7 +194,7 @@ class Config:
             'funcY': lambda t: 10 * math.cos(t/2),
             't': 50,
             'direction': 'W',
-            'pic': ''
+            'pic': 'H09.JPG'
         },
 
         '10': {
@@ -136,7 +203,7 @@ class Config:
             'funcY': lambda t: 10 * math.sin(t/2),
             't': 50,
             'direction': 'W',
-            'pic': ''
+            'pic': 'H10.JPG'
         },
 
         '11': {
@@ -145,7 +212,7 @@ class Config:
             'funcY': lambda t: 40 * math.cos(t/8),
             't': 40,
             'direction': 'SW',
-            'pic': ''
+            'pic': 'H11.JPG'
         },
 
         '12': {
@@ -155,7 +222,7 @@ class Config:
             'funcY': lambda t: 10 * (t / 2 + abs((t / 2 % 5) - 2.5)),
             't': 40,
             'direction': 'SW',
-            'pic': ''
+            'pic': 'H12.JPG'
         },
 
         '13': {
@@ -164,7 +231,7 @@ class Config:
             'funcY': lambda t: 100 * math.cos(t/10),
             't': 40,
             'direction': 'S',
-            'pic': ''
+            'pic': 'H13.JPG'
         },
 
         '14': {
@@ -173,7 +240,7 @@ class Config:
             'funcY': lambda t: (-5 * t) + (10*math.cos(t)),
             't': 50,
             'direction': 'S',
-            'pic': ''
+            'pic': 'H14.JPG'
         },
 
         '15': {
@@ -182,7 +249,7 @@ class Config:
             'funcY': lambda t: 4 - (((t-2)**2)/25),
             't': 50,
             'direction': 'SE',
-            'pic': ''
+            'pic': 'H15.JPG'
         },
 
         '16': {
@@ -191,6 +258,6 @@ class Config:
             'funcY': lambda t: -5*t + 10 * math.sin(t),
             't': 50,
             'direction': 'SE',
-            'pic': ''
+            'pic': 'H16.JPG'
         },
     }

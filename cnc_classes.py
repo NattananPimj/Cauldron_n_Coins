@@ -27,7 +27,7 @@ class Drawer:
                            ((Config.SCREEN_WIDTH - Config.MAP_WIDTH) / 2,
                             (Config.SCREEN_HEIGHT - Config.MAP_HEIGHT) / 8,))
         for block in self.__herb.herb_blocks:
-            pg.draw.rect(self.__herb.surface, Config.COLOR['map'], block)
+            block.draw(self.__herb.surface)
         self.__screen.blit(self.__herb.surface,((((Config.SCREEN_WIDTH - Config.MAP_WIDTH) / 2)-Config.HERB_WIDTH)/2
                                                 , (Config.SCREEN_HEIGHT - Config.HERB_HEIGHT)/2))
 

@@ -24,21 +24,10 @@ class HerbManager:
 
     def add_herb(self, herb_name):
         info = self.__HERB_INFO[herb_name]
-        if info['type'] == 'V':
-            herb = Vertical_Herb(
-                info['name'],
-                info['direction'],
-                info['func'],
-                info['file'],
-                info['x'],
-                info['y'])
-        elif info['type'] == 'H':
-            herb = Horizontal_Herb(
-                info['name'],
-                info['direction'],
-                info['func'],
-                info['file'],
-                info['x'],
-                info['y'])
-
+        herb = Herb(
+            info['name'],
+            info['funcX'],
+            info['funcY'],
+            info['t']
+        )
         self.__map.add_herb(herb)

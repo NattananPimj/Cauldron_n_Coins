@@ -9,7 +9,7 @@ class Map:
 
         self.__path = []
         self.__distance = [0, 0]
-        self.__bottle = [175, -150]
+        self.__bottle = [10, 0]
         self.surface = pg.Surface((Config.MAP_WIDTH, Config.MAP_HEIGHT))
         self.rect = self.surface.get_rect()
         self.__originX = Config.MAP_WIDTH / 2
@@ -77,7 +77,7 @@ class Map:
 
     def add_herb(self, herb: Herb):
         # print(herb.path())
-        self.__path.extend(herb.path())
+        self.__path.extend(herb.path)
 
     def move_along(self):
         if len(self.__path) > 0:
@@ -86,7 +86,7 @@ class Map:
             self.__distance[0] += 1
             self.__bottle[1] += path[1]
             self.__distance[1] += 1
-            print(path)
+            # print(path)
 
     def find_distance_btw(self, pos: tuple[float, float]):
         return ((self.__bottle[0] - pos[0]) ** 2 + (self.__bottle[1] - pos[1]) ** 2) ** 0.5

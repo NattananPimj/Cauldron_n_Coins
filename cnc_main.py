@@ -27,11 +27,9 @@ class Game:
                     if ev.key == pg.K_LEFT:
                         self.__state = 'shop'
                     if ev.key == pg.K_p:
-                        # herb = Horizontal_Herb("a", "E", lambda x: 10*(abs((x/10)%5 - 2.5)), '', 200, 50)
-                        # herb = Horizontal_Herb("a", "E", lambda x: 10 * math.sin(x / 5), '', 200, 50)
-                        # herb = Vertical_Herb("a", "N", lambda x: 5*(10*math.log10(x/50) + 2*math.sin(x/5))-100, '',
-                                             # 50, 200)
+                        herb = Herb('a', lambda t: -5 * t + 10 * math.cos(t), lambda t: -5*t + 10 * math.sin(t), 50)
                         self.__map.add_herb(herb)
+                        self.__map.get_path_line()
                     if ev.key == pg.K_o:
                         self.__map.done_brewing()
                 if self.__state == 'shop':

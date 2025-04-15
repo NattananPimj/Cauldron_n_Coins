@@ -20,7 +20,7 @@ class ItemSlot:
 
 
     def get_position(self):
-        return self.inv.upperline + (self.x * 100) + 2, self.y * 150 + 2
+        return (self.x * 100) + 2, self.inv.upperline +  (self.y * 150 + 2)
 
     def is_empty(self):
         return self.item is None
@@ -85,6 +85,12 @@ class Inventory:
         self.next_id = 10 + 1
         for item in self.__inventory:
             self.add_to_slot(item)
+
+        # moving up, down arrow
+        self.arrowup_box = pg.Rect(Config.SCREEN_WIDTH - Config.INV_WIDTH - 40, Config.SCREEN_HEIGHT/2 - 50,
+                                   40, 50)
+        self.arrowdown_box = pg.Rect(Config.SCREEN_WIDTH - Config.INV_WIDTH - 40, Config.SCREEN_HEIGHT / 2 + 10,
+                                   40, 50)
 
     @classmethod
     def get_instance(cls):
@@ -249,6 +255,20 @@ class Inventory:
 
     def deduct_money(self, money: float):
         self.__money -= money
+
+    def move_up_down(self, num: int):
+        tmp = self.upperline + (num * 10)
+        if 0 >= tmp >= (-150 * (self.next_id//2 - 4)):
+            self.upperline = tmp
+        # print(self.upperline)
+
+    def check_arrow(self, mouse_pos):
+        if pg.mouse.get_pressed()[0] == 1:
+            if self.arrowup_box.collidepoint(mouse_pos):
+                self.move_up_down(0.5)
+            if self.arrowdown_box.collidepoint(mouse_pos):
+                self.move_up_down(-0.5)
+
 
 
 if __name__ == "__main__":

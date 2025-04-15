@@ -114,6 +114,18 @@ class Drawer:
 
         self.__screen.blit(self.__uiSurface, (Config.SCREEN_WIDTH - Config.UI_WIDTH, 0))
 
+        # draw arrow up
+        pg.draw.polygon(self.__screen, Config.COLOR['marks'],
+                        ((Config.SCREEN_WIDTH - Config.INV_WIDTH - 40, Config.SCREEN_HEIGHT/2),
+                         (Config.SCREEN_WIDTH - Config.INV_WIDTH, Config.SCREEN_HEIGHT/2),
+                         (Config.SCREEN_WIDTH - Config.INV_WIDTH - 20, Config.SCREEN_HEIGHT/2 - 50)), width=3)
+        # draw arrow up
+        pg.draw.polygon(self.__screen, Config.COLOR['marks'],
+                        ((Config.SCREEN_WIDTH - Config.INV_WIDTH - 40, Config.SCREEN_HEIGHT / 2 + 10),
+                         (Config.SCREEN_WIDTH - Config.INV_WIDTH, Config.SCREEN_HEIGHT / 2 + 10),
+                         (Config.SCREEN_WIDTH - Config.INV_WIDTH - 20, Config.SCREEN_HEIGHT / 2 + 60)), width=3)
+
+
     def draw_inventory(self):
         self.__screen.blit(self.__inventory.surface, (Config.SCREEN_WIDTH - Config.INV_WIDTH, Config.UI_HEIGHT))
         self.__inventory.surface.fill((Config.COLOR['inventory_bg']))

@@ -32,6 +32,8 @@ class Game:
             if ev.type == pg.QUIT:
                 pg.quit()
                 self.__running = False
+            if ev.type == pg.MOUSEWHEEL:
+                self.__inventory.move_up_down(ev.y)
             if ev.type == pg.KEYDOWN:
 
                 if self.__state == 'map':
@@ -55,6 +57,7 @@ class Game:
             """
             mouse = pg.mouse.get_pos()
             self.user_event()
+            self.__inventory.check_arrow(mouse)
 
             if self.__state == 'map':
                 self.__drawer.draw_brewing_screen()

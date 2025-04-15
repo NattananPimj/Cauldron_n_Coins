@@ -7,6 +7,58 @@ import math
 import csv
 
 
+class ItemSlot:
+    def __init__(self, id, inv: "Inventory"):
+        self.id = id
+        self.item = None
+
+        self.check_position()
+        self.inv = inv
+        self.box = pg.Rect(self.get_position()[0], self.get_position()[1], 95, 145)
+        self.base = pg.image.load('IngamePic/Potion.png')
+        self.base = pg.transform.scale(self.base, (70, 120))
+
+
+    def get_position(self):
+        return self.inv.upperline + (self.x * 100) + 2, self.y * 150 + 2
+
+    def is_empty(self):
+        return self.item is None
+
+    def check_position(self):
+        self.y = math.ceil(self.id / 2) - 1
+        self.x = 1 - (self.id % 2)
+
+    def add_item(self, item: Potion):
+        if self.is_empty():
+            self.item = item
+            return True
+        return False
+
+    def remove_item(self):
+        self.item = None
+
+    def get_item(self):
+        item = self.item
+        self.inv.remove_slot(self.id)  # self item will change
+        return item
+
+    def draw(self, screen):
+        self.box.topleft = self.get_position()
+        pg.draw.rect(screen, Config.COLOR['map'], self.box, border_radius=5)
+        if self.item is not None:
+            screen.blit(self.base, (self.get_position()[0] + 12.5, self.get_position()[1] + 15))
+            font = pg.font.SysFont('comicsansms', 20)
+            text = font.render('I'*self.item.get_power(), True, Config.COLOR['marks'])
+            screen.blit(text, (self.get_position()[0] + 95 - 15 - (5 * self.item.get_power()),
+                               self.get_position()[1] + 145 - 30))
+
+    def __str__(self):
+        if self.item is None:
+            return f"{self.id}: None"
+        return f"{self.id}: {self.item.__str__()}"
+
+
 class Inventory:
     __instance = None
 
@@ -26,6 +78,19 @@ class Inventory:
 
         self.__file = "cnc_save_test.csv"
         self.to_id(name)
+        self.surface = pg.Surface((Config.INV_WIDTH, Config.INV_HEIGHT))
+
+        self.upperline = 0
+        self.slots = [ItemSlot(i + 1, self) for i in range(10)]
+        self.next_id = 10 + 1
+        for item in self.__inventory:
+            self.add_to_slot(item)
+
+    @classmethod
+    def get_instance(cls):
+        if cls.__instance is None:
+            cls.__instance = cls()
+        return cls.__instance
 
     def __load_data(self) -> List[dict]:
         """
@@ -132,8 +197,43 @@ class Inventory:
     def get_name(self) -> str:
         return self.__username
 
+    def get_slots(self):
+        return self.slots
+
     def add_item(self, item):
         self.__inventory.append(item)
+        self.add_to_slot(item)
+
+    def add_to_slot(self, item: Potion):
+        for slot in self.slots:
+            if slot.is_empty():
+                slot.add_item(item)
+                return True
+
+        if len(self.slots) % 2 == 0:  # Check if the number of slots is even
+            new_slots = [ItemSlot(self.next_id + i) for i in range(2)]  # Create two new slots
+            self.slots.extend(new_slots)
+            self.next_id += 2
+            self.slots[-2].add_item(item)  # Add the item to the first new slot
+            return True
+        return False
+
+    def remove_slot(self, slot_id):
+        if 1 <= slot_id <= len(self.slots):
+            # Remove the item in the specified slot
+            self.slots[slot_id - 1].remove_item()
+
+            # Shift items to fill the gap
+            for i in range(slot_id - 1, len(self.slots) - 1):
+                self.slots[i].item = self.slots[i + 1].item
+                self.slots[i].id = i + 1  # Update IDs
+            self.slots[-1].remove_item()  # Last slot becomes empty
+            return True
+        return False
+
+    def print_slot(self):
+        for i in self.slots:
+            print(i)
 
     def get_inventory(self):
         return self.__inventory
@@ -152,7 +252,7 @@ class Inventory:
 
 
 if __name__ == "__main__":
-    inventory = Inventory("b")
+    inventory = Inventory()
     print(inventory.get_day())
     print(inventory.get_inventory())
-    inventory.save_data()
+    inventory.print_slot()

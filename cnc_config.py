@@ -6,8 +6,13 @@ class Config:
     SCREEN_HEIGHT = 700
     MAP_WIDTH = 700
     MAP_HEIGHT = 400
+
     HERB_WIDTH = 200
     HERB_HEIGHT = 640
+
+    INV_WIDTH = 200
+    INV_HEIGHT = 600
+
     UI_WIDTH = 200
     UI_HEIGHT = 100
 
@@ -22,7 +27,8 @@ class Config:
         'background': (212, 198, 169),
         'map': (212, 188, 159),
         'path': (94, 90, 78),
-        'marks': (50, 50, 50)
+        'marks': (50, 50, 50),
+        'inventory_bg': (150, 125, 90)
     }
     '''
     HERB PATTERN

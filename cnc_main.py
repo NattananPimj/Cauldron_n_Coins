@@ -2,6 +2,7 @@ import pygame as pg
 from cnc_herbs import *
 from cnc_classes import *
 from cnc_config import Config
+from cnc_inventory import Inventory
 from cnc_map import Map
 from cnc_herbManager import HerbManager
 
@@ -9,7 +10,8 @@ pg.init()
 
 
 class Game:
-    def __init__(self):
+    def __init__(self, name: str = 'lilly'):
+        self.__inventory = Inventory(name)
         self.__map = Map()
         self.__herbs = HerbManager(self.__map)
         self.__drawer = Drawer(self.__map, self.__herbs)
@@ -28,13 +30,11 @@ class Game:
                     if ev.key == pg.K_LEFT:
                         self.__state = 'shop'
                     if ev.key == pg.K_p:
-                        herb = Herb('a', lambda t: -5 * t + 10 * math.cos(t), lambda t: -5*t + 10 * math.sin(t), 50)
+                        herb = Herb('a', lambda t: -5 * t + 10 * math.cos(t), lambda t: -5 * t + 10 * math.sin(t), 50)
                         self.__map.add_herb(herb)
                         self.__map.get_path_line()
                     if ev.key == pg.K_o:
                         self.__map.done_brewing()
-
-
 
                 if self.__state == 'shop':
                     if ev.key == pg.K_RIGHT:
@@ -46,21 +46,23 @@ class Game:
             self.__map.move_along()
         self.__map.move_map(key)
 
-
-
     def run(self):
         while self.__running:
             mouse = pg.mouse.get_pos()
             self.user_event()
+
             if self.__state == 'map':
                 self.__drawer.draw_brewing_screen()
                 for block in self.__herbs.herb_blocks:
                     block.check_click(mouse)
+
             if self.__state == 'shop':
                 self.__drawer.draw_shop_screen()
             pg.display.update()
 
 
 if __name__ == "__main__":
-    game = Game()
+    # name = input('Put ur name to lock in: ')
+    name = 'lilly'
+    game = Game(name)
     game.run()

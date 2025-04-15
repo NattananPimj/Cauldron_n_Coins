@@ -1,6 +1,7 @@
 import pygame as pg
 
 from cnc_config import Config
+from cnc_inventory import Inventory
 from cnc_map import Map
 from cnc_herbs import Herb
 import math
@@ -21,6 +22,7 @@ class HerbCabinet:
         self.hitbox = self.image.get_rect()
         self.hitbox.topleft = (x, y)
         self.enable = True
+        self.__inventory = Inventory()
 
     def check_click(self, mouse_pos):
         if self.hitbox.collidepoint(mouse_pos):
@@ -34,6 +36,7 @@ class HerbCabinet:
     def sent_herb(self):
         herb = Herb(self.name, self.funcX, self.funcY, self.t)
         self.__map.add_herb(herb)
+        self.__inventory.deduct_money(3.5)
 
     def draw(self, screen):
         screen.blit(self.image, (self.hitbox.x, self.hitbox.y))
@@ -57,4 +60,5 @@ class HerbManager:
                 tmpR = HerbCabinet(ids[i], x, y, self.__map)
                 i += 1
                 self.herb_blocks.append(tmpR)
+
 

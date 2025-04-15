@@ -8,6 +8,9 @@ class Config:
     MAP_HEIGHT = 400
     HERB_WIDTH = 200
     HERB_HEIGHT = 640
+    UI_WIDTH = 200
+    UI_HEIGHT = 100
+
     FACTOR_x = 1 / 20  # each block
     MOVESPEED = 40  # the bigger the slower
 
@@ -19,7 +22,7 @@ class Config:
         'background': (212, 198, 169),
         'map': (212, 188, 159),
         'path': (94, 90, 78),
-        'marks': (100, 100, 100)
+        'marks': (50, 50, 50)
     }
     '''
     HERB PATTERN

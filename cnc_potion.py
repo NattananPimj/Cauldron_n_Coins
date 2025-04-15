@@ -21,3 +21,11 @@ class Potion:
 
     def check_ingredients(self, ingredient):
         return ingredient in self.__ingredients
+
+    def __str__(self):
+        return '{'+ f"""'name': 'STONE', 'power': 1, 'ingredients': ['a', 'b']"""+ '}'
+
+
+if __name__ == '__main__':
+    po1 = Potion("STONE", 1, ['a', 'b'])
+    print(po1)

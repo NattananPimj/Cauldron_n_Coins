@@ -2,14 +2,16 @@ import pygame as pg
 
 from cnc_config import Config
 from cnc_herbs import *
+from cnc_potion import Potion
 
 
 class Map:
     def __init__(self):
 
         self.__path = []
-        self.__distance = [0, 0]
-        self.__bottle = [10, 0]
+        self.__distance = 0
+        self.__bottle = [0, 0]
+        self.__herb_used = []
         self.surface = pg.Surface((Config.MAP_WIDTH, Config.MAP_HEIGHT))
         self.rect = self.surface.get_rect()
         self.__originX = Config.MAP_WIDTH / 2
@@ -77,29 +79,39 @@ class Map:
 
     def add_herb(self, herb: Herb):
         # print(herb.path())
+        self.__herb_used.append(herb.name)
         self.__path.extend(herb.path)
 
     def move_along(self):
         if len(self.__path) > 0:
             path = self.__path.pop(0)
             self.__bottle[0] += path[0]
-            self.__distance[0] += 1
             self.__bottle[1] += path[1]
-            self.__distance[1] += 1
-            # print(path)
+            self.__originX -= path[0] / 3
+            self.__originY += path[1] / 3
 
     def find_distance_btw(self, pos: tuple[float, float]):
         return ((self.__bottle[0] - pos[0]) ** 2 + (self.__bottle[1] - pos[1]) ** 2) ** 0.5
 
     def done_brewing(self):
-        # check all the position
-        for potion, pos in Config.POTION_POS.items():
+        # TODO: sent potion to inventory
+        potion = None
+        for p, pos in Config.POTION_POS.items():
             dis = self.find_distance_btw(pos)
-            if dis <= 3:
-                print(potion, 3)
-            elif dis <= 5:
-                print(potion, 2)
-            elif dis <= 25:
-                print(potion, 1)
-            else:
+            if dis > 25:
                 pass
+            else:
+                for tier, distance in enumerate([3,5,25]):
+                    if dis <= distance:
+                        potion = Potion(p, 3-tier, self.__herb_used)
+                        break
+                self.reset()
+                break
+
+    def reset(self):
+        self.__path.clear()
+        self.__distance = 0
+        self.__bottle = [0, 0]
+        self.__originX = Config.MAP_WIDTH / 2
+        self.__originY = Config.MAP_HEIGHT / 2
+        self.__herb_used = []

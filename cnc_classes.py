@@ -24,7 +24,7 @@ class Drawer:
         self.__clock = pg.time.Clock()
         self.__map = m
         self.__herb = h
-        self.__inventory = Inventory()
+        self.__inventory = Inventory.get_instance()
 
         self.__uiSurface = pg.Surface((Config.UI_WIDTH, Config.UI_HEIGHT), pg.SRCALPHA)
 
@@ -60,6 +60,7 @@ class Drawer:
 
         self.__screen.blit(self.__map.waters[self.__map.current_water],
                            ((Config.SCREEN_WIDTH - 450) / 2, Config.SCREEN_HEIGHT - 250 - 120))
+        # print(self.__map.current_water)
 
         self.__screen.blit(self.__map.tableR, ((Config.SCREEN_WIDTH + 250) / 2, Config.SCREEN_HEIGHT - 150))
         self.__screen.blit(self.__map.tableL, ((Config.SCREEN_WIDTH - 730) / 2, Config.SCREEN_HEIGHT - 250))
@@ -98,6 +99,7 @@ class Drawer:
         draw ui
         :return None:
         """
+        self.draw_inventory()
         dayRect = pg.Rect(1, 1, Config.UI_WIDTH - 2, Config.UI_HEIGHT / 2 - 2)
         pg.draw.rect(self.__uiSurface, (Config.COLOR['marks']), dayRect, border_radius=100)
         pg.draw.rect(self.__uiSurface, (Config.COLOR['map']), dayRect.inflate(-5, -5), border_radius=100)
@@ -111,6 +113,12 @@ class Drawer:
                        Config.UI_HEIGHT / 2 + 1, (Config.COLOR['marks']))
 
         self.__screen.blit(self.__uiSurface, (Config.SCREEN_WIDTH - Config.UI_WIDTH, 0))
+
+    def draw_inventory(self):
+        self.__screen.blit(self.__inventory.surface, (Config.SCREEN_WIDTH - Config.INV_WIDTH, Config.UI_HEIGHT))
+        self.__inventory.surface.fill((Config.COLOR['inventory_bg']))
+        for slot in self.__inventory.get_slots():
+            slot.draw(self.__inventory.surface)
 
     @staticmethod
     def draw_text(screen, txt, size=36, x=0, y=0, color=Config.COLOR['black']):

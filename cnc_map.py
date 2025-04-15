@@ -12,7 +12,7 @@ from cnc_inventory import Inventory
 class Map:
     def __init__(self):
 
-        self.inventory = Inventory()
+        self.inventory = Inventory.get_instance()
 
         self.reset()
 
@@ -209,15 +209,11 @@ class Map:
 
     def add_water(self, mouse_pos):
         self.__check_click(mouse_pos, self.water_hitbox, self.back_to_origin,
-                           lambda: self.change_current(self.current_water, 2, 1),
-                           lambda: self.change_current(self.current_water, 2, 0))
+                           lambda: self.change_current_water(1),
+                           lambda: self.change_current_water(0))
 
-    @staticmethod
-    def change_current(current: int, len: int, to: int = None):
-        if to is None:
-            current = (current + 1) % len
-        else:
-            current = to
+    def change_current_water(self, to:int):
+        self.current_water = to
 
     @staticmethod
     def __check_click(mouse_pos, hitbox: pg.Rect, func1_1, func1_2=None, func2=None) -> None:

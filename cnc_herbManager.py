@@ -22,7 +22,6 @@ class HerbCabinet:
         self.hitbox = self.image.get_rect()
         self.hitbox.topleft = (x, y)
         self.enable = True
-        self.__inventory = Inventory()
 
     def check_click(self, mouse_pos) -> None:
         """
@@ -62,7 +61,7 @@ class HerbCabinet:
         """
         herb = Herb(self.name, self.funcX, self.funcY, self.t)
         self.__map.add_herb(herb)
-        self.__inventory.deduct_money(3.5)
+        Inventory.get_instance().deduct_money(3.5)
 
     def draw(self, screen):
         """

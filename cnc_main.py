@@ -10,7 +10,15 @@ pg.init()
 
 
 class Game:
+    """
+    main class for the game, run everything here
+    """
     def __init__(self, name: str = 'lilly'):
+        """
+        :param name: username for register the save. if not sign in yet, create new one
+
+        import all the class in
+        """
         self.__inventory = Inventory(name)
         self.__map = Map()
         self.__herbs = HerbManager(self.__map)
@@ -42,6 +50,9 @@ class Game:
 
     def run(self):
         while self.__running:
+            """
+            user event + checking mouse clicking
+            """
             mouse = pg.mouse.get_pos()
             self.user_event()
 

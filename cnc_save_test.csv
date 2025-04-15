@@ -1,2 +1,1 @@
-Name,Days,Money,Inventory
-lilly,10,100,"[{'name': 'STONE', 'power': 1, 'ingredients': ['a', 'b']}]"
+Name,Days,Money,Inventorylilly,10,100.0,"""[{'name': 'STONE', 'power': 1, 'ingredients': ['a', 'b']}]"""

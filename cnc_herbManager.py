@@ -24,7 +24,12 @@ class HerbCabinet:
         self.enable = True
         self.__inventory = Inventory()
 
-    def check_click(self, mouse_pos):
+    def check_click(self, mouse_pos) -> None:
+        """
+        if the cabinet is selected, sent herb data into map class
+        :param mouse_pos: mouse position (pg.mouse.get_pos())
+        :return None:
+        """
         if self.hitbox.collidepoint(mouse_pos):
             if pg.mouse.get_pressed()[0] == 1 and self.enable:
                 self.enable = False
@@ -33,7 +38,13 @@ class HerbCabinet:
             if pg.mouse.get_pressed()[0] == 0:
                 self.enable = True
 
-    def check_hover(self, mouse_pos, screen):
+    def check_hover(self, mouse_pos, screen) -> None:
+        """
+        create mini text when the mouse is hover on the cabinet to sent name and direction to user
+        :param mouse_pos: mouse position (pg.mouse.get_pos())
+        :param screen: screen, for drawing
+        :return None:
+        """
         if self.hitbox.collidepoint(mouse_pos):
             tmps = pg.Surface((150, 25))
             tmprect = tmps.get_rect()
@@ -45,17 +56,27 @@ class HerbCabinet:
             screen.blit(tmps, mouse_pos)
 
     def sent_herb(self):
+        """
+        create herb object then sent to map + deduct money
+        :return:
+        """
         herb = Herb(self.name, self.funcX, self.funcY, self.t)
         self.__map.add_herb(herb)
         self.__inventory.deduct_money(3.5)
 
     def draw(self, screen):
+        """
+        draw the herb cabinet
+        :param screen: pg.Surface
+        :return:
+        """
         screen.blit(self.image, (self.hitbox.x, self.hitbox.y))
 
 
 class HerbManager:
-    # 16 herb
-    __HERB_INFO = Config.HERB_INFO
+    """
+    store herb cabinet
+    """
 
     def __init__(self, m: Map):
         self.surface = pg.Surface((Config.HERB_WIDTH, Config.HERB_HEIGHT))

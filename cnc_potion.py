@@ -23,5 +23,5 @@ class Potion:
         return ingredient in self.__ingredients
 
     def __str__(self):
-        return '{' + f"""'name': {self.__name}, 'power': {self.__power}, 'ingredients': {self.__ingredients}""" + '}'
+        return '{' + f"'name': '{self.__name}', 'power': {self.__power}, 'ingredients': {self.__ingredients}" + '}'
 

@@ -1,3 +1,5 @@
+from typing import List
+
 import pygame as pg
 from cnc_config import Config
 from cnc_potion import Potion
@@ -16,21 +18,20 @@ class Inventory:
         return cls.__instance
 
     def __init__(self, name: str = 'lilly'):
-        """
-        TODO:
-              2. make the init read data from csv and sent data back every time game save
-              3. if there is new people, create new acc
-        """
         self.__day = None
         self.__money = None
         self.__inventory = []
         self.__username = None
+        self.__data = None
 
         self.__file = "cnc_save_test.csv"
-        self.data = self.load_data()
         self.to_id(name)
 
-    def load_data(self):
+    def __load_data(self) -> List[dict]:
+        """
+        get all data from csv file
+        :return:
+        """
         data = []
         with open(self.__file, 'r') as file:
             csv_reader = csv.DictReader(file)
@@ -38,32 +39,98 @@ class Inventory:
                 data.append(row)
         return data
 
-    def process(self, name):
+    def __process(self, name) -> bool:
+        """
+        choose only one specific data to used
+        :param name:
+        :return bool: return False if there is no username yet
+        """
         data = None
-        for row in self.data:
+        for row in self.__data:
             if row['Name'] == name:
                 data = row
         if data is None:
             return False
         self.__day = int(data['Days'])
         self.__money = float(data['Money'])
-        inv = eval(data['Inventory'])
+        inv = eval(data['Inventory'][1:-1])
+        print(inv)
+        print(type(inv))
         for item in inv:
-            self.__inventory.append(Potion(item['name'], item['power'], item['ingredients']))
+            self.__inventory.append(Potion(item['name'], (item['power']), item['ingredients']))
         return True
 
     def to_id(self, name: str):
+        """
+        if username not found, create new account
+        :param name: username
+        :return:
+        """
         self.__username = name
-        self.data = self.load_data()
+        self.__data = self.__load_data()
 
-        if not self.process(name):
+        if not self.__process(name):
             self.__inventory = []
-            self.__money = 0
+            self.__money = 100
             self.__day = 1
-            self.game_save()
+            self.save_data()
+
+    def find_data(self, name: str) -> int:
+        """
+        find data to save
+        :param name:
+        :return:
+        """
+        for row in self.__data:
+            if row['Name'] == name:
+                return self.__data.index(row)
+        return -1
+
+    def str_inventory(self) -> str:
+        """
+        make the inventory output that readable and re-use able
+        :return str:
+        """
+        txt = '"['
+        for item in self.__inventory:
+            txt += item.__str__()
+            if self.__inventory.index(item) != len(self.__inventory) - 1:
+                txt += ','
+        txt += ']"'
+        return txt
 
     def save_data(self):
-        pass
+        """
+        chang data into dict then rewrite to csv file
+        :return:
+        """
+        # get data into dict
+        tmp_row = {
+            'Name': self.__username,
+            'Days': str(self.__day),
+            'Money': str(self.__money),
+            'Inventory': self.str_inventory()
+        }
+
+        tmp_data = self.__data
+        index = self.find_data(self.__username)
+        if index != -1:
+            tmp_data[index] = tmp_row
+        else:
+            tmp_data.append(tmp_row)
+
+        # rewrite
+        header = ["Name", "Days", "Money", "Inventory"]
+        with open(self.__file, 'w') as file:
+            writer = csv.DictWriter(file, fieldnames=header)
+            writer.writeheader()
+            for row in tmp_data:
+                writer.writerow(row)
+
+        self.__load_data()
+
+    def get_name(self) -> str:
+        return self.__username
 
     def add_item(self, item):
         self.__inventory.append(item)
@@ -83,12 +150,9 @@ class Inventory:
     def deduct_money(self, money: float):
         self.__money -= money
 
-    def game_save(self):
-        # rewrite data in csv
-        pass
-
 
 if __name__ == "__main__":
-    inventory = Inventory()
-    print(inventory.load_data())
+    inventory = Inventory("b")
+    print(inventory.get_day())
     print(inventory.get_inventory())
+    inventory.save_data()

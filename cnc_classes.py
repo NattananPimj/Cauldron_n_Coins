@@ -10,6 +10,10 @@ pg.init()
 
 
 class Drawer:
+    """
+    most drawing here
+    """
+
     def __init__(self, m: Map, h: HerbManager):
         self.__gameinfo = None
         self.__screen = pg.display.set_mode((Config.SCREEN_WIDTH, Config.SCREEN_HEIGHT))
@@ -27,7 +31,10 @@ class Drawer:
     def get_screen(self):
         return self.__screen
 
-    def draw_brewing_screen(self):
+    def draw_brewing_screen(self) -> None:
+        """
+        for everything happen on brewing screen
+        """
         self.__screen.fill((Config.COLOR['background']))
         self.on_map_draw()
         self.__screen.blit(self.__map.surface,
@@ -41,7 +48,12 @@ class Drawer:
         self.draw_brewing_element()
         self.draw_ui()
 
-    def draw_brewing_element(self):
+    def draw_brewing_element(self) -> None:
+        """
+        all brewing elements.
+        Cauldron, shelf, bottle, water
+        :return None:
+        """
         self.__screen.blit(self.__map.spatulas[self.__map.current_spatula],
                            ((Config.SCREEN_WIDTH - 250) / 2, Config.SCREEN_HEIGHT - 250 - 100))
         self.__screen.blit(self.__map.cauldron_pic, ((Config.SCREEN_WIDTH - 250) / 2, Config.SCREEN_HEIGHT - 250))
@@ -53,12 +65,13 @@ class Drawer:
         self.__screen.blit(self.__map.tableL, ((Config.SCREEN_WIDTH - 730) / 2, Config.SCREEN_HEIGHT - 250))
         self.__screen.blit(self.__map.bottleup, ((Config.SCREEN_WIDTH + 250) / 2, Config.SCREEN_HEIGHT - 150 - 90))
 
-        self.__screen.blit(self.__map.cancel, ((Config.SCREEN_WIDTH + Config.MAP_WIDTH)/2 - 50,
-                                 (Config.SCREEN_HEIGHT - Config.MAP_HEIGHT) / 8 + Config.MAP_HEIGHT - 50))
+        self.__screen.blit(self.__map.cancel, ((Config.SCREEN_WIDTH + Config.MAP_WIDTH) / 2 - 50,
+                                               (Config.SCREEN_HEIGHT - Config.MAP_HEIGHT) / 8 + Config.MAP_HEIGHT - 50))
 
-
-
-    def on_map_draw(self):
+    def on_map_draw(self) -> None:
+        """
+        everything happen on map surface
+        """
         self.__map.surface.fill((Config.COLOR['black']))
         self.__map.surface.fill((Config.COLOR['map']), self.__map.rect.inflate(-5, -5))
         # draw marks
@@ -71,23 +84,29 @@ class Drawer:
 
     def plot_potion(self):
         for pos in Config.POTION_POS.values():
-            pg.draw.circle(self.__map.surface, (Config.COLOR['green']), self.__map.get_position(pos), 10, width=2)
             self.__map.surface.blit(self.__map.bottleShad, self.__map.get_position((pos[0] - 15, pos[1] + 21)))
 
     def draw_shop_screen(self):
+        """
+            for everything happen on shop screen
+        """
         self.__screen.fill((Config.COLOR['background']))
         self.draw_ui()
 
     def draw_ui(self):
-        tmpR1 = pg.Rect(1, 1, Config.UI_WIDTH - 2, Config.UI_HEIGHT / 2 - 2)
-        pg.draw.rect(self.__uiSurface, (Config.COLOR['marks']), tmpR1, border_radius=100)
-        pg.draw.rect(self.__uiSurface, (Config.COLOR['map']), tmpR1.inflate(-5, -5), border_radius=100)
+        """
+        draw ui
+        :return None:
+        """
+        dayRect = pg.Rect(1, 1, Config.UI_WIDTH - 2, Config.UI_HEIGHT / 2 - 2)
+        pg.draw.rect(self.__uiSurface, (Config.COLOR['marks']), dayRect, border_radius=100)
+        pg.draw.rect(self.__uiSurface, (Config.COLOR['map']), dayRect.inflate(-5, -5), border_radius=100)
         self.draw_text(self.__uiSurface, f"Day {self.__inventory.get_day()}", 30, Config.UI_WIDTH / 4,
                        0, (Config.COLOR['marks']))
 
-        tmpR2 = pg.Rect(1, Config.UI_HEIGHT / 2 + 1, Config.UI_WIDTH - 2, Config.UI_HEIGHT / 2 - 2)
-        pg.draw.rect(self.__uiSurface, (Config.COLOR['marks']), tmpR2, border_radius=100)
-        pg.draw.rect(self.__uiSurface, (Config.COLOR['map']), tmpR2.inflate(-5, -5), border_radius=100)
+        moneyRect = pg.Rect(1, Config.UI_HEIGHT / 2 + 1, Config.UI_WIDTH - 2, Config.UI_HEIGHT / 2 - 2)
+        pg.draw.rect(self.__uiSurface, (Config.COLOR['marks']), moneyRect, border_radius=100)
+        pg.draw.rect(self.__uiSurface, (Config.COLOR['map']), moneyRect.inflate(-5, -5), border_radius=100)
         self.draw_text(self.__uiSurface, f"$ {self.__inventory.get_money():.2f}", 30, Config.UI_WIDTH / 6,
                        Config.UI_HEIGHT / 2 + 1, (Config.COLOR['marks']))
 

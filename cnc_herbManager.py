@@ -33,6 +33,17 @@ class HerbCabinet:
             if pg.mouse.get_pressed()[0] == 0:
                 self.enable = True
 
+    def check_hover(self, mouse_pos, screen):
+        if self.hitbox.collidepoint(mouse_pos):
+            tmps = pg.Surface((150, 25))
+            tmprect = tmps.get_rect()
+            tmps.fill((Config.COLOR['black']))
+            tmps.fill((Config.COLOR['map']), tmprect.inflate(-2, -2))
+            font = pg.font.SysFont('comicsansms', 15)
+            text = font.render(f"{self.name} ({self.direction})", True, Config.COLOR['black'])
+            tmps.blit(text, (10, 0))
+            screen.blit(tmps, mouse_pos)
+
     def sent_herb(self):
         herb = Herb(self.name, self.funcX, self.funcY, self.t)
         self.__map.add_herb(herb)
@@ -60,5 +71,3 @@ class HerbManager:
                 tmpR = HerbCabinet(ids[i], x, y, self.__map)
                 i += 1
                 self.herb_blocks.append(tmpR)
-
-

@@ -23,9 +23,5 @@ class Potion:
         return ingredient in self.__ingredients
 
     def __str__(self):
-        return '{'+ f"""'name': 'STONE', 'power': 1, 'ingredients': ['a', 'b']"""+ '}'
+        return '{' + f"""'name': {self.__name}, 'power': {self.__power}, 'ingredients': {self.__ingredients}""" + '}'
 
-
-if __name__ == '__main__':
-    po1 = Potion("STONE", 1, ['a', 'b'])
-    print(po1)

@@ -3,6 +3,11 @@
 ### Note v0.5:
 50% all the brewing system and inventory ready. Potion can not be sold yet
 
+## Table of Contents
+
+- [Instalation](#Instalation)
+- [Tutorails](#Tutorials)
+
 # Instalation
 1. download pygame, type in commands prompt
 
@@ -15,13 +20,15 @@
     
         python3 -m pip install pygame
 
-2. after download pygame, download all the file, or clone this repo by using
+   or visit [pygame website](https://www.pygame.org/wiki/GettingStarted) to see the instalation 
+
+3. after download pygame, download all the file, or clone this repo by using
    
     ```githubexpressionlanguage
    git clone https://github.com/NattananPimj/Cauldron_n_Coins.git
     ```
    
-3. hit run on file `cnc_main.py`
+4. hit run on file **[cnc_main.py](cnc_main.py)**
 
 Enjoy
 

@@ -3,6 +3,12 @@
 ### Note v0.5:
 50% all the brewing system and inventory ready. Potion can not be sold yet
 
+## Table of Contents
+
+- [Instalation](#Instalation)
+- [Tutorials](#Tutorials)
+- [Known Bugs](#Knowns-Bug-v0.5)
+
 # Instalation
 1. download pygame, type in commands prompt
 
@@ -15,13 +21,15 @@
     
         python3 -m pip install pygame
 
-2. after download pygame, download all the file, or clone this repo by using
+   or visit [pygame website](https://www.pygame.org/wiki/GettingStarted) to see the instalation 
+
+3. after download pygame, download all the file, or clone this repo by using
    
     ```githubexpressionlanguage
    git clone https://github.com/NattananPimj/Cauldron_n_Coins.git
     ```
    
-3. hit run on file `cnc_main.py`
+4. hit run on file **[cnc_main.py](cnc_main.py)**
 
 Enjoy
 
@@ -53,3 +61,10 @@ this game is most interact by mouse, in the picture there is the colored rectang
 * WASD: moving around the map
 * Arrow Left, Arrow Right: move around shop scree and brewing screen(not done yet)
 * Scroll Wheel: while hover on the inventory area, move up and down like the arrow
+
+
+# Knowns Bug v0.5
+- if hitting on very right of water jat and very left of cauldron, user can do both action at the same time.
+- player can move around the map so far away and cannot come back easily
+- while moving the map, cannot use mouse
+- if hit spacebar, the water jar action will run (forgot to remove, will do in final)

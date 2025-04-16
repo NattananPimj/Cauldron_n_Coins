@@ -6,7 +6,8 @@
 ## Table of Contents
 
 - [Instalation](#Instalation)
-- [Tutorails](#Tutorials)
+- [Tutorials](#Tutorials)
+- [Known Bugs](#Knowns Bug v0.5)
 
 # Instalation
 1. download pygame, type in commands prompt
@@ -60,3 +61,10 @@ this game is most interact by mouse, in the picture there is the colored rectang
 * WASD: moving around the map
 * Arrow Left, Arrow Right: move around shop scree and brewing screen(not done yet)
 * Scroll Wheel: while hover on the inventory area, move up and down like the arrow
+
+
+# Knowns Bug v0.5
+- if hitting on very right of water jat and very left of cauldron, user can do both action at the same time.
+- player can move around the map so far away and cannot come back easily
+- while moving the map, cannot use mouse
+- if hit spacebar, the water jar action will run (forgot to remove, will do in final)

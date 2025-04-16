@@ -7,7 +7,7 @@
 
 - [Instalation](#Instalation)
 - [Tutorials](#Tutorials)
-- [Known Bugs](#Knowns Bug v0.5)
+- [Known Bugs](#Knowns-Bug-v0.5)
 
 # Instalation
 1. download pygame, type in commands prompt

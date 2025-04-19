@@ -2,7 +2,7 @@ import pygame as pg
 from cnc_herbs import *
 from cnc_classes import *
 from cnc_config import Config
-from cnc_inventory import Inventory
+from cnc_inventory import Inventory, CustomerManager
 from cnc_map import Map
 from cnc_herbManager import HerbManager
 
@@ -13,6 +13,7 @@ class Game:
     """
     main class for the game, run everything here
     """
+
     def __init__(self, name: str = 'lilly'):
         """
         :param name: username for register the save. if not sign in yet, create new one
@@ -20,10 +21,13 @@ class Game:
         import all the class in
         """
         self.__inventory = Inventory(name)
+        self.__customer_manager = CustomerManager()
+        self.__inventory.add_manager(self.__customer_manager)
         self.__map = Map()
         self.__herbs = HerbManager(self.__map)
-        self.__drawer = Drawer(self.__map, self.__herbs)
+        self.__drawer = Drawer(self.__map, self.__herbs, self.__customer_manager)
         self.__state = 'map'  # map / store
+        self.__prev_state = 'map'
 
         self.__running = True
 
@@ -39,10 +43,25 @@ class Game:
                 if self.__state == 'map':
                     if ev.key == pg.K_LEFT:
                         self.__state = 'shop'
+                    if ev.key == pg.K_UP:
+                        self.__state = 'bedroom'
+                        self.__prev_state = 'map'
 
                 if self.__state == 'shop':
                     if ev.key == pg.K_RIGHT:
                         self.__state = 'map'
+                    if ev.key == pg.K_UP:
+                        self.__state = 'bedroom'
+                        self.__prev_state = 'shop'
+
+                if self.__state == 'haggle':
+                    if ev.key == pg.K_SPACE:
+                        pass
+
+                if self.__state == 'bedroom':
+                    if ev.key == pg.K_DOWN:
+                        self.__state = self.__prev_state
+
         # hold key down
         key = pg.key.get_pressed()
         # self.move_to_origin()
@@ -70,7 +89,23 @@ class Game:
                 self.__map.add_water(mouse)
 
             if self.__state == 'shop':
+                if not self.__customer_manager.startday:
+                    self.__customer_manager.startday = True
+
+
                 self.__drawer.draw_shop_screen()
+                for slot in self.__inventory.slots:
+                    slot.check_click(mouse)
+            if self.__customer_manager.startday:
+                self.__customer_manager.walk_in()
+
+            if self.__state == 'bedroom':
+                self.__drawer.draw_bedroom()
+
+            if self.__state == 'haggle':
+                self.__drawer.draw_shop_screen()
+                self.__drawer.draw_haggle()
+
             pg.display.update()
 
 

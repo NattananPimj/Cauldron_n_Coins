@@ -1,3 +1,4 @@
+import random
 from typing import List
 
 import pygame as pg
@@ -9,18 +10,20 @@ import csv
 
 class ItemSlot:
     def __init__(self, id, inv: "Inventory"):
+        self.__enable = True
         self.id = id
         self.item = None
 
         self.check_position()
         self.inv = inv
         self.box = pg.Rect(self.get_position()[0], self.get_position()[1], 95, 145)
+        self.hitbox = pg.Rect((Config.SCREEN_WIDTH - Config.INV_WIDTH) + self.get_position()[0],
+                              Config.UI_HEIGHT + self.get_position()[1], 95, 145)
         self.base = pg.image.load('IngamePic/Potion.png')
         self.base = pg.transform.scale(self.base, (70, 120))
 
-
     def get_position(self):
-        return (self.x * 100) + 2, self.inv.upperline +  (self.y * 150 + 2)
+        return (self.x * 100) + 2, self.inv.upperline + (self.y * 150 + 2)
 
     def is_empty(self):
         return self.item is None
@@ -43,13 +46,24 @@ class ItemSlot:
         self.inv.remove_slot(self.id)  # self item will change
         return item
 
+    def check_click(self, mouse_pos):
+        if self.hitbox.collidepoint(mouse_pos):
+            if pg.mouse.get_pressed()[0] == 1 and self.__enable:
+                self.__enable = False
+                # print(self.item.__str__())
+                self.inv.get_manager().offer(self.get_item())
+        if pg.mouse.get_pressed()[0] == 0:
+            self.__enable = True
+
     def draw(self, screen):
         self.box.topleft = self.get_position()
+        self.hitbox.topleft = ((Config.SCREEN_WIDTH - Config.INV_WIDTH) + self.get_position()[0],
+                               Config.UI_HEIGHT + self.get_position()[1])
         pg.draw.rect(screen, Config.COLOR['map'], self.box, border_radius=5)
         if self.item is not None:
             screen.blit(self.base, (self.get_position()[0] + 12.5, self.get_position()[1] + 15))
             font = pg.font.SysFont('comicsansms', 20)
-            text = font.render('I'*self.item.get_power(), True, Config.COLOR['marks'])
+            text = font.render('I' * self.item.get_power(), True, Config.COLOR['marks'])
             screen.blit(text, (self.get_position()[0] + 95 - 15 - (5 * self.item.get_power()),
                                self.get_position()[1] + 145 - 30))
 
@@ -73,8 +87,9 @@ class Inventory:
         self.__day = None
         self.__money = None
         self.__inventory = []
-        self.__username = None
+        self.__name = None
         self.__data = None
+        self.__manager: CustomerManager = None
 
         self.__file = "cnc_save_test.csv"
         self.to_id(name)
@@ -87,16 +102,23 @@ class Inventory:
             self.add_to_slot(item)
 
         # moving up, down arrow
-        self.arrowup_box = pg.Rect(Config.SCREEN_WIDTH - Config.INV_WIDTH - 40, Config.SCREEN_HEIGHT/2 - 50,
+        self.arrowup_box = pg.Rect(Config.SCREEN_WIDTH - Config.INV_WIDTH - 40, Config.SCREEN_HEIGHT / 2 - 50,
                                    40, 50)
         self.arrowdown_box = pg.Rect(Config.SCREEN_WIDTH - Config.INV_WIDTH - 40, Config.SCREEN_HEIGHT / 2 + 10,
-                                   40, 50)
+                                     40, 50)
 
     @classmethod
     def get_instance(cls):
         if cls.__instance is None:
             cls.__instance = cls()
         return cls.__instance
+
+    def add_manager(self, manager: "CustomerManager"):
+        if self.__manager is None:
+            self.__manager = manager
+
+    def get_manager(self):
+        return self.__manager
 
     def __load_data(self) -> List[dict]:
         """
@@ -125,8 +147,8 @@ class Inventory:
         self.__day = int(data['Days'])
         self.__money = float(data['Money'])
         inv = eval(data['Inventory'][1:-1])
-        print(inv)
-        print(type(inv))
+        # print(inv)
+        # print(type(inv))
         for item in inv:
             self.__inventory.append(Potion(item['name'], (item['power']), item['ingredients']))
         return True
@@ -137,7 +159,7 @@ class Inventory:
         :param name: username
         :return:
         """
-        self.__username = name
+        self.__name = name
         self.__data = self.__load_data()
 
         if not self.__process(name):
@@ -177,14 +199,14 @@ class Inventory:
         """
         # get data into dict
         tmp_row = {
-            'Name': self.__username,
+            'Name': self.__name,
             'Days': str(self.__day),
             'Money': str(self.__money),
             'Inventory': self.str_inventory()
         }
 
         tmp_data = self.__data
-        index = self.find_data(self.__username)
+        index = self.find_data(self.__name)
         if index != -1:
             tmp_data[index] = tmp_row
         else:
@@ -201,7 +223,7 @@ class Inventory:
         self.__load_data()
 
     def get_name(self) -> str:
-        return self.__username
+        return self.__name
 
     def get_slots(self):
         return self.slots
@@ -258,7 +280,7 @@ class Inventory:
 
     def move_up_down(self, num: int):
         tmp = self.upperline + (num * 10)
-        if 0 >= tmp >= (-150 * (self.next_id//2 - 4)):
+        if 0 >= tmp >= (-150 * (self.next_id // 2 - 4)):
             self.upperline = tmp
         # print(self.upperline)
 
@@ -270,9 +292,162 @@ class Inventory:
                 self.move_up_down(-0.5)
 
 
+class Haggling:
+    def __init__(self):
+        self.surface = pg.Surface((400, 200))
+        self.haggle_speed = (1 / 3)
+        self.reset()
 
-if __name__ == "__main__":
-    inventory = Inventory()
-    print(inventory.get_day())
-    print(inventory.get_inventory())
-    inventory.print_slot()
+    def draw_triangle(self):
+        pg.draw.polygon(self.surface, Config.COLOR['black'],
+                        (self.haggle_pos,
+                         (self.haggle_pos[0] - 10, self.haggle_pos[1] - 30),
+                         (self.haggle_pos[0] + 10, self.haggle_pos[1] - 30)))
+
+    def move_haggle(self):
+        self.haggle_pos[0] += self.movement * self.haggle_speed
+        if self.haggle_pos[0] > 380:
+            self.movement = -1
+        if self.haggle_pos[0] < 0:
+            self.movement = 1
+
+    def create_rect(self):
+        tmpw = random.randint(20, 50)
+        tmpr = pg.Rect((random.randint(0, 400 - tmpw)), 50,
+                       tmpw, 50)
+        while any(r.colliderect(tmpr) for r in self.hagglebar):
+            tmpw = random.randint(20, 50)
+            tmpr = pg.Rect((random.randint(0, 400 - tmpw)), 50,
+                           tmpw, 50)
+        return tmpr
+
+    def check_haggle(self, r: pg.Rect):
+        if r.collidepoint(self.haggle_pos):
+            self.hagglebar.remove(r)
+            self.hagglebar.append(r)
+        return False
+
+    def done(self):
+        return self.multiplier
+
+    def check_done(self):
+        if self.multiplier <= 0.5:
+            self.multiplier = 0.5
+            return self.done()
+        if self.multiplier >= 1.5:
+            self.multiplier = 1.5
+            return self.done()
+
+    def reset(self):
+        self.multiplier = 1
+        self.hagglebar = []
+        self.num_hagglebar = 5
+        for i in range(self.num_hagglebar):
+            self.hagglebar.append(self.create_rect())
+        self.haggling_left = 30
+        self.haggle_pos = [20, 80]
+        self.movement = 1
+
+
+class Customer:
+    def __init__(self, rq, pic):
+        self.__request = rq
+        self.dialog = self.create_dialog().splitlines()
+        self.pic = pg.image.load("customer/DemoCustomer.png")
+        self.pic = pg.transform.scale(self.pic, (120, 333))
+        self.patience = random.randint(1, 4)
+        self.x = 10
+        self.multiplier = 1
+
+    def get_request(self):
+        return self.__request
+
+    def create_dialog(self):
+        # first space bar after 30th letter
+        tmplst = list(self.__request)
+        for i in range(30, len(tmplst)):
+            if tmplst[i] == ' ':
+                tmplst[i] = '\n'
+                break
+            if tmplst[i] == '—':
+                tmplst[i] = '—\n'
+                break
+        return ''.join(tmplst)
+
+
+class CustomerManager:
+    def __init__(self):
+        self.__inventory = Inventory().get_instance()
+        self.customers_each_day = random.randint(6, 10)
+        self.num_customers = 0
+
+        self.sell_pos = Config.SCREEN_WIDTH / 6
+
+        self.current_customer = None
+        self.prev_customer = None
+        self.offered = None
+        self.sell_enable = False
+        self.haggle_enable = False
+        self.haggle = Haggling()
+        self.create()
+        self.startday = False
+        self.dialogBox = pg.image.load("IngamePic/dialogBox.png")
+
+        self.rejectButton = pg.Rect(430, 40 + 180, 150, 50)
+        self.sellButton = pg.Rect(430 + 155, 40 + 180, 150, 50)
+        self.haggleButton = pg.Rect(430 + 310 , 40 + 180, 150, 50)
+        self.buttons = [self.rejectButton, self.sellButton, self.haggleButton]
+        self.buttontxt = ['Reject', 'Sell', 'Haggle']
+
+    @staticmethod
+    def random_rq():
+        key = list(Config.RQ.keys())
+        ans = random.choice(key)
+        return Config.RQ[ans][random.randint(0, len(Config.RQ[ans]) - 1)]
+
+    @staticmethod
+    def get_random_pic():
+        file = random.choice(Config.customer_pic)
+        pic = pg.image.load('IngamePic/' + file)
+        pic = pg.transform.scale(pic, (30, 30))
+        return pic
+
+    def create(self):
+        if self.num_customers < self.customers_each_day:
+            self.current_customer = Customer(self.random_rq(), None)
+            self.num_customers += 1
+            return True
+        return False
+
+    def offer(self, potion: Potion):
+        self.offered = potion
+        self.check_offer()
+
+    def walk_in(self):
+        if self.current_customer.x < self.sell_pos:
+            self.current_customer.x += 1
+        else:
+            self.current_customer.x = self.sell_pos
+
+    def check_offer(self):
+        if self.current_customer.get_request() in Config.RQ[self.offered.get_name()]:
+            self.sell_enable = True
+            self.haggle_enable = True
+            print("yes")
+            # sell button and bargin enable
+        else:
+            self.current_customer.patience -= 1
+            print("no")
+            if self.current_customer.patience == 0:
+                self.next_customer()
+
+    def next_customer(self):
+        self.prev_customer = self.current_customer
+        self.create()
+
+    def sell(self):
+        self.__inventory.add_money(self.potion.get_price() * self.current_customer.multiplier)
+        self.sell_enable = False
+        self.haggle_enable = False
+        self.offered = None
+

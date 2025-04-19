@@ -2,7 +2,7 @@ import pygame as pg
 
 from cnc_config import Config
 from cnc_herbs import *
-from cnc_inventory import Inventory
+from cnc_inventory import Inventory, CustomerManager, Customer
 from cnc_map import Map
 from cnc_herbManager import HerbManager
 
@@ -14,7 +14,7 @@ class Drawer:
     most drawing here
     """
 
-    def __init__(self, m: Map, h: HerbManager):
+    def __init__(self, m: Map, h: HerbManager, c: CustomerManager):
         self.__gameinfo = None
         self.__screen = pg.display.set_mode((Config.SCREEN_WIDTH, Config.SCREEN_HEIGHT))
         self.__mapsize = pg.Rect((Config.SCREEN_WIDTH - Config.MAP_WIDTH) / 2,
@@ -24,9 +24,12 @@ class Drawer:
         self.__clock = pg.time.Clock()
         self.__map = m
         self.__herb = h
+        self.__customerM = c
         self.__inventory = Inventory.get_instance()
 
         self.__uiSurface = pg.Surface((Config.UI_WIDTH, Config.UI_HEIGHT), pg.SRCALPHA)
+        self.bedroom = pg.image.load('IngamePic/Bedroom.jpg')
+        self.bed = pg.Rect(20, 1 * Config.SCREEN_HEIGHT / 2, Config.SCREEN_WIDTH / 2, Config.SCREEN_HEIGHT / 3)
 
     def get_screen(self):
         return self.__screen
@@ -46,6 +49,7 @@ class Drawer:
                            ((((Config.SCREEN_WIDTH - Config.MAP_WIDTH) / 2) - Config.HERB_WIDTH) / 2
                             , (Config.SCREEN_HEIGHT - Config.HERB_HEIGHT) / 2))
         self.draw_brewing_element()
+        self.draw_inventory()
         self.draw_ui()
 
     def draw_brewing_element(self) -> None:
@@ -92,14 +96,33 @@ class Drawer:
             for everything happen on shop screen
         """
         self.__screen.fill((Config.COLOR['background']))
+        if self.__customerM.current_customer is not None:
+            self.__screen.blit(self.__customerM.current_customer.pic,
+                               (self.__customerM.current_customer.x, 200))
+        self.__screen.blit(self.__customerM.dialogBox,
+                           (300,
+                            40))
+        # draw dialog
+        for i, lines in enumerate(self.__customerM.current_customer.dialog):
+            self.draw_text(self.__customerM.dialogBox,
+                           lines, 30, 25, 25 + (i * 40), Config.COLOR['marks'])
+        for i, button in enumerate(self.__customerM.buttons):
+            pg.draw.rect(self.__screen, Config.COLOR['marks'], button, border_radius=20)
+            pg.draw.rect(self.__screen, Config.COLOR['map'], button.inflate(-5, -5), border_radius=20)
+            self.draw_text(self.__screen, self.__customerM.buttontxt[i], 30,
+                           button.x + (30 + 20 * (i % 2)), button.y + 5, Config.COLOR['marks'])
+
+        self.draw_inventory()
         self.draw_ui()
+
+    def draw_haggle(self):
+        pass
 
     def draw_ui(self):
         """
         draw ui
         :return None:
         """
-        self.draw_inventory()
         dayRect = pg.Rect(1, 1, Config.UI_WIDTH - 2, Config.UI_HEIGHT / 2 - 2)
         pg.draw.rect(self.__uiSurface, (Config.COLOR['marks']), dayRect, border_radius=100)
         pg.draw.rect(self.__uiSurface, (Config.COLOR['map']), dayRect.inflate(-5, -5), border_radius=100)
@@ -114,26 +137,31 @@ class Drawer:
 
         self.__screen.blit(self.__uiSurface, (Config.SCREEN_WIDTH - Config.UI_WIDTH, 0))
 
+    def draw_inventory(self):
+        self.__screen.blit(self.__inventory.surface, (Config.SCREEN_WIDTH - Config.INV_WIDTH, Config.UI_HEIGHT))
+        self.__inventory.surface.fill((Config.COLOR['inventory_bg']))
+        for slot in self.__inventory.get_slots():
+            slot.draw(self.__inventory.surface)
         # draw arrow up
         pg.draw.polygon(self.__screen, Config.COLOR['marks'],
-                        ((Config.SCREEN_WIDTH - Config.INV_WIDTH - 40, Config.SCREEN_HEIGHT/2),
-                         (Config.SCREEN_WIDTH - Config.INV_WIDTH, Config.SCREEN_HEIGHT/2),
-                         (Config.SCREEN_WIDTH - Config.INV_WIDTH - 20, Config.SCREEN_HEIGHT/2 - 50)), width=3)
+                        ((Config.SCREEN_WIDTH - Config.INV_WIDTH - 40, Config.SCREEN_HEIGHT / 2),
+                         (Config.SCREEN_WIDTH - Config.INV_WIDTH, Config.SCREEN_HEIGHT / 2),
+                         (Config.SCREEN_WIDTH - Config.INV_WIDTH - 20, Config.SCREEN_HEIGHT / 2 - 50)), width=3)
         # draw arrow up
         pg.draw.polygon(self.__screen, Config.COLOR['marks'],
                         ((Config.SCREEN_WIDTH - Config.INV_WIDTH - 40, Config.SCREEN_HEIGHT / 2 + 10),
                          (Config.SCREEN_WIDTH - Config.INV_WIDTH, Config.SCREEN_HEIGHT / 2 + 10),
                          (Config.SCREEN_WIDTH - Config.INV_WIDTH - 20, Config.SCREEN_HEIGHT / 2 + 60)), width=3)
 
-
-    def draw_inventory(self):
-        self.__screen.blit(self.__inventory.surface, (Config.SCREEN_WIDTH - Config.INV_WIDTH, Config.UI_HEIGHT))
-        self.__inventory.surface.fill((Config.COLOR['inventory_bg']))
-        for slot in self.__inventory.get_slots():
-            slot.draw(self.__inventory.surface)
-
     @staticmethod
     def draw_text(screen, txt, size=36, x=0, y=0, color=Config.COLOR['black']):
         font = pg.font.SysFont('comicsansms', size)
         text = font.render(txt, True, color)
         screen.blit(text, (x, y))
+
+    def draw_bedroom(self):
+        self.__screen.fill((Config.COLOR['background']))
+        self.__screen.blit(self.bedroom, (0, 0))
+        # pg.draw.rect(self.__screen, Config.COLOR['red'], self.bed)
+
+        self.draw_ui()

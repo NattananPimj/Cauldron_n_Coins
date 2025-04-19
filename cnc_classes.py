@@ -96,21 +96,21 @@ class Drawer:
             for everything happen on shop screen
         """
         self.__screen.fill((Config.COLOR['background']))
+        dialogBox = self.__customerM.dialogBox.copy()
         if self.__customerM.current_customer is not None:
             self.__screen.blit(self.__customerM.current_customer.pic,
                                (self.__customerM.current_customer.x, 200))
-        self.__screen.blit(self.__customerM.dialogBox,
-                           (300,
-                            40))
-        # draw dialog
-        for i, lines in enumerate(self.__customerM.current_customer.dialog):
-            self.draw_text(self.__customerM.dialogBox,
-                           lines, 30, 25, 25 + (i * 40), Config.COLOR['marks'])
-        for i, button in enumerate(self.__customerM.buttons):
-            pg.draw.rect(self.__screen, Config.COLOR['marks'], button, border_radius=20)
-            pg.draw.rect(self.__screen, Config.COLOR['map'], button.inflate(-5, -5), border_radius=20)
-            self.draw_text(self.__screen, self.__customerM.buttontxt[i], 30,
-                           button.x + (30 + 20 * (i % 2)), button.y + 5, Config.COLOR['marks'])
+            # draw dialog
+            for i, lines in enumerate(self.__customerM.current_customer.dialog):
+                self.draw_text(dialogBox,
+                               lines, 30, 25, 25 + (i * 40), Config.COLOR['marks'])
+            self.__screen.blit(dialogBox, (300, 40))
+            for key, value in self.__customerM.buttons.items():
+                pg.draw.rect(self.__screen, Config.COLOR['marks'], value[0], border_radius=20)
+                pg.draw.rect(self.__screen, Config.COLOR['map'], value[0].inflate(-5, -5), border_radius=20)
+                self.draw_text(self.__screen, key, 30,
+                               value[0].x + (30), value[0].y + 5, Config.COLOR['marks'])
+
 
         self.draw_inventory()
         self.draw_ui()

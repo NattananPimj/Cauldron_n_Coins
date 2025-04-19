@@ -294,6 +294,7 @@ class Inventory:
 
 class Haggling:
     def __init__(self):
+        self.movement = None
         self.surface = pg.Surface((400, 200))
         self.haggle_speed = (1 / 3)
         self.reset()
@@ -386,8 +387,6 @@ class CustomerManager:
         self.current_customer = None
         self.prev_customer = None
         self.offered = None
-        self.sell_enable = False
-        self.haggle_enable = False
         self.haggle = Haggling()
         self.create()
         self.startday = False
@@ -395,9 +394,10 @@ class CustomerManager:
 
         self.rejectButton = pg.Rect(430, 40 + 180, 150, 50)
         self.sellButton = pg.Rect(430 + 155, 40 + 180, 150, 50)
-        self.haggleButton = pg.Rect(430 + 310 , 40 + 180, 150, 50)
-        self.buttons = [self.rejectButton, self.sellButton, self.haggleButton]
-        self.buttontxt = ['Reject', 'Sell', 'Haggle']
+        self.haggleButton = pg.Rect(430 + 310, 40 + 180, 150, 50)
+        self.buttons = {'Reject': [self.rejectButton, self.next_customer, False],
+                        'Sell': [self.sellButton, self.sell, False],
+                        'Haggle': [self.haggleButton, self.haggle, False], }
 
     @staticmethod
     def random_rq():
@@ -417,6 +417,7 @@ class CustomerManager:
             self.current_customer = Customer(self.random_rq(), None)
             self.num_customers += 1
             return True
+        self.current_customer = None
         return False
 
     def offer(self, potion: Potion):
@@ -427,12 +428,14 @@ class CustomerManager:
         if self.current_customer.x < self.sell_pos:
             self.current_customer.x += 1
         else:
+            self.buttons['Reject'][2] = True
             self.current_customer.x = self.sell_pos
+
 
     def check_offer(self):
         if self.current_customer.get_request() in Config.RQ[self.offered.get_name()]:
-            self.sell_enable = True
-            self.haggle_enable = True
+            self.buttons['Sell'][2] = True
+            self.buttons['Haggle'][2] = True
             print("yes")
             # sell button and bargin enable
         else:
@@ -444,10 +447,24 @@ class CustomerManager:
     def next_customer(self):
         self.prev_customer = self.current_customer
         self.create()
+        return None
 
     def sell(self):
         self.__inventory.add_money(self.potion.get_price() * self.current_customer.multiplier)
-        self.sell_enable = False
-        self.haggle_enable = False
         self.offered = None
+        return None
 
+    def haggle(self):
+        return 'haggle'
+
+    def check_click(self, mouse, key):
+        output = None
+        if self.buttons[key][0].collidepoint(mouse):
+            if pg.mouse.get_pressed()[0] == 1 and self.buttons[key][2]:
+                self.buttons['Reject'][2] = False
+                self.buttons['Haggle'][2] = False
+                self.buttons['Sell'][2] = False
+                print(key)
+                output = self.buttons[key][1]()
+
+        return output

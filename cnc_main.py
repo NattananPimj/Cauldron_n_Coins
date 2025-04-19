@@ -91,13 +91,18 @@ class Game:
             if self.__state == 'shop':
                 if not self.__customer_manager.startday:
                     self.__customer_manager.startday = True
+                if self.__customer_manager.current_customer is not None:
+                    if self.__customer_manager.startday:
+                        self.__customer_manager.walk_in()
+                    for key, v in self.__customer_manager.buttons.items():
+                        output = self.__customer_manager.check_click(mouse, key)
+                        if output == 'haggle':
+                            self.__state = 'haggle'
 
-
-                self.__drawer.draw_shop_screen()
                 for slot in self.__inventory.slots:
                     slot.check_click(mouse)
-            if self.__customer_manager.startday:
-                self.__customer_manager.walk_in()
+
+                self.__drawer.draw_shop_screen()
 
             if self.__state == 'bedroom':
                 self.__drawer.draw_bedroom()

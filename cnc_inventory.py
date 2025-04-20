@@ -1,3 +1,4 @@
+import copy
 import random
 from typing import List
 
@@ -19,8 +20,6 @@ class ItemSlot:
         self.box = pg.Rect(self.get_position()[0], self.get_position()[1], 95, 145)
         self.hitbox = pg.Rect((Config.SCREEN_WIDTH - Config.INV_WIDTH) + self.get_position()[0],
                               Config.UI_HEIGHT + self.get_position()[1], 95, 145)
-        self.base = pg.image.load('IngamePic/Potion.png')
-        self.base = pg.transform.scale(self.base, (70, 120))
 
     def get_position(self):
         return (self.x * 100) + 2, self.inv.upperline + (self.y * 150 + 2)
@@ -48,7 +47,7 @@ class ItemSlot:
 
     def check_click(self, mouse_pos):
         if self.hitbox.collidepoint(mouse_pos):
-            if pg.mouse.get_pressed()[0] == 1 and self.__enable:
+            if pg.mouse.get_pressed()[0] == 1 and self.__enable and not self.is_empty():
                 self.__enable = False
                 # print(self.item.__str__())
                 self.inv.get_manager().offer(self.get_item())
@@ -61,7 +60,7 @@ class ItemSlot:
                                Config.UI_HEIGHT + self.get_position()[1])
         pg.draw.rect(screen, Config.COLOR['map'], self.box, border_radius=5)
         if self.item is not None:
-            screen.blit(self.base, (self.get_position()[0] + 12.5, self.get_position()[1] + 15))
+            screen.blit(self.item.pic, (self.get_position()[0] + 12.5, self.get_position()[1] + 15))
             font = pg.font.SysFont('comicsansms', 20)
             text = font.render('I' * self.item.get_power(), True, Config.COLOR['marks'])
             screen.blit(text, (self.get_position()[0] + 95 - 15 - (5 * self.item.get_power()),
@@ -387,6 +386,7 @@ class CustomerManager:
         self.current_customer = None
         self.prev_customer = None
         self.offered = None
+        self.offering_hitbox = pg.Rect(600, 400, 95, 145)  # +12.5 +15
         self.haggle = Haggling()
         self.create()
         self.startday = False
@@ -397,7 +397,7 @@ class CustomerManager:
         self.haggleButton = pg.Rect(430 + 310, 40 + 180, 150, 50)
         self.buttons = {'Reject': [self.rejectButton, self.next_customer, False],
                         'Sell': [self.sellButton, self.sell, False],
-                        'Haggle': [self.haggleButton, self.haggle, False], }
+                        'Haggle': [self.haggleButton, self.haggle, False],}
 
     @staticmethod
     def random_rq():
@@ -431,7 +431,6 @@ class CustomerManager:
             self.buttons['Reject'][2] = True
             self.current_customer.x = self.sell_pos
 
-
     def check_offer(self):
         if self.current_customer.get_request() in Config.RQ[self.offered.get_name()]:
             self.buttons['Sell'][2] = True
@@ -443,6 +442,13 @@ class CustomerManager:
             print("no")
             if self.current_customer.patience == 0:
                 self.next_customer()
+
+    def walk_away(self):
+        if self.prev_customer is not None:
+            if self.prev_customer.x < Config.SCREEN_WIDTH:
+                self.prev_customer.x += 3
+            else:
+                self.prev_customer = None
 
     def next_customer(self):
         self.prev_customer = self.current_customer
@@ -459,6 +465,7 @@ class CustomerManager:
 
     def check_click(self, mouse, key):
         output = None
+        condition = None
         if self.buttons[key][0].collidepoint(mouse):
             if pg.mouse.get_pressed()[0] == 1 and self.buttons[key][2]:
                 self.buttons['Reject'][2] = False
@@ -468,3 +475,20 @@ class CustomerManager:
                 output = self.buttons[key][1]()
 
         return output
+
+    def offered_not_none(self):
+        return self.offered is not None
+
+    def sent_back(self):
+        self.__inventory.add_item(self.offered)
+        self.offered = None
+
+    def draw_offering(self, screen):
+        # pg.draw.rect(screen, Config.COLOR['black'],self.offering_hitbox)
+        if self.offered is not None:
+            screen.blit(self.offered.pic, (self.offering_hitbox.x + 12.5, self.offering_hitbox.y + 15))
+
+    def click_sent(self, mouse):
+        if self.offering_hitbox.collidepoint(mouse):
+            if pg.mouse.get_pressed()[0] == 1 and self.offered_not_none():
+                self.sent_back()

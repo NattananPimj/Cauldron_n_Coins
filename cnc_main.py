@@ -26,7 +26,7 @@ class Game:
         self.__map = Map()
         self.__herbs = HerbManager(self.__map)
         self.__drawer = Drawer(self.__map, self.__herbs, self.__customer_manager)
-        self.__state = 'map'  # map / store
+        self.__state = 'shop'  # map / store
         self.__prev_state = 'map'
 
         self.__running = True
@@ -91,6 +91,7 @@ class Game:
             if self.__state == 'shop':
                 if not self.__customer_manager.startday:
                     self.__customer_manager.startday = True
+                self.__customer_manager.walk_away()
                 if self.__customer_manager.current_customer is not None:
                     if self.__customer_manager.startday:
                         self.__customer_manager.walk_in()
@@ -101,6 +102,7 @@ class Game:
 
                 for slot in self.__inventory.slots:
                     slot.check_click(mouse)
+                self.__customer_manager.click_sent(mouse)
 
                 self.__drawer.draw_shop_screen()
 

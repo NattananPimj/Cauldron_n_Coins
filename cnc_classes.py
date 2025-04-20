@@ -97,6 +97,10 @@ class Drawer:
         """
         self.__screen.fill((Config.COLOR['background']))
         dialogBox = self.__customerM.dialogBox.copy()
+        if self.__customerM.prev_customer is not None:
+            self.__screen.blit(self.__customerM.prev_customer.pic,
+                               (self.__customerM.prev_customer.x, 200))
+
         if self.__customerM.current_customer is not None:
             self.__screen.blit(self.__customerM.current_customer.pic,
                                (self.__customerM.current_customer.x, 200))
@@ -110,6 +114,10 @@ class Drawer:
                 pg.draw.rect(self.__screen, Config.COLOR['map'], value[0].inflate(-5, -5), border_radius=20)
                 self.draw_text(self.__screen, key, 30,
                                value[0].x + (30), value[0].y + 5, Config.COLOR['marks'])
+
+
+
+        self.__customerM.draw_offering(self.__screen)
 
 
         self.draw_inventory()

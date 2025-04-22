@@ -26,7 +26,7 @@ class Game:
         self.__map = Map()
         self.__herbs = HerbManager(self.__map)
         self.__drawer = Drawer(self.__map, self.__herbs, self.__customer_manager)
-        self.__state = 'shop'  # map / store
+        self.__state = 'map'  # map / store
         self.__prev_state = 'map'
 
         self.__running = True
@@ -56,7 +56,15 @@ class Game:
 
                 if self.__state == 'haggle':
                     if ev.key == pg.K_SPACE:
-                        pass
+                        # temporary
+                        # TODO: keep it inside haggle/customer manager + make satus that done or not done haggling
+                        for bar in self.__customer_manager.haggle.hagglebar:
+                            if self.__customer_manager.haggle.check_haggle(bar):
+                                self.__customer_manager.haggle.multiplier += 0.05
+                        else:
+                            self.__customer_manager.haggle.multiplier -= 0.03
+                        self.__customer_manager.haggle.multiplier -= 0.01
+                        # print(self.__customer_manager.haggle.multiplier)
 
                 if self.__state == 'bedroom':
                     if ev.key == pg.K_DOWN:
@@ -112,6 +120,7 @@ class Game:
             if self.__state == 'haggle':
                 self.__drawer.draw_shop_screen()
                 self.__drawer.draw_haggle()
+                self.__customer_manager.doing_haggle()
 
             pg.display.update()
 

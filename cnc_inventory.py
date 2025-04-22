@@ -292,39 +292,42 @@ class Inventory:
 
 
 class Haggling:
+    Haggle_WIN_W = 500
+    Haggle_WIN_H = 300
     def __init__(self):
         self.movement = None
-        self.surface = pg.Surface((400, 200))
-        self.haggle_speed = (1 / 3)
+        self.surface = pg.Surface((500, 300))
+        self.haggle_speed = (1 / 2)
         self.reset()
 
     def draw_triangle(self):
         pg.draw.polygon(self.surface, Config.COLOR['black'],
                         (self.haggle_pos,
-                         (self.haggle_pos[0] - 10, self.haggle_pos[1] - 30),
-                         (self.haggle_pos[0] + 10, self.haggle_pos[1] - 30)))
+                         (self.haggle_pos[0] - 10, self.haggle_pos[1] + 30),
+                         (self.haggle_pos[0] + 10, self.haggle_pos[1] + 30)))
 
     def move_haggle(self):
         self.haggle_pos[0] += self.movement * self.haggle_speed
-        if self.haggle_pos[0] > 380:
+        if self.haggle_pos[0] > self.Haggle_WIN_W:
             self.movement = -1
         if self.haggle_pos[0] < 0:
             self.movement = 1
 
     def create_rect(self):
         tmpw = random.randint(20, 50)
-        tmpr = pg.Rect((random.randint(0, 400 - tmpw)), 50,
+        tmpr = pg.Rect((random.randint(0, self.Haggle_WIN_W - tmpw)), 50,
                        tmpw, 50)
         while any(r.colliderect(tmpr) for r in self.hagglebar):
             tmpw = random.randint(20, 50)
-            tmpr = pg.Rect((random.randint(0, 400 - tmpw)), 50,
+            tmpr = pg.Rect((random.randint(0, self.Haggle_WIN_W - tmpw)), 50,
                            tmpw, 50)
         return tmpr
 
     def check_haggle(self, r: pg.Rect):
         if r.collidepoint(self.haggle_pos):
             self.hagglebar.remove(r)
-            self.hagglebar.append(r)
+            self.hagglebar.append(self.create_rect())
+            return True
         return False
 
     def done(self):
@@ -337,6 +340,7 @@ class Haggling:
         if self.multiplier >= 1.5:
             self.multiplier = 1.5
             return self.done()
+        return 'F'
 
     def reset(self):
         self.multiplier = 1
@@ -397,7 +401,7 @@ class CustomerManager:
         self.haggleButton = pg.Rect(430 + 310, 40 + 180, 150, 50)
         self.buttons = {'Reject': [self.rejectButton, self.next_customer, False],
                         'Sell': [self.sellButton, self.sell, False],
-                        'Haggle': [self.haggleButton, self.haggle, False],}
+                        'Haggle': [self.haggleButton, self.sent_haggle, False],}
 
     @staticmethod
     def random_rq():
@@ -460,8 +464,19 @@ class CustomerManager:
         self.offered = None
         return None
 
-    def haggle(self):
+    def sent_haggle(self):
+        print('HAGGLE')
         return 'haggle'
+
+    def doing_haggle(self):
+        done = self.haggle.check_done()
+        if done == 'F':
+            self.haggle.move_haggle()
+        else:
+            self.current_customer.multiplier = done
+            print(done)
+
+
 
     def check_click(self, mouse, key):
         output = None

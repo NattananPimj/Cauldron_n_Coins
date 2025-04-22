@@ -124,7 +124,11 @@ class Drawer:
         self.draw_ui()
 
     def draw_haggle(self):
-        pass
+        self.__screen.blit(self.__customerM.haggle.surface, (400, 100))
+        self.__customerM.haggle.surface.fill(Config.COLOR['marks'])
+        for bar in self.__customerM.haggle.hagglebar:
+            pg.draw.rect(self.__customerM.haggle.surface, Config.COLOR['red'], bar)
+        self.__customerM.haggle.draw_triangle()
 
     def draw_ui(self):
         """

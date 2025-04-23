@@ -2,6 +2,8 @@ import math
 
 
 class Config:
+    MUSIC_VOLUME = 0.1
+
     SCREEN_WIDTH = 1200
     SCREEN_HEIGHT = 700
     MAP_WIDTH = 700

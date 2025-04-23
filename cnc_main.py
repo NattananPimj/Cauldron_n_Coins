@@ -1,4 +1,5 @@
 import pygame as pg
+from pygame import mixer
 from cnc_herbs import *
 from cnc_classes import *
 from cnc_config import Config
@@ -78,6 +79,7 @@ class Game:
         self.__map.move_map(key)
 
     def run(self):
+        self.music()
         while self.__running:
             """
             user event + checking mouse clicking
@@ -123,6 +125,13 @@ class Game:
                 self.__customer_manager.doing_haggle()
 
             pg.display.update()
+
+    def music(self):
+        mixer.init()
+        mixer.music.load('Music/misty-wind-troubadour-164146.ogg')
+        mixer.music.play(-1)
+        # print(mixer.music.get_volume())
+        mixer.music.set_volume(Config.MUSIC_VOLUME)
 
 
 if __name__ == "__main__":

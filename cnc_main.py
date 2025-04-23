@@ -118,6 +118,8 @@ class Game:
 
             if self.__state == 'bedroom':
                 self.__drawer.draw_bedroom()
+                if self.__drawer.check_sleep(mouse):
+                    self.reset()
 
             if self.__state == 'haggle':
                 self.__drawer.draw_shop_screen()
@@ -132,6 +134,12 @@ class Game:
         mixer.music.play(-1)
         # print(mixer.music.get_volume())
         mixer.music.set_volume(Config.MUSIC_VOLUME)
+
+    def reset(self):
+        self.__map.reset()
+        self.__customer_manager.reset()
+        self.__inventory.next_day()
+        self.__inventory.save_data()
 
 
 if __name__ == "__main__":

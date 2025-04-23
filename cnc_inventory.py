@@ -268,6 +268,9 @@ class Inventory:
     def get_day(self):
         return self.__day
 
+    def next_day(self):
+        self.__day += 1
+
     def get_money(self) -> float:
         return self.__money
 
@@ -382,18 +385,19 @@ class Customer:
 class CustomerManager:
     def __init__(self):
         self.__inventory = Inventory().get_instance()
-        self.customers_each_day = random.randint(6, 10)
-        self.num_customers = 0
-
         self.sell_pos = Config.SCREEN_WIDTH / 6
 
+        self.customers_each_day = random.randint(6, 10)
+        self.num_customers = 0
         self.current_customer = None
         self.prev_customer = None
         self.offered = None
-        self.offering_hitbox = pg.Rect(600, 400, 95, 145)  # +12.5 +15
-        self.haggle = Haggling()
         self.create()
         self.startday = False
+
+
+        self.offering_hitbox = pg.Rect(600, 400, 95, 145)  # +12.5 +15
+        self.haggle = Haggling()
         self.dialogBox = pg.image.load("IngamePic/dialogBox.png")
 
         self.rejectButton = pg.Rect(430, 40 + 180, 150, 50)
@@ -402,6 +406,20 @@ class CustomerManager:
         self.buttons = {'Reject': [self.rejectButton, self.next_customer, False],
                         'Sell': [self.sellButton, self.sell, False],
                         'Haggle': [self.haggleButton, self.sent_haggle, False],}
+
+    def reset(self):
+        self.customers_each_day = random.randint(6, 10)
+        self.num_customers = 0
+        self.current_customer = None
+        self.prev_customer = None
+        self.offered = None
+        self.create()
+        self.startday = False
+
+        self.buttons['Reject'][2] = False
+        self.buttons['Sell'][2] = False
+        self.buttons['Haggle'][2] = False
+
 
     @staticmethod
     def random_rq():

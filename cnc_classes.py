@@ -30,6 +30,17 @@ class Drawer:
         self.__uiSurface = pg.Surface((Config.UI_WIDTH, Config.UI_HEIGHT), pg.SRCALPHA)
         self.bedroom = pg.image.load('IngamePic/Bedroom.jpg')
         self.bed = pg.Rect(20, 1 * Config.SCREEN_HEIGHT / 2, Config.SCREEN_WIDTH / 2, Config.SCREEN_HEIGHT / 3)
+        self.bed_enable = True
+
+    def check_sleep(self, mouse):
+        if self.bed.collidepoint(mouse):
+            if pg.mouse.get_pressed()[0] == 1 and self.bed_enable:
+                self.bed_enable = False
+                return True
+            if pg.mouse.get_pressed()[0] == 0:
+                self.bed_enable = True
+        return False
+
 
     def get_screen(self):
         return self.__screen

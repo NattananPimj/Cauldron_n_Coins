@@ -46,18 +46,28 @@ class Map:
         self.__animateS = True
         self.spatula_hitbox = self.spatulas[0].get_rect()
         self.spatula_hitbox.topleft = ((Config.SCREEN_WIDTH - 250) / 2, Config.SCREEN_HEIGHT - 250 - 100)
+        self.potion_symbol = {}
+        for name, pos in Config.POTION_POS.items():
+            tmp = self.add_picture('/Potion_effect/'+name+'.png', (20, 20))
+            self.potion_symbol[name] = tmp
+
+
 
     def reset(self):
         """
         reset to origin and delete all path
         :return:
         """
+
         self.__path = []
         self.__distance = 0
         self.__bottle = [0, 0]
         self.__originX = Config.MAP_WIDTH / 2
         self.__originY = Config.MAP_HEIGHT / 2
         self.__herb_used = []
+
+    def get_herb_used_data(self):
+        return self.__herb_used
 
     @staticmethod
     def add_picture(filename: str, size: tuple):
@@ -135,15 +145,16 @@ class Map:
         :param key: W A S D for up, left, down and, right respectively
         :return:
         """
-        factor_x = Config.FACTOR_x * 6
-        if key[pg.K_w]:
+        factor_x = Config.FACTOR_x * 10
+        if key[pg.K_w] and self.__originY <= ((Config.MAP_HEIGHT / 2) + 900):
             self.__originY += factor_x
-        if key[pg.K_s]:
+        if key[pg.K_s] and self.__originY >= ((Config.MAP_HEIGHT / 2) - 900):
             self.__originY -= factor_x
-        if key[pg.K_a]:
-            self.__originX += factor_x
-        if key[pg.K_d]:
+        if key[pg.K_d] and self.__originX >= ((Config.MAP_WIDTH / 2) - 900):
             self.__originX -= factor_x
+        if key[pg.K_a] and self.__originX <= ((Config.MAP_WIDTH / 2) + 900):
+            self.__originX += factor_x
+
 
     def add_herb(self, herb: Herb):
         """

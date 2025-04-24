@@ -99,8 +99,10 @@ class Drawer:
             pg.draw.lines(self.__map.surface, (Config.COLOR['path']), False, self.__map.get_path_line(), 1)
 
     def plot_potion(self):
-        for pos in Config.POTION_POS.values():
+        for name, pos in Config.POTION_POS.items():
             self.__map.surface.blit(self.__map.bottleShad, self.__map.get_position((pos[0] - 15, pos[1] + 21)))
+            self.__map.surface.blit(self.__map.potion_symbol[name], self.__map.get_position((pos[0] - 7, pos[1] + 10)))
+
 
     def draw_shop_screen(self):
         """

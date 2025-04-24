@@ -11,7 +11,9 @@ class Potion:
         self.__price = Config.POTION_info[self.__name]['price'] * (1 + (self.__power / 3))
         self.pic = pg.image.load('IngamePic/Potion.png')
         self.pic = pg.transform.scale(self.pic, (70, 120))
-        # TODO: making logo/ symbol for each potion and add it to dict
+        self.symbol = pg.image.load('IngamePic/Potion_effect/'+name+'.png')
+        self.symbol = pg.transform.scale(self.symbol, (40, 40))
+        self.pic.blit(self.symbol, (15, 60))
 
     def get_name(self):
         return self.__name

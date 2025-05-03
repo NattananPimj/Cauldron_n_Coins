@@ -41,7 +41,6 @@ class Drawer:
                 self.bed_enable = True
         return False
 
-
     def get_screen(self):
         return self.__screen
 
@@ -103,7 +102,6 @@ class Drawer:
             self.__map.surface.blit(self.__map.bottleShad, self.__map.get_position((pos[0] - 15, pos[1] + 21)))
             self.__map.surface.blit(self.__map.potion_symbol[name], self.__map.get_position((pos[0] - 7, pos[1] + 10)))
 
-
     def draw_shop_screen(self):
         """
             for everything happen on shop screen
@@ -122,25 +120,47 @@ class Drawer:
                 self.draw_text(dialogBox,
                                lines, 30, 25, 25 + (i * 40), Config.COLOR['marks'])
             self.__screen.blit(dialogBox, (300, 40))
+            # draw buttons
             for key, value in self.__customerM.buttons.items():
                 pg.draw.rect(self.__screen, Config.COLOR['marks'], value[0], border_radius=20)
                 pg.draw.rect(self.__screen, Config.COLOR['map'], value[0].inflate(-5, -5), border_radius=20)
                 self.draw_text(self.__screen, key, 30,
                                value[0].x + (30), value[0].y + 5, Config.COLOR['marks'])
 
-
-
         self.__customerM.draw_offering(self.__screen)
-
-
+        cashier = self.__customerM.cashier.copy()
+        if self.__customerM.offered is not None:
+            self.draw_text(cashier, f"{self.__customerM.get_price():.2f}", 30, 70, 20, Config.COLOR['marks'])
+        self.__screen.blit(cashier, (500, 400))
+        # table
+        pg.draw.rect(self.__screen, Config.COLOR['brown'],
+                     (0, 400 + 228, Config.SCREEN_WIDTH, Config.SCREEN_HEIGHT - 600))
         self.draw_inventory()
         self.draw_ui()
 
     def draw_haggle(self):
         self.__screen.blit(self.__customerM.haggle.surface, (400, 100))
         self.__customerM.haggle.surface.fill(Config.COLOR['marks'])
+        self.__customerM.haggle.surface.fill(Config.COLOR['haggle1'], self.__customerM.haggle.surfaceR.inflate(-5, -5))
+        pg.draw.rect(self.__customerM.haggle.surface, Config.COLOR['haggle2'], pg.Rect(10, 150, 480, 50))
+        self.__customerM.haggle.surface.blit(self.__customerM.haggle.details, (500 - 227, 2))
+
+        txt_surface = self.__customerM.haggle.surface.copy()
+        # TODO: Change 12 to offered.price * 0.5
+        self.draw_text(txt_surface,
+                       f"+{12}", 20, 500 - 190, 50, Config.COLOR['marks'])
+        self.draw_text(txt_surface,
+                       f"-{12}", 20, 500 - 80, 50, Config.COLOR['marks'])
+        self.draw_text(txt_surface,"Press Space to Haggle", 36, 50, 220, Config.COLOR['marks'])
+
+        self.__customerM.haggle.surface.blit(txt_surface, (0, 0))
+
+        for box in self.__customerM.haggle.done_rect:
+            pg.draw.rect(self.__customerM.haggle.surface, Config.COLOR['black'], box)
+            pg.draw.rect(self.__customerM.haggle.surface, Config.COLOR['green'], box.inflate(-2, -2))
         for bar in self.__customerM.haggle.hagglebar:
-            pg.draw.rect(self.__customerM.haggle.surface, Config.COLOR['red'], bar)
+            pg.draw.rect(self.__customerM.haggle.surface, Config.COLOR['black'], bar)
+            pg.draw.rect(self.__customerM.haggle.surface, Config.COLOR['hagglebar'], bar.inflate(-2, -2))
         self.__customerM.haggle.draw_triangle()
 
     def draw_ui(self):

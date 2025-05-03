@@ -25,12 +25,16 @@ class Config:
         'black': (0, 0, 0),
         'white': (255, 255, 255),
         'red': (255, 0, 0),
-        'green': (0, 255, 0),
+        'green': (111, 171, 94),
+        'brown': (54, 34, 25),
         'background': (212, 198, 169),
         'map': (212, 188, 159),
         'path': (94, 90, 78),
         'marks': (50, 50, 50),
-        'inventory_bg': (150, 125, 90)
+        'inventory_bg': (150, 125, 90),
+        'haggle1':(160, 135, 114),
+        'haggle2':(163, 111, 88),
+        'hagglebar': (217, 169, 147)
     }
     '''
     HERB PATTERN

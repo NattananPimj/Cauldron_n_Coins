@@ -27,8 +27,9 @@ class Game:
         self.__map = Map()
         self.__herbs = HerbManager(self.__map)
         self.__drawer = Drawer(self.__map, self.__herbs, self.__customer_manager)
-        self.__state = 'map'  # map / store
+        self.__state = 'shop'  # map / store
         self.__prev_state = 'map'
+        self.__music_file = 'Music/misty-wind-troubadour-164146.ogg'
 
         self.__running = True
 
@@ -58,13 +59,8 @@ class Game:
                 if self.__state == 'haggle':
                     if ev.key == pg.K_SPACE:
                         # temporary
-                        # TODO: keep it inside haggle/customer manager + make satus that done or not done haggling
-                        for bar in self.__customer_manager.haggle.hagglebar:
-                            if self.__customer_manager.haggle.check_haggle(bar):
-                                self.__customer_manager.haggle.multiplier += 0.05
-                        else:
-                            self.__customer_manager.haggle.multiplier -= 0.03
-                        self.__customer_manager.haggle.multiplier -= 0.01
+                        self.__customer_manager.haggle.haggle_action()
+                        self.__customer_manager.haggle.click_done()
                         # print(self.__customer_manager.haggle.multiplier)
 
                 if self.__state == 'bedroom':
@@ -109,6 +105,7 @@ class Game:
                         output = self.__customer_manager.check_click(mouse, key)
                         if output == 'haggle':
                             self.__state = 'haggle'
+                # print(self.__customer_manager.buttons['Sell'][2])
 
                 for slot in self.__inventory.slots:
                     slot.check_click(mouse)
@@ -125,14 +122,17 @@ class Game:
                 self.__drawer.draw_shop_screen()
                 self.__drawer.draw_haggle()
                 self.__customer_manager.doing_haggle()
+                if self.__customer_manager.haggle.done:
+                    self.__customer_manager.buttons['Sell'][2] = True
+                    self.__state = 'shop'
 
             pg.display.update()
 
+
     def music(self):
         mixer.init()
-        mixer.music.load('Music/misty-wind-troubadour-164146.ogg')
+        mixer.music.load(self.__music_file)
         mixer.music.play(-1)
-        # print(mixer.music.get_volume())
         mixer.music.set_volume(Config.MUSIC_VOLUME)
 
     def reset(self):

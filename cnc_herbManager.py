@@ -9,6 +9,7 @@ import math
 
 class HerbCabinet:
     def __init__(self, id, x, y, m):
+        self.id = id
         info = Config.HERB_INFO[id]
         self.name = info['name']
         self.funcX = info['funcX']
@@ -59,7 +60,7 @@ class HerbCabinet:
         create herb object then sent to map + deduct money
         :return:
         """
-        herb = Herb(self.name, self.funcX, self.funcY, self.t)
+        herb = Herb(self.name, self.funcX, self.funcY, self.t, self.id)
         self.__map.add_herb(herb)
         Inventory.get_instance().deduct_money(3.5)
 

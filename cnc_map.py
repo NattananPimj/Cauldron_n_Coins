@@ -65,6 +65,7 @@ class Map:
         self.__originX = Config.MAP_WIDTH / 2
         self.__originY = Config.MAP_HEIGHT / 2
         self.__herb_used = []
+        self.__traveled = 0
 
     def get_herb_used_data(self):
         return self.__herb_used
@@ -83,6 +84,9 @@ class Map:
 
     def get_origin(self):
         return self.__originX, self.__originY
+
+    def get_traveled(self):
+        return self.__traveled
 
     def get_position(self, coordinate: tuple[float, float], mod_x: float = 0, mod_y: float = 0) -> tuple[float, float]:
         """
@@ -162,7 +166,7 @@ class Map:
         :param herb:
         :return:
         """
-        self.__herb_used.append(herb.name)
+        self.__herb_used.append(herb.id)
         self.__path.extend(herb.path)
 
     def move_along(self):
@@ -176,6 +180,9 @@ class Map:
             self.__bottle[1] += path[1]
             self.__originX -= path[0] / 3
             self.__originY += path[1] / 3
+
+            self.__traveled += ((path[0])**2 + (path[0])**2)*0.5
+            print(self.__traveled)
 
     def find_distance_btw(self, pos: tuple[float, float]):
         return ((self.__bottle[0] - pos[0]) ** 2 + (self.__bottle[1] - pos[1]) ** 2) ** 0.5

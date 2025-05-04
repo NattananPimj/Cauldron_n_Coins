@@ -6,13 +6,14 @@ import math
 
 class Herb:
 
-    def __init__(self, name, funcX, funcY, t: int):
+    def __init__(self, name, funcX, funcY, t: int, id:str):
         self.name = name
         # parametric equation
         self.funcX = funcX
         self.funcY = funcY
         self.factor_t = [0.0001 + i/Config.MOVESPEED for i in range(Config.MOVESPEED*t)]
         self.path = self.get_path()
+        self.id = id
 
     def get_path(self):
         path = []

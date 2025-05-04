@@ -306,7 +306,7 @@ class Haggling:
         self.surfaceR = self.surface.get_rect()
         self.haggle_speed = 1
         self.reset()
-        self.done_rect = [pg.Rect(10,150, 40, 50), pg.Rect(self.Haggle_WIN_W-50, 150, 40, 50)]
+        self.done_rect = [pg.Rect(10, 150, 40, 50), pg.Rect(self.Haggle_WIN_W - 50, 150, 40, 50)]
         self.done = False
         self.timer = time.time()
 
@@ -320,13 +320,21 @@ class Haggling:
                          (self.haggle_pos[0] + 10, self.haggle_pos[1] + 30)))
 
     def move_haggle(self):
+        """
+        move the triangle left and right
+        """
         self.haggle_pos[0] += self.movement * self.haggle_speed
         if self.haggle_pos[0] > self.Haggle_WIN_W - 15:
             self.movement = -1
         if self.haggle_pos[0] < 15:
             self.movement = 1
 
-    def create_rect(self):
+    def create_rect(self) -> pg.Rect:
+        """
+        Create Random size rect that doesn't collide to other rect created
+
+        :return: pg.Rect object; random size rectangle
+        """
         tmpw = random.randint(20, 60)
         tmpr = pg.Rect((random.randint(50, self.Haggle_WIN_W - 50 - tmpw)), 150,
                        tmpw, 50)
@@ -336,18 +344,10 @@ class Haggling:
                            tmpw, 50)
         return tmpr
 
-    def reduce_overtime(self):
-        t = time.time()
-        if t - self.timer >= 0.5:
-            self.multiplier -= 0.01
-            self.timer = t
-
-    def click_done(self):
-        for r in self.done_rect:
-            if r.collidepoint(self.haggle_pos):
-                self.done = True
-
     def check_haggle(self, r: pg.Rect):
+        """
+        Check if the haggle rectangle was clicked
+        """
         if r.collidepoint(self.haggle_pos):
             self.hagglebar.remove(r)
             self.hagglebar.append(self.create_rect())
@@ -355,13 +355,41 @@ class Haggling:
         return False
 
     def haggle_action(self):
+        """
+        As the button is press, check every haggle bar if it's clicked
+        if yes + 0.05
+        if no - 0.03 and collect the data
+        TODO: collect haggle data here
+        """
         for r in self.hagglebar:
             if self.check_haggle(r):
                 self.multiplier += 0.05
         else:
             self.multiplier -= 0.03
 
+    def reduce_overtime(self):
+        """
+        make when the time goes by the multiplier is reduced; 0.005 per 0.5s
+        """
+        t = time.time()
+        if t - self.timer >= 0.5:
+            self.multiplier -= 0.005
+            self.timer = t
+
+    def click_done(self):
+        """
+        Check if the done (green rectangle) was clicked
+        """
+        for r in self.done_rect:
+            if r.collidepoint(self.haggle_pos):
+                self.done = True
+
     def check_auto_done(self):
+        """
+        if the haggling is huge success or lose, end it automatically
+
+        :return bool: True or False:
+        """
         if self.multiplier <= 0.5:
             self.multiplier = 0.5
             self.done = True
@@ -374,6 +402,9 @@ class Haggling:
         return False
 
     def reset(self):
+        """
+        reset haggle every time it is called
+        """
         self.multiplier = 1
         self.hagglebar = []
         self.num_hagglebar = 5
@@ -398,7 +429,7 @@ class Customer:
     def get_request(self):
         return self.__request
 
-    def create_dialog(self):
+    def create_dialog(self) -> str:
         # first space bar after 30th letter
         tmplst = list(self.__request)
         for i in range(30, len(tmplst)):
@@ -437,6 +468,7 @@ class CustomerManager:
                         'Haggle': [self.haggleButton, self.sent_haggle, False], }
 
         self.cashier = self.add_picture('Cashier.png', (400, 228))
+
     @staticmethod
     def add_picture(filename: str, size: tuple):
         pic = pg.image.load('IngamePic/' + filename)
@@ -470,6 +502,10 @@ class CustomerManager:
         return pic
 
     def create(self):
+        """
+        create a new customer as long as the customer create is not reach amount of customer per day
+        """
+        # TODO: pic = get_random_pic()
         if self.num_customers < self.customers_each_day:
             self.current_customer = Customer(self.random_rq(), None)
             self.num_customers += 1
@@ -478,10 +514,17 @@ class CustomerManager:
         return False
 
     def offer(self, potion: Potion):
+        """
+        make an offered to the customer
+        """
         self.offered = potion
         self.check_offer()
+        self.current_customer.multiplier = 1
 
     def walk_in(self):
+        """
+        walk in slowly until reach the point then activate the buttons
+        """
         if self.current_customer.x < self.sell_pos:
             self.current_customer.x += 1
         else:
@@ -489,6 +532,9 @@ class CustomerManager:
             self.current_customer.x = self.sell_pos
 
     def check_offer(self):
+        """
+        check if offer is satisfied, if not for too many times they will walk away
+        """
         if self.current_customer.get_request() in Config.RQ[self.offered.get_name()]:
             self.buttons['Sell'][2] = True
             self.buttons['Haggle'][2] = True
@@ -501,6 +547,9 @@ class CustomerManager:
                 self.next_customer()
 
     def walk_away(self):
+        """
+        walk away animation
+        """
         if self.prev_customer is not None:
             if self.prev_customer.x < Config.SCREEN_WIDTH:
                 self.prev_customer.x += 3
@@ -508,27 +557,51 @@ class CustomerManager:
                 self.prev_customer = None
 
     def next_customer(self):
+        """
+        move the customer to prev for animation and create new one
+        """
         self.prev_customer = self.current_customer
         self.create()
         return None
 
     def sell(self):
+        """
+        sell: add money, remove item and call next customer
+        """
         self.__inventory.add_money(self.offered.get_price() * self.current_customer.multiplier)
         self.offered = None
         self.next_customer()
         return None
 
     def sent_haggle(self):
+        """
+        activate haggle by sent the str to main
+        """
+        self.haggle.reset()
         print('HAGGLE')
         return 'haggle'
 
     def doing_haggle(self):
+        """
+        make sure that the haggle is working
+        """
         done = self.haggle.check_auto_done()
         # print('Done: ',done)
         if not done:
             self.haggle.move_haggle()
 
+    def done_haggle(self):
+        """
+        reactivate the button after done haggle
+        """
+        self.buttons['Sell'][2] = True
+        self.buttons['Reject'][2] = True
+        self.current_customer.multiplier = self.haggle.multiplier
+
     def check_click(self, mouse, key):
+        """
+        check if the button was clicked
+        """
         output = None
         condition = None
         if self.buttons[key][0].collidepoint(mouse):
@@ -542,13 +615,15 @@ class CustomerManager:
         return output
 
     def offered_not_none(self):
+        """
+        check if the offer is none
+        """
         return self.offered is not None
 
-    def sent_back(self):
-        self.__inventory.add_item(self.offered)
-        self.offered = None
-
     def draw_offering(self, screen):
+        """
+        draw the offering
+        """
         # pg.draw.rect(screen, Config.COLOR['black'],self.offering_hitbox)
         if self.offered is not None:
             pic = pg.transform.scale(self.offered.pic, (100, 170))
@@ -558,6 +633,13 @@ class CustomerManager:
         if self.offering_hitbox.collidepoint(mouse):
             if pg.mouse.get_pressed()[0] == 1 and self.offered_not_none():
                 self.sent_back()
+
+    def sent_back(self):
+        """
+        send back the offer to inventory
+        """
+        self.__inventory.add_item(self.offered)
+        self.offered = None
 
     def get_price(self):
         return self.offered.get_price() * self.haggle.multiplier

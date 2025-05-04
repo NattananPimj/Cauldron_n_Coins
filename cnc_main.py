@@ -123,7 +123,7 @@ class Game:
                 self.__drawer.draw_haggle()
                 self.__customer_manager.doing_haggle()
                 if self.__customer_manager.haggle.done:
-                    self.__customer_manager.buttons['Sell'][2] = True
+                    self.__customer_manager.done_haggle()
                     self.__state = 'shop'
 
             pg.display.update()

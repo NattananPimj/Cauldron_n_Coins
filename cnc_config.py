@@ -133,7 +133,7 @@ class Config:
     # TODO: add name
     HERB_INFO = {
         '01': {
-            'name': '',
+            'name': 'Moonveil',
             'funcX': lambda t: 5 * t + 10 * math.cos(t),
             'funcY': lambda t: 10 * math.sin(t),
             't': 75,
@@ -142,7 +142,7 @@ class Config:
         },
 
         '02': {
-            'name': '',
+            'name': 'Emberroot',
             'funcX': lambda t: 5 * t,
             'funcY': lambda t: 10 * math.sin(t / 2),
             't': 50,
@@ -151,7 +151,7 @@ class Config:
         },
 
         '03': {
-            'name': '',
+            'name': 'Whisperleaf',
             'funcX': lambda t: 5 * t,
             'funcY': lambda t: 10 * (t / 2 + abs((t / 2 % 5) - 2.5)),
             't': 40,
@@ -160,7 +160,7 @@ class Config:
         },
 
         '04': {
-            'name': '',
+            'name': 'Dragonbloom',
             'funcX': lambda t: (2 * t) + 10 * math.cos(t),
             'funcY': lambda t: (5 * t) + -15 * math.sin(t),
             't': 40,
@@ -169,7 +169,7 @@ class Config:
         },
 
         '05': {
-            'name': '',
+            'name': 'Gloamhollow',
             'funcX': lambda t: t / 2 * math.cos(t / 2),
             'funcY': lambda t: 5 * (t + math.cos(t)),
             't': 50,
@@ -178,7 +178,7 @@ class Config:
         },
 
         '06': {
-            'name': '',
+            'name': 'Starroot',
             'funcX': lambda t: 10 * abs((t / 2 % 5) - 2.5),
             'funcY': lambda t: 5 * t,
             't': 40,
@@ -187,7 +187,7 @@ class Config:
         },
 
         '07': {
-            'name': '',
+            'name': 'Eldersap',
             'funcX': lambda t: -5 * t,
             'funcY': lambda t: (2 * t) - 10 * abs(math.sin(t / 5)),
             't': int(15 * math.pi),
@@ -196,7 +196,7 @@ class Config:
         },
 
         '08': {
-            'name': '',
+            'name': 'Echolily',
             'funcX': lambda t: (-2 * t) - 10 * math.cos(t),
             'funcY': lambda t: (5 * t) + -15 * math.sin(t),
             't': 50,
@@ -205,7 +205,7 @@ class Config:
         },
 
         '09': {
-            'name': '',
+            'name': 'Stormsage',
             'funcX': lambda t: (-4 * t) - 10 * math.sin(t),
             'funcY': lambda t: 10 * math.cos(t / 2),
             't': 50,
@@ -214,7 +214,7 @@ class Config:
         },
 
         '10': {
-            'name': '',
+            'name': 'Frostvine',
             'funcX': lambda t: -5 * t,
             'funcY': lambda t: 10 * math.sin(t / 2),
             't': 50,
@@ -223,7 +223,7 @@ class Config:
         },
 
         '11': {
-            'name': '',
+            'name': 'Voidmint',
             'funcX': lambda t: 100 * math.sin(t / 8),
             'funcY': lambda t: 40 * math.cos(t / 8),
             't': 40,
@@ -232,7 +232,7 @@ class Config:
         },
 
         '12': {
-            'name': '',
+            'name': 'Dewshade',
             'funcX': lambda t: t,
             'funcX': lambda t: -5 * t,
             'funcY': lambda t: -10 * (t / 2 + abs((t / 2 % 5) - 2.5)),
@@ -242,7 +242,7 @@ class Config:
         },
 
         '13': {
-            'name': '',
+            'name': 'Duskwort',
             'funcX': lambda t: 10 * math.sin(t / 2),
             'funcY': lambda t: 100 * math.cos(t / 10),
             't': 40,
@@ -251,7 +251,7 @@ class Config:
         },
 
         '14': {
-            'name': '',
+            'name': 'Silvershroud',
             'funcX': lambda t: 20 * math.sin(t / 2),
             'funcY': lambda t: (-5 * t) + (10 * math.cos(t)),
             't': 50,
@@ -260,7 +260,7 @@ class Config:
         },
 
         '15': {
-            'name': '',
+            'name': 'Mirththorn',
             'funcX': lambda t: (10 * math.sin(t / 3)) + t,
             'funcY': lambda t: 4 - (((t - 2) ** 2) / 25),
             't': 50,
@@ -269,7 +269,7 @@ class Config:
         },
 
         '16': {
-            'name': '',
+            'name': "Bird's heart" ,
             'funcX': lambda t: 5 * t + 10 * math.cos(t),
             'funcY': lambda t: -5 * t + 10 * math.sin(t),
             't': 50,

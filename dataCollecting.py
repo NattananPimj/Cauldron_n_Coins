@@ -14,7 +14,7 @@ class DataCollector:
         'haggle_fail': 'haggle_fail.csv',
     }
     __header = {
-        'herb_use': ['Herb_name', 'Direction'],
+        'herb_use': ['ID', 'Herb_name', 'Direction'],
         'herb_potion': ['Potion', 'Tier', 'Herbs'],
         'distance': ['Potion', 'Tier', 'Distance'],
         'sell_success': ['Dialog', 'Offered', 'Success'],
@@ -53,6 +53,7 @@ class DataCollector:
     def add_data_herb(self, herb_list: list):
         for i in herb_list:
             self.__herbs_data.append({
+                'ID': i,
                 'Herb_name': Config.HERB_INFO[i]['name'],
                 'Direction': Config.HERB_INFO[i]['direction'],
             })

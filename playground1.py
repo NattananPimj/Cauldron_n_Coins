@@ -1,2 +1,11 @@
-txt = "The fortress gates won’t budge. \nI need the strength to force them open!"
-print(txt.splitlines())
+import csv
+
+
+data = []
+with open('cnc_save_test.csv', 'r') as file:
+    csv_reader = csv.DictReader(file)
+    for row in csv_reader:
+        data.append(row)
+
+print(data)
+

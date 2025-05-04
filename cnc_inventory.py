@@ -6,6 +6,7 @@ from typing import List
 import pygame as pg
 from cnc_config import Config
 from cnc_potion import Potion
+from dataCollecting import DataCollector
 import math
 import csv
 
@@ -90,6 +91,7 @@ class Inventory:
         self.__name = None
         self.__data = None
         self.__manager: CustomerManager = None
+        self.dataCollector = DataCollector()
 
         self.__file = "cnc_save_test.csv"
         self.to_id(name)
@@ -220,7 +222,7 @@ class Inventory:
             for row in tmp_data:
                 writer.writerow(row)
 
-        self.__load_data()
+        self.__data = self.__load_data()
 
     def get_name(self) -> str:
         return self.__name
@@ -270,6 +272,8 @@ class Inventory:
         return self.__day
 
     def next_day(self):
+        self.save_data()
+        self.dataCollector.end_day()
         self.__day += 1
 
     def get_money(self) -> float:
@@ -302,6 +306,7 @@ class Haggling:
     def __init__(self):
 
         self.movement = None
+        self.__dataCollector = DataCollector()
         self.surface = pg.Surface((self.Haggle_WIN_W, self.Haggle_WIN_H))
         self.surfaceR = self.surface.get_rect()
         self.haggle_speed = 1
@@ -365,6 +370,12 @@ class Haggling:
             if self.check_haggle(r):
                 self.multiplier += 0.05
         else:
+            self.__dataCollector.add_haggle_data(self.num_hagglebar,
+                                                 self.haggle_speed,
+                                                 [b.size[0] for b in self.hagglebar],
+                                                 [b.right for b in self.hagglebar],
+                                                 [b.left for b in self.hagglebar],
+                                                 self.haggle_pos)
             self.multiplier -= 0.03
 
     def reduce_overtime(self):
@@ -445,6 +456,7 @@ class Customer:
 class CustomerManager:
     def __init__(self):
         self.__inventory = Inventory().get_instance()
+        self.__dataCollector = DataCollector()
         self.sell_pos = Config.SCREEN_WIDTH / 6
 
         self.customers_each_day = random.randint(6, 10)
@@ -535,9 +547,11 @@ class CustomerManager:
         """
         check if offer is satisfied, if not for too many times they will walk away
         """
+        success = False
         if self.current_customer.get_request() in Config.RQ[self.offered.get_name()]:
             self.buttons['Sell'][2] = True
             self.buttons['Haggle'][2] = True
+            success = True
             # print("yes")
             # sell button and bargin enable
         else:
@@ -545,6 +559,8 @@ class CustomerManager:
             # print("no")
             if self.current_customer.patience == 0:
                 self.next_customer()
+        self.__dataCollector.add_sell_data(self.current_customer.get_request(),
+                                           self.offered.get_name(), success)
 
     def walk_away(self):
         """

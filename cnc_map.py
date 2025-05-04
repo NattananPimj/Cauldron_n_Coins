@@ -4,15 +4,17 @@ from typing import List
 import pygame as pg
 
 from cnc_config import Config
-from cnc_herbs import *
+from cnc_herbs import Herb
 from cnc_potion import Potion
 from cnc_inventory import Inventory
+from dataCollecting import DataCollector
 
 
 class Map:
     def __init__(self):
 
         self.inventory = Inventory.get_instance()
+        self.dataCollector = DataCollector()
 
         self.reset()
 
@@ -203,6 +205,10 @@ class Map:
                         potion = Potion(p, 3 - tier, self.__herb_used)
                         print(potion)
                         self.inventory.add_item(potion)
+                        # add data
+                        self.dataCollector.add_data_herb(self.__herb_used)
+                        self.dataCollector.add_distance_data(p, 3-tier, self.__traveled)
+                        self.dataCollector.add_potion_data(p, 3-tier, self.__herb_used)
                         self.reset()
                         return True
         return False

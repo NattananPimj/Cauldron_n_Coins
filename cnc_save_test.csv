@@ -1,2 +1,2 @@
 Name,Days,Money,Inventory
-lilly,16,129.0,"""[{'name': 'STONE', 'power': 1, 'ingredients': ['a', 'b']},{'name': 'POISON', 'power': 3, 'ingredients': ['', '']},{'name': 'FROST', 'power': 3, 'ingredients': ['', '', '', '', '']}]"""
+lilly,18,554.9700000000003,"""[{'name': 'FIRE', 'power': 1, 'ingredients': ['02', '02']},{'name': 'SWIFTNESS', 'power': 1, 'ingredients': ['06', '06', '06', '06']},{'name': 'STONE', 'power': 1, 'ingredients': ['a', 'b']},{'name': 'HEAL', 'power': 3, 'ingredients': ['02', '14']}]"""

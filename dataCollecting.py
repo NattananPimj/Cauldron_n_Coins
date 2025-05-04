@@ -13,6 +13,13 @@ class DataCollector:
         'sell_success': 'sell_success.csv',
         'haggle_fail': 'haggle_fail.csv',
     }
+    __header = {
+        'herb_use': ['Herb_name', 'Direction'],
+        'herb_potion': ['Potion', 'Tier', 'Herbs'],
+        'distance': ['Potion', 'Tier', 'Distance'],
+        'sell_success': ['Dialog', 'Offered', 'Success'],
+        'haggle_fail': ['Number_of_bar', 'Speed', 'bar sizes', 'Left', 'Right', 'pos'],
+    }
 
     def __new__(cls, *args, **kwargs):
         if cls.__instance is None:
@@ -36,7 +43,7 @@ class DataCollector:
 
     def end_day(self):
         for key in self.__data.keys():
-            self.__save_data(self.__filename[key], self.__data[key])
+            self.__save_data(key, self.__data[key])
         self.reset()
 
     def reset(self):
@@ -76,20 +83,20 @@ class DataCollector:
                                    'Speed': speed,
                                    'bar sizes': size,
                                    'Left': left,
-                                   'Right':right,
+                                   'Right': right,
                                    'pos': pos
                                    })
 
-    def __save_data(self, file, data):
+    def __save_data(self, f, data):
         tmp = []
-        with open('database/'+self.__file[file], 'r') as file:
+        with open('database/' + self.__filename[f], 'r') as file:
             reader = csv.DictReader(file)
             for row in reader:
                 tmp.append(row)
 
         tmp.extend(data)
-        header = list(tmp[0].keys())
-        with open('database/'+self.__file[file], 'w') as file:
+        header = self.__header[f]
+        with open('database/' + self.__filename[f], 'w') as file:
             writer = csv.DictWriter(file, fieldnames=header)
             writer.writeheader()
             for row in tmp:

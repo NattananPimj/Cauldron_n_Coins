@@ -252,6 +252,7 @@ class Inventory:
         if 1 <= slot_id <= len(self.slots):
             # Remove the item in the specified slot
             self.slots[slot_id - 1].remove_item()
+            del self.__inventory[slot_id - 1]
 
             # Shift items to fill the gap
             for i in range(slot_id - 1, len(self.slots) - 1):

@@ -481,11 +481,15 @@ class Customer:
     def __init__(self, rq, pic):
         self.__request = rq
         self.dialog = self.create_dialog().splitlines()
-        self.pic = pg.image.load("customer/DemoCustomer.png")
-        self.pic = pg.transform.scale(self.pic, (120, 333))
+        self.pic = pic
         self.patience = random.randint(3, 10)
         self.x = 10
         self.multiplier = 1 * round((random.randint(1, 10)/50), 2)
+        self.reaction_pic = {
+            'happy': CustomerManager.add_picture('happy.png', (250, 525)),
+            'sad': CustomerManager.add_picture('sad.png', (250, 525)),
+        }
+        self.reaction = None
 
     def get_request(self):
         return self.__request
@@ -507,13 +511,12 @@ class CustomerManager:
     def __init__(self):
         self.__inventory = Inventory().get_instance()
         self.__dataCollector = DataCollector()
-        self.sell_pos = Config.SCREEN_WIDTH / 6
+        self.__sell_pos = Config.SCREEN_WIDTH / 8
 
         self.customers_each_day = random.randint(6, 10)
         self.num_customers = 0
         self.current_customer = None
         self.prev_customer = None
-        # self.offered = Potion('STONE', 3, [])
         self.offered = None
         self.create()
         self.startday = False
@@ -565,8 +568,8 @@ class CustomerManager:
     @staticmethod
     def get_random_pic():
         file = random.choice(Config.customer_pic)
-        pic = pg.image.load('IngamePic/' + file)
-        pic = pg.transform.scale(pic, (30, 30))
+        pic = pg.image.load('customer/' + file)
+        pic = pg.transform.scale(pic, (250, 525))
         return pic
 
     def create(self):
@@ -575,7 +578,7 @@ class CustomerManager:
         """
         # TODO: pic = get_random_pic()
         if self.num_customers < self.customers_each_day:
-            self.current_customer = Customer(self.random_rq(), None)
+            self.current_customer = Customer(self.random_rq(), self.get_random_pic())
             self.num_customers += 1
             return True
         self.current_customer = None
@@ -593,11 +596,11 @@ class CustomerManager:
         """
         walk in slowly until reach the point then activate the buttons
         """
-        if self.current_customer.x < self.sell_pos:
+        if self.current_customer.x < self.__sell_pos:
             self.current_customer.x += 1
         else:
             self.buttons['Reject'][2] = True
-            self.current_customer.x = self.sell_pos
+            self.current_customer.x = self.__sell_pos
 
     def check_offer(self):
         """
@@ -606,9 +609,11 @@ class CustomerManager:
         if self.current_customer.get_request() in Config.RQ[self.offered.get_name()]:
             self.buttons['Sell'][2] = True
             self.buttons['Haggle'][2] = True
+            self.current_customer.reaction = 'happy'
         else:
             self.current_customer.patience -= 1
             self.trail += 1
+            self.current_customer.reaction = 'sad'
             if self.current_customer.patience == 0:
                 self.next_customer(False)
 

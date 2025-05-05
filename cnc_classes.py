@@ -115,6 +115,9 @@ class Drawer:
         if self.__customerM.current_customer is not None:
             self.__screen.blit(self.__customerM.current_customer.pic,
                                (self.__customerM.current_customer.x, 200))
+            if self.__customerM.current_customer.reaction is not None:
+                self.__screen.blit(self.__customerM.current_customer.reaction_pic[self.__customerM.current_customer.reaction],
+                                   (self.__customerM.current_customer.x, 200))
             # draw dialog
             for i, lines in enumerate(self.__customerM.current_customer.dialog):
                 self.draw_text(dialogBox,

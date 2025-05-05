@@ -413,9 +413,8 @@ class Config:
         ]
     }
 
-    customer_pic = [
+    customer_pic = ['Customer'+str(i)+'.png' for i in range(1, 13)]
 
-    ]
 
 if __name__ == '__main__':
     print(Config.POTION_DISPLACEMENT)

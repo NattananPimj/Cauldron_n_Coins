@@ -16,12 +16,16 @@ class HerbCabinet:
         self.funcY = info['funcY']
         self.t = info['t']
         self.direction = info['direction']
+        self.price = info['price']
         self.__map = m
+        self.x = x
+        self.y = y
 
         self.image = pg.image.load('IngamePic/' + info['pic'])
         self.image = pg.transform.scale(self.image, (Config.HERB_WIDTH // 2 - 2, Config.HERB_HEIGHT // 8 - 2))
         self.hitbox = self.image.get_rect()
-        self.hitbox.topleft = (x, y)
+        self.hitbox.topleft = (x + (((Config.SCREEN_WIDTH - Config.MAP_WIDTH) / 2) - Config.HERB_WIDTH) / 2
+                               , y +(Config.SCREEN_HEIGHT - Config.HERB_HEIGHT) / 2)
         self.enable = True
 
     def check_click(self, mouse_pos) -> None:
@@ -46,12 +50,13 @@ class HerbCabinet:
         :return None:
         """
         if self.hitbox.collidepoint(mouse_pos):
-            tmps = pg.Surface((150, 25))
+            tmps = pg.Surface((200, 25))
             tmprect = tmps.get_rect()
+            pg.draw.rect(screen, pg.Color('red'), self.hitbox, 1)
             tmps.fill((Config.COLOR['black']))
             tmps.fill((Config.COLOR['map']), tmprect.inflate(-2, -2))
             font = pg.font.SysFont('comicsansms', 15)
-            text = font.render(f"{self.name} ({self.direction})", True, Config.COLOR['black'])
+            text = font.render(f"{self.name} ({self.direction}) [${self.price:.2f}]", True, Config.COLOR['black'])
             tmps.blit(text, (10, 0))
             screen.blit(tmps, mouse_pos)
 
@@ -62,7 +67,7 @@ class HerbCabinet:
         """
         herb = Herb(self.name, self.funcX, self.funcY, self.t, self.id)
         self.__map.add_herb(herb)
-        Inventory.get_instance().deduct_money(3.5)
+        Inventory.get_instance().deduct_money(self.price)
 
     def draw(self, screen):
         """
@@ -70,7 +75,7 @@ class HerbCabinet:
         :param screen: pg.Surface
         :return:
         """
-        screen.blit(self.image, (self.hitbox.x, self.hitbox.y))
+        screen.blit(self.image, (self.x, self.y))
 
 
 class HerbManager:

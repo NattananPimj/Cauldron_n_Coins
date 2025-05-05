@@ -70,71 +70,70 @@ class Config:
     POTION_info = {
         "SWIFTNESS": {
             'pic': '',
-            'price': 0,
+            'price': 22,
         },
         "DEXITY": {
             'pic': '',
-            'price': 0,
+            'price': 30,
         },
         "MANA": {
             'pic': '',
-            'price': 0,
+            'price': 24,
         },
         "EXPLOSION": {
             'pic': '',
-            'price': 0,
+            'price': 32,
         },
         "FIRE": {
             'pic': '',
-            'price': 0,
+            'price': 15,
         },
         "LIGHT": {
             'pic': '',
-            'price': 0,
+            'price': 27,
         },
         "HEAL": {
             'pic': '',
-            'price': 0,
+            'price': 10,
         },
         "GROWTH": {
             'pic': '',
-            'price': 0,
+            'price': 20,
         },
         "STRENGTH": {
             'pic': '',
-            'price': 0,
+            'price': 15,
         },
         "STONE": {
             'pic': '',
-            'price': 0,
+            'price': 32,
         },
         "SLEEP": {
             'pic': '',
-            'price': 0,
+            'price': 25,
         },
         "SLOW": {
             'pic': '',
-            'price': 0,
+            'price': 30,
         },
         "FROST": {
             'pic': '',
-            'price': 0,
+            'price': 15,
         },
         "LIGHTNING": {
             'pic': '',
-            'price': 0,
+            'price': 17,
         },
         "POISON": {
             'pic': '',
-            'price': 0,
+            'price': 12,
         },
         "RAGE": {
             'pic': '',
-            'price': 0,
+            'price': 27,
         }
     }
 
-    # TODO: add name
     HERB_INFO = {
         '01': {
             'name': 'Moonveil',
@@ -142,7 +141,8 @@ class Config:
             'funcY': lambda t: 10 * math.sin(t),
             't': 75,
             'direction': 'E',
-            'pic': 'H01.JPG'
+            'pic': 'H01.JPG',
+            'price': 5
         },
 
         '02': {
@@ -151,7 +151,8 @@ class Config:
             'funcY': lambda t: 10 * math.sin(t / 2),
             't': 50,
             'direction': 'E',
-            'pic': 'H02.JPG'
+            'pic': 'H02.JPG',
+            'price': 3
         },
 
         '03': {
@@ -160,7 +161,8 @@ class Config:
             'funcY': lambda t: 10 * (t / 2 + abs((t / 2 % 5) - 2.5)),
             't': 40,
             'direction': 'NE',
-            'pic': 'H03.JPG'
+            'pic': 'H03.JPG',
+            'price': 3.25
         },
 
         '04': {
@@ -169,7 +171,8 @@ class Config:
             'funcY': lambda t: (5 * t) + -15 * math.sin(t),
             't': 40,
             'direction': 'NE',
-            'pic': 'H04.JPG'
+            'pic': 'H04.JPG',
+            'price': 2.75
         },
 
         '05': {
@@ -178,7 +181,8 @@ class Config:
             'funcY': lambda t: 5 * (t + math.cos(t)),
             't': 50,
             'direction': 'N',
-            'pic': 'H05.JPG'
+            'pic': 'H05.JPG',
+            'price': 3.25
         },
 
         '06': {
@@ -187,7 +191,8 @@ class Config:
             'funcY': lambda t: 5 * t,
             't': 40,
             'direction': 'N',
-            'pic': 'H06.JPG'
+            'pic': 'H06.JPG',
+            'price': 2.75
         },
 
         '07': {
@@ -196,7 +201,8 @@ class Config:
             'funcY': lambda t: (2 * t) - 10 * abs(math.sin(t / 5)),
             't': int(15 * math.pi),
             'direction': 'NW',
-            'pic': 'H07.JPG'
+            'pic': 'H07.JPG',
+            'price': 3.25
         },
 
         '08': {
@@ -205,7 +211,8 @@ class Config:
             'funcY': lambda t: (5 * t) + -15 * math.sin(t),
             't': 50,
             'direction': 'NW',
-            'pic': 'H08.JPG'
+            'pic': 'H08.JPG',
+            'price': 5
         },
 
         '09': {
@@ -214,7 +221,9 @@ class Config:
             'funcY': lambda t: 10 * math.cos(t / 2),
             't': 50,
             'direction': 'W',
-            'pic': 'H09.JPG'
+            'pic': 'H09.JPG',
+            'price': 2
+
         },
 
         '10': {
@@ -223,7 +232,8 @@ class Config:
             'funcY': lambda t: 10 * math.sin(t / 2),
             't': 50,
             'direction': 'W',
-            'pic': 'H10.JPG'
+            'pic': 'H10.JPG',
+            'price': 3.25
         },
 
         '11': {
@@ -232,7 +242,8 @@ class Config:
             'funcY': lambda t: 40 * math.cos(t / 8),
             't': 40,
             'direction': 'SW',
-            'pic': 'H11.JPG'
+            'pic': 'H11.JPG',
+            'price': 3.25
         },
 
         '12': {
@@ -242,7 +253,8 @@ class Config:
             'funcY': lambda t: -10 * (t / 2 + abs((t / 2 % 5) - 2.5)),
             't': 40,
             'direction': 'SW',
-            'pic': 'H12.JPG'
+            'pic': 'H12.JPG',
+            'price': 4.75
         },
 
         '13': {
@@ -251,7 +263,8 @@ class Config:
             'funcY': lambda t: 100 * math.cos(t / 10),
             't': 40,
             'direction': 'S',
-            'pic': 'H13.JPG'
+            'pic': 'H13.JPG',
+            'price': 3
         },
 
         '14': {
@@ -260,7 +273,8 @@ class Config:
             'funcY': lambda t: (-5 * t) + (10 * math.cos(t)),
             't': 50,
             'direction': 'S',
-            'pic': 'H14.JPG'
+            'pic': 'H14.JPG',
+            'price': 3
         },
 
         '15': {
@@ -269,7 +283,8 @@ class Config:
             'funcY': lambda t: 4 - (((t - 2) ** 2) / 25),
             't': 50,
             'direction': 'SE',
-            'pic': 'H15.JPG'
+            'pic': 'H15.JPG',
+            'price': 2
         },
 
         '16': {
@@ -278,7 +293,8 @@ class Config:
             'funcY': lambda t: -5 * t + 10 * math.sin(t),
             't': 50,
             'direction': 'SE',
-            'pic': 'H16.JPG'
+            'pic': 'H16.JPG',
+            'price': 4.5
         },
     }
     RQ = {
@@ -400,3 +416,6 @@ class Config:
     customer_pic = [
 
     ]
+
+if __name__ == '__main__':
+    print(Config.POTION_DISPLACEMENT)

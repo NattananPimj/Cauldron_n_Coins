@@ -485,7 +485,7 @@ class Customer:
         self.pic = pg.transform.scale(self.pic, (120, 333))
         self.patience = random.randint(3, 10)
         self.x = 10
-        self.multiplier = 1
+        self.multiplier = 1 * round((random.randint(1, 10)/50), 2)
 
     def get_request(self):
         return self.__request
@@ -552,11 +552,15 @@ class CustomerManager:
         self.buttons['Sell'][2] = False
         self.buttons['Haggle'][2] = False
 
-    @staticmethod
-    def random_rq():
+    def random_rq(self):
         key = list(Config.RQ.keys())
-        ans = random.choice(key)
-        return Config.RQ[ans][random.randint(0, len(Config.RQ[ans]) - 1)]
+        weight = [3, 1, 2, 1, 6, 2, 6, 3, 3, 1, 2, 1, 6, 3, 6, 2]
+        ans = random.choices(key, weights=weight)[0]
+        rq = Config.RQ[ans][random.randint(0, len(Config.RQ[ans]) - 1)]
+        if self.prev_customer is not None:
+            while rq == self.prev_customer.get_request():
+                Config.RQ[ans][random.randint(0, len(Config.RQ[ans]) - 1)]
+        return rq
 
     @staticmethod
     def get_random_pic():
@@ -661,7 +665,7 @@ class CustomerManager:
         """
         self.buttons['Sell'][2] = True
         self.buttons['Reject'][2] = True
-        self.current_customer.multiplier = self.haggle.multiplier
+        self.current_customer.multiplier *= self.haggle.multiplier
 
     def check_click(self, mouse, key):
         """

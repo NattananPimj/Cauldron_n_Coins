@@ -9,7 +9,7 @@ class Potion:
         self.__power = power
         self.__ingredients = ingredients
         self.__price = 57
-        # self.__price = Config.POTION_info[self.__name]['price'] * (1 + (self.__power / 3))
+        self.__price = Config.POTION_info[self.__name]['price'] * (1 + (self.__power / 3))
         self.pic = pg.image.load('IngamePic/Potion.png')
         self.pic = pg.transform.scale(self.pic, (70, 120))
         self.symbol = pg.image.load('IngamePic/Potion_effect/'+name+'.png')

@@ -22,6 +22,7 @@ class DataApp(ttk.Frame):
         'herb_potion': 'herb_each_potion.csv',
         'distance': 'potion_distance.csv',
         'haggle_information': 'haggle_fail.csv',
+        'sell_success': 'sell_success.csv',
     }
     # TODO: add sell info
 
@@ -79,7 +80,7 @@ class DataApp(ttk.Frame):
         elif dist == 'distance':
             self.process_potion_distance()
         elif dist == 'sell success':
-            pass
+            self.process_sell_success()
         elif dist == 'haggle information':
             self.process_haggle_information()
         # self.update_plot()
@@ -136,6 +137,34 @@ class DataApp(ttk.Frame):
         self.ax_graph.bar(speed, percent, color='m')
 
         self.fig_canvas.draw()
+
+    def process_sell_success(self):
+        self.ax_graph.clear()
+        df = pd.DataFrame(self.__data_base['sell_success'])
+        bins = np.arange(1, 12, 1)
+        width = 0.4
+
+        success_trials = df[df["Success"] == 1]["Trial"].values
+        fail_trials = df[df["Success"] == 0]["Trial"].values
+        hist_success, _ = np.histogram(success_trials, bins=bins)
+        print(success_trials)
+        print(hist_success)
+        hist_fail, _ = np.histogram(fail_trials, bins=bins)
+
+        self.ax_graph.bar(bins[:-1] - width / 2, hist_success, width=width, label="Success", color="blue", edgecolor="black")
+        self.ax_graph.bar(bins[:-1] + width / 2, hist_fail, width=width, label="Fail", color="red", edgecolor="black")
+
+        self.ax_graph.set_xlabel("Trials until Success/Fail")
+        self.ax_graph.set_ylabel("Frequency")
+        self.ax_graph.set_title("Histogram of Trials until Success or Failure")
+        self.ax_graph.set_xticks(range(1, 11))  # Ensures clear labeling of bins 1-10
+        self.ax_graph.legend()
+
+        self.fig_canvas.draw()
+
+
+
+
 
     def update_plot(self):
         self.ax_graph.clear()

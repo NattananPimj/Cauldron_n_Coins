@@ -17,7 +17,7 @@ class DataCollector:
         'herb_use': ['ID', 'Herb_name', 'Direction'],
         'herb_potion': ['Potion', 'Tier', 'Herbs'],
         'distance': ['Potion', 'Tier', 'Distance'],
-        'sell_success': ['Dialog', 'Offered', 'Success'],
+        'sell_success': ['Success', 'Trial'],
         'haggle_fail': ['Number_of_bar', 'Speed', 'Success'],
     }
 
@@ -72,11 +72,10 @@ class DataCollector:
             'Distance': distance,
         })
 
-    def add_sell_data(self, dialog, offered, success):
+    def add_sell_data(self, success, trial):
         self.__sell_data.append({
-            'Dialog': dialog,
-            'Offered': offered,
             'Success': success,
+            'Trial': trial,
         })
 
     def add_haggle_data(self, bar, speed, success):

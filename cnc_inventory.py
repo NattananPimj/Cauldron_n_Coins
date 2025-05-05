@@ -483,7 +483,7 @@ class Customer:
         self.dialog = self.create_dialog().splitlines()
         self.pic = pg.image.load("customer/DemoCustomer.png")
         self.pic = pg.transform.scale(self.pic, (120, 333))
-        self.patience = random.randint(1, 4)
+        self.patience = random.randint(3, 10)
         self.x = 10
         self.multiplier = 1
 
@@ -530,6 +530,8 @@ class CustomerManager:
                         'Haggle': [self.haggleButton, self.sent_haggle, False], }
 
         self.cashier = self.add_picture('Cashier.png', (400, 228))
+
+        self.trail = 1
 
     @staticmethod
     def add_picture(filename: str, size: tuple):
@@ -597,20 +599,14 @@ class CustomerManager:
         """
         check if offer is satisfied, if not for too many times they will walk away
         """
-        success = False
         if self.current_customer.get_request() in Config.RQ[self.offered.get_name()]:
             self.buttons['Sell'][2] = True
             self.buttons['Haggle'][2] = True
-            success = True
-            # print("yes")
-            # sell button and bargin enable
         else:
             self.current_customer.patience -= 1
-            # print("no")
+            self.trail += 1
             if self.current_customer.patience == 0:
-                self.next_customer()
-        self.__dataCollector.add_sell_data(self.current_customer.get_request(),
-                                           self.offered.get_name(), success)
+                self.next_customer(False)
 
     def walk_away(self):
         """
@@ -622,12 +618,15 @@ class CustomerManager:
             else:
                 self.prev_customer = None
 
-    def next_customer(self):
+    def next_customer(self, success=False):
         """
         move the customer to prev for animation and create new one
         """
         self.prev_customer = self.current_customer
         self.create()
+        self.__dataCollector.add_sell_data(success, self.trail)
+        self.trail = 1
+
         return None
 
     def sell(self):
@@ -636,7 +635,7 @@ class CustomerManager:
         """
         self.__inventory.add_money(self.offered.get_price() * self.current_customer.multiplier)
         self.offered = None
-        self.next_customer()
+        self.next_customer(True)
         return None
 
     def sent_haggle(self):

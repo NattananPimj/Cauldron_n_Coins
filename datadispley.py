@@ -21,9 +21,9 @@ class DataApp(ttk.Frame):
         'herb_use': 'herb_use.csv',
         'herb_potion': 'herb_each_potion.csv',
         'distance': 'potion_distance.csv',
-        'sell_success': 'sell_success.csv',
-        'haggle_fail': 'haggle_fail.csv',
+        'haggle_information': 'haggle_fail.csv',
     }
+    # TODO: add sell info
 
     def __init__(self, parent):
         super().__init__(parent)
@@ -51,7 +51,7 @@ class DataApp(ttk.Frame):
             'herb potion',
             'distance',
             'sell success',
-            'haggle fail'
+            'haggle information'
         )
         self.cb_dist.bind('<<ComboboxSelected>>', self.update_dist)
         self.cb_dist.grid(row=0, column=0, padx=10, pady=10)
@@ -80,8 +80,8 @@ class DataApp(ttk.Frame):
             self.process_potion_distance()
         elif dist == 'sell success':
             pass
-        elif dist == 'haggle fail':
-            pass
+        elif dist == 'haggle information':
+            self.process_haggle_information()
         # self.update_plot()
 
     def load_data_base(self):
@@ -93,11 +93,11 @@ class DataApp(ttk.Frame):
         data = self.__data_base['herb_use']
         tmpx = []
         tmpy = []
-        print(data)
+        # print(data)
         for i in range(1, 17):
             tmpx.append(f"{Config.HERB_INFO[self.__herb_id[i - 1]]['name']}")
             tmpy.append(len(data[data['ID'] == i]))
-        print(tmpx, tmpy)
+        # print(tmpx, tmpy)
         color = ['red', 'blue', 'green', 'yellow', 'cyan']
         self.ax_graph.bar(tmpx, tmpy, color=color, width=0.6)
         self.ax_graph.set_xticklabels(tmpx, rotation=75, ha='right')
@@ -124,6 +124,16 @@ class DataApp(ttk.Frame):
         self.ax_graph.legend()
         self.ax_graph.set_title("Distance in each potion")
         self.fig_graph.subplots_adjust(top=0.9, bottom=0.25)
+
+        self.fig_canvas.draw()
+
+    def process_haggle_information(self):
+        # TODO: set axis and label
+        self.ax_graph.clear()
+        data = self.__data_base['haggle_information'].groupby('Speed')['Success'].mean()
+        speed = [1, 2, 3]
+        percent = [data[i] for i in speed]
+        self.ax_graph.bar(speed, percent, color='m')
 
         self.fig_canvas.draw()
 

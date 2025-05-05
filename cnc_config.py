@@ -32,8 +32,8 @@ class Config:
         'path': (94, 90, 78),
         'marks': (50, 50, 50),
         'inventory_bg': (150, 125, 90),
-        'haggle1':(160, 135, 114),
-        'haggle2':(163, 111, 88),
+        'haggle1': (160, 135, 114),
+        'haggle2': (163, 111, 88),
         'hagglebar': (217, 169, 147)
     }
     '''
@@ -62,6 +62,10 @@ class Config:
         "POISON": (-200, 200),
         "RAGE": (-500, 600)
     }
+
+    POTION_DISPLACEMENT = dict(
+        sorted({k: (((pos[0]) ** 2 + (pos[1]) ** 2) ** 0.5) for k, pos in POTION_POS.items()}.items(),
+               key=lambda x: x[1]))
 
     POTION_info = {
         "SWIFTNESS": {
@@ -269,7 +273,7 @@ class Config:
         },
 
         '16': {
-            'name': "Bird's heart" ,
+            'name': "Bird's heart",
             'funcX': lambda t: 5 * t + 10 * math.cos(t),
             'funcY': lambda t: -5 * t + 10 * math.sin(t),
             't': 50,

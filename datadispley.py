@@ -47,9 +47,11 @@ class DataApp(ttk.Frame):
 
         self.cb_dist = ttk.Combobox(self.frame_dist, state="readonly")
         self.cb_dist['values'] = (
-            'herb_use',
-            'Exponential',
-            'Uniform',
+            'herb use',
+            'herb potion',
+            'distance',
+            'sell success',
+            'haggle fail'
         )
         self.cb_dist.bind('<<ComboboxSelected>>', self.update_dist)
         self.cb_dist.grid(row=0, column=0, padx=10, pady=10)
@@ -70,12 +72,16 @@ class DataApp(ttk.Frame):
 
     def update_dist(self, ev):
         dist = self.cb_dist.get()
-        if dist == 'herb_use':
+        if dist == 'herb use':
             self.process_herb_use()
-        elif dist == 'Exponential':
+        elif dist == 'herb potion':
             self.data = np.random.exponential(size=10000)
-        elif dist == 'Uniform':
-            self.data = np.random.uniform(size=10000)
+        elif dist == 'distance':
+            self.process_potion_distance()
+        elif dist == 'sell success':
+            pass
+        elif dist == 'haggle fail':
+            pass
         # self.update_plot()
 
     def load_data_base(self):
@@ -103,6 +109,24 @@ class DataApp(ttk.Frame):
 
         self.fig_canvas.draw()
 
+    def process_potion_distance(self):
+        # TODO: add axis label and ticks
+        self.ax_graph.clear()
+        dfline = pd.DataFrame.from_dict(Config.POTION_DISPLACEMENT, orient="index")
+        self.ax_graph.plot(dfline.index, dfline[0], color='m')
+
+        df = self.__data_base['distance']
+        for tier in df['Tier'].unique():
+            subset = df[df['Tier'] == tier]
+            self.ax_graph.scatter(subset['Potion'], subset['Distance'],
+                                  label=tier)
+        self.ax_graph.set_xticklabels(dfline.index, rotation=45, ha='right')
+        self.ax_graph.legend()
+        self.ax_graph.set_title("Distance in each potion")
+        self.fig_graph.subplots_adjust(top=0.9, bottom=0.25)
+
+        self.fig_canvas.draw()
+
     def update_plot(self):
         self.ax_graph.clear()
         self.ax_graph.hist(self.data, bins=20)
@@ -114,7 +138,7 @@ class DataApp(ttk.Frame):
 if __name__ == "__main__":
     root = tk.Tk()
     root.title("Matplotlib Integration")
-    root.geometry("500x720")
+    root.geometry("1000x720")
     app = DataApp(root)
     root.mainloop()
     app.process_herb_use()

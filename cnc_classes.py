@@ -145,13 +145,21 @@ class Drawer:
         pg.draw.rect(self.__customerM.haggle.surface, Config.COLOR['haggle2'], pg.Rect(10, 150, 480, 50))
         self.__customerM.haggle.surface.blit(self.__customerM.haggle.details, (500 - 227, 2))
 
+        for dif, r in self.__customerM.haggle.difficulty_button.items():
+            color = Config.COLOR['haggle2'] if dif == self.__customerM.haggle.get_level() else Config.COLOR['haggle1']
+            pg.draw.rect(self.__customerM.haggle.surface, color, r)
+            # pg.draw.rect(self.__screen,Config.COLOR['red'], self.__customerM.haggle.difficulty_hitbox[1])
+            pg.draw.rect(self.__customerM.haggle.surface, Config.COLOR['marks'], r, width=1)
+
         txt_surface = self.__customerM.haggle.surface.copy()
-        # TODO: Change 12 to offered.price * 0.5
+
+        for i, txt in enumerate(['I', 'II', 'III']):
+            self.draw_text(txt_surface, txt, 40, 30 + (91*i) - (8*i), 40, Config.COLOR['marks'])
         self.draw_text(txt_surface,
-                       f"+{12}", 20, 500 - 190, 50, Config.COLOR['marks'])
+                       f"+{self.__customerM.offered.get_price() * 0.5:.2f}", 20, 500 - 190, 50, Config.COLOR['marks'])
         self.draw_text(txt_surface,
-                       f"-{12}", 20, 500 - 80, 50, Config.COLOR['marks'])
-        self.draw_text(txt_surface,"Press Space to Haggle", 36, 50, 220, Config.COLOR['marks'])
+                       f"-{self.__customerM.offered.get_price() * 1.5:.2f}", 20, 500 - 80, 50, Config.COLOR['marks'])
+        self.draw_text(txt_surface, "Press Space to Haggle", 36, 50, 220, Config.COLOR['marks'])
 
         self.__customerM.haggle.surface.blit(txt_surface, (0, 0))
 

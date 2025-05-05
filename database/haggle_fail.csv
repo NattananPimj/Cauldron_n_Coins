@@ -1,1 +1,18 @@
-Number_of_bar,Speed,bar sizes,Left,Right,pos
+Number_of_bar,Speed,Success
+5,1,True
+5,1,True
+5,1,True
+5,1,True
+5,1,True
+5,1,True
+5,1,False
+5,3,True
+5,3,True
+5,3,True
+5,3,True
+5,3,False
+5,3,True
+5,3,True
+5,3,True
+5,3,False
+5,3,False

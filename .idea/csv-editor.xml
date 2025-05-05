@@ -3,13 +3,6 @@
   <component name="CsvFileAttributes">
     <option name="attributeMap">
       <map>
-        <entry key="C:\Users\ASUS\AppData\Roaming\JetBrains\PyCharm2024.1\scratches\scratch.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
         <entry key="\cnc_save_test.csv">
           <value>
             <Attribute>

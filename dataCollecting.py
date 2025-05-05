@@ -18,7 +18,7 @@ class DataCollector:
         'herb_potion': ['Potion', 'Tier', 'Herbs'],
         'distance': ['Potion', 'Tier', 'Distance'],
         'sell_success': ['Dialog', 'Offered', 'Success'],
-        'haggle_fail': ['Number_of_bar', 'Speed', 'bar sizes', 'Left', 'Right', 'pos'],
+        'haggle_fail': ['Number_of_bar', 'Speed', 'Success'],
     }
 
     def __new__(cls, *args, **kwargs):
@@ -79,13 +79,10 @@ class DataCollector:
             'Success': success,
         })
 
-    def add_haggle_data(self, bar, speed, size, left, right, pos):
+    def add_haggle_data(self, bar, speed, success):
         self.__haggle_data.append({'Number_of_bar': bar,
                                    'Speed': speed,
-                                   'bar sizes': size,
-                                   'Left': left,
-                                   'Right': right,
-                                   'pos': pos
+                                   'Success': success
                                    })
 
     def __save_data(self, f, data):

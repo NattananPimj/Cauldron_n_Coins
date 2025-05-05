@@ -1,1 +1,5 @@
 Dialog,Offered,Success
+My forge went cold. Can you help reignite it?,FIRE,True
+I want to scare off some bandits—anything fiery?,LIGHT,False
+I need to endure a troll’s attack—got a potion for toughness?,STONE,True
+My tummy hurts—do you have a potion for that?,HEAL,True

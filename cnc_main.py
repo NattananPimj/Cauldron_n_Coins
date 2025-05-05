@@ -59,6 +59,7 @@ class Game:
                 if self.__state == 'haggle':
                     if ev.key == pg.K_SPACE:
                         # temporary
+                        self.__customer_manager.haggle.start = True
                         self.__customer_manager.haggle.haggle_action()
                         self.__customer_manager.haggle.click_done()
                         # print(self.__customer_manager.haggle.multiplier)
@@ -121,7 +122,9 @@ class Game:
             if self.__state == 'haggle':
                 self.__drawer.draw_shop_screen()
                 self.__drawer.draw_haggle()
+                self.__customer_manager.haggle.choose_difficulty(mouse)
                 self.__customer_manager.doing_haggle()
+
                 if self.__customer_manager.haggle.done:
                     self.__customer_manager.done_haggle()
                     self.__state = 'shop'

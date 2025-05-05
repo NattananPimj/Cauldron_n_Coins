@@ -303,14 +303,34 @@ class Inventory:
 class Haggling:
     Haggle_WIN_W = 500
     Haggle_WIN_H = 300
+    __difficulty = {
+        1: {
+            'speed': 1,
+            'success': 0.05,
+            'fail': 0.03,
+            'reduce': 0.01
+        },
+        2: {
+            'speed': 2,
+            'success': 0.07,
+            'fail': 0.04,
+            'reduce': 0.02
+        },
+        3: {
+            'speed': 3,
+            'success': 0.07,
+            'fail': 0.04,
+            'reduce': 0.02
+        }
+    }
 
     def __init__(self):
-
+        self.__level = 1
+        self.set_difficulty(self.__level)
         self.movement = None
         self.__dataCollector = DataCollector()
         self.surface = pg.Surface((self.Haggle_WIN_W, self.Haggle_WIN_H))
         self.surfaceR = self.surface.get_rect()
-        self.haggle_speed = 1
         self.reset()
         self.done_rect = [pg.Rect(10, 150, 40, 50), pg.Rect(self.Haggle_WIN_W - 50, 150, 40, 50)]
         self.done = False
@@ -318,6 +338,26 @@ class Haggling:
 
         self.details = pg.image.load('IngamePic/DealDetails.png')
         self.details = pg.transform.scale(self.details, (225, 145))
+        self.difficulty_button = {
+            1: pg.Rect(2, 2, 91, 145),
+            2: pg.Rect(93, 2, 91, 145),
+            3: pg.Rect(184, 2, 91, 145),
+        }
+        self.difficulty_hitbox = {
+            1: pg.Rect(2 + 400, 2 + 100, 91, 145),
+            2: pg.Rect(93 + 400, 2 + 100, 91, 145),
+            3: pg.Rect(184 + 400, 2 + 100, 91, 145),
+        }
+
+    def get_level(self):
+        return self.__level
+
+    def set_difficulty(self, difficulty):
+        self.__level = difficulty
+        self.__haggle_speed = self.__difficulty[difficulty]['speed']
+        self.__success_add = self.__difficulty[difficulty]['success']
+        self.__fail_add = self.__difficulty[difficulty]['fail']
+        self.__reduce_add = self.__difficulty[difficulty]['reduce']
 
     def draw_triangle(self):
         pg.draw.polygon(self.surface, Config.COLOR['black'],
@@ -325,11 +365,19 @@ class Haggling:
                          (self.haggle_pos[0] - 10, self.haggle_pos[1] + 30),
                          (self.haggle_pos[0] + 10, self.haggle_pos[1] + 30)))
 
+    def choose_difficulty(self, mouse):
+        # print('choose difficulty')
+        for dif, r in self.difficulty_hitbox.items():
+            if r.collidepoint(mouse):
+                if pg.mouse.get_pressed()[0] == 1:
+                    # print(dif)
+                    self.set_difficulty(dif)
+
     def move_haggle(self):
         """
         move the triangle left and right
         """
-        self.haggle_pos[0] += self.movement * self.haggle_speed
+        self.haggle_pos[0] += self.movement * self.__haggle_speed
         if self.haggle_pos[0] > self.Haggle_WIN_W - 15:
             self.movement = -1
         if self.haggle_pos[0] < 15:
@@ -367,17 +415,16 @@ class Haggling:
         if no - 0.03 and collect the data
         TODO: collect haggle data here
         """
+        success = False
         for r in self.hagglebar:
             if self.check_haggle(r):
-                self.multiplier += 0.05
+                self.multiplier += self.__success_add
+                success = True
         else:
-            self.__dataCollector.add_haggle_data(self.num_hagglebar,
-                                                 self.haggle_speed,
-                                                 [b.size[0] for b in self.hagglebar],
-                                                 [b.right for b in self.hagglebar],
-                                                 [b.left for b in self.hagglebar],
-                                                 self.haggle_pos)
-            self.multiplier -= 0.03
+            self.multiplier -= self.__fail_add
+        self.__dataCollector.add_haggle_data(self.num_hagglebar,
+                                             self.__haggle_speed,
+                                             success)
 
     def reduce_overtime(self):
         """
@@ -385,7 +432,7 @@ class Haggling:
         """
         t = time.time()
         if t - self.timer >= 0.5:
-            self.multiplier -= 0.005
+            self.multiplier -= self.__reduce_add
             self.timer = t
 
     def click_done(self):
@@ -410,7 +457,8 @@ class Haggling:
             self.multiplier = 1.5
             self.done = True
             return self.done
-        self.reduce_overtime()
+        if self.start:
+            self.reduce_overtime()
         return False
 
     def reset(self):
@@ -426,6 +474,7 @@ class Haggling:
         self.haggle_pos = [20, 180]
         self.movement = 1
         self.done = False
+        self.start = False
 
 
 class Customer:

@@ -183,8 +183,8 @@ class Map:
             self.__originX -= path[0] / 3
             self.__originY += path[1] / 3
 
-            self.__traveled += ((path[0])**2 + (path[0])**2)*0.5
-            print(self.__traveled)
+            self.__traveled += ((path[0])**2 + (path[0])**2)**0.5
+            print(self.__traveled, path,':', self.__bottle,self.find_distance_btw((0,0)))
 
     def find_distance_btw(self, pos: tuple[float, float]):
         return ((self.__bottle[0] - pos[0]) ** 2 + (self.__bottle[1] - pos[1]) ** 2) ** 0.5

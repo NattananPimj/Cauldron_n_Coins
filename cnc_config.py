@@ -279,9 +279,9 @@ class Config:
 
         '15': {
             'name': 'Mirththorn',
-            'funcX': lambda t: (10 * math.sin(t / 3)) + t,
-            'funcY': lambda t: 4 - (((t - 2) ** 2) / 25),
-            't': 50,
+            'funcX': lambda t: (10 * math.sin(2*t / 3)) + 2*t,
+            'funcY': lambda t: 4 - (((2*t - 2) ** 2) / 25),
+            't': 25,
             'direction': 'SE',
             'pic': 'H15.JPG',
             'price': 2

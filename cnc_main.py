@@ -41,6 +41,8 @@ class Game:
             if ev.type == pg.MOUSEWHEEL:
                 self.__inventory.move_up_down(ev.y)
             if ev.type == pg.KEYDOWN:
+                if ev.key == pg.K_ESCAPE:
+                    self.__state = 'title'
 
                 if self.__state == 'map':
                     if ev.key == pg.K_LEFT:
@@ -48,6 +50,10 @@ class Game:
                     if ev.key == pg.K_UP:
                         self.__state = 'bedroom'
                         self.__prev_state = 'map'
+
+                if self.__state == 'manual':
+                    if ev.key == pg.K_SPACE:
+                        self.__state = 'map'
 
                 if self.__state == 'shop':
                     if ev.key == pg.K_RIGHT:
@@ -94,6 +100,12 @@ class Game:
                 self.__map.bottlingUp(mouse)
                 self.__map.cancel_brewing(mouse)
                 self.__map.add_water(mouse)
+                if self.__map.open_manual(mouse):
+                    self.__state = 'manual'
+
+            if self.__state == 'manual':
+                self.__drawer.draw_brewing_screen()
+                self.__drawer.draw_manual()
 
             if self.__state == 'shop':
                 if not self.__customer_manager.startday:
@@ -129,6 +141,9 @@ class Game:
                     self.__customer_manager.done_haggle()
                     self.__state = 'shop'
 
+            if self.__state == 'title':
+                self.__drawer.draw_title()
+
             pg.display.update()
 
 
@@ -146,7 +161,7 @@ class Game:
 
 
 if __name__ == "__main__":
-    # name = input('Put ur name to lock in: ')
+    # name = input('Put ur name to log in: ')
     name = 'lilly'
     game = Game(name)
     game.run()

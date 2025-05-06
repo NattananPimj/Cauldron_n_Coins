@@ -31,6 +31,8 @@ class Drawer:
         self.bedroom = pg.image.load('IngamePic/Bedroom.jpg')
         self.bed = pg.Rect(20, 1 * Config.SCREEN_HEIGHT / 2, Config.SCREEN_WIDTH / 2, Config.SCREEN_HEIGHT / 3)
         self.bed_enable = True
+        self.title = pg.image.load('IngamePic/Title.jpg')
+        self.play_button = pg.Rect((Config.SCREEN_WIDTH - 400) / 2, (Config.SCREEN_HEIGHT * (2 / 3)), 400, 100)
 
     def check_sleep(self, mouse):
         if self.bed.collidepoint(mouse):
@@ -83,6 +85,7 @@ class Drawer:
         self.__screen.blit(self.__map.cancel, ((Config.SCREEN_WIDTH + Config.MAP_WIDTH) / 2 - 50,
                                                (Config.SCREEN_HEIGHT - Config.MAP_HEIGHT) / 8 + Config.MAP_HEIGHT - 50))
 
+
     def on_map_draw(self) -> None:
         """
         everything happen on map surface
@@ -96,6 +99,14 @@ class Drawer:
         self.__map.surface.blit(self.__map.bottle_pic, self.__map.get_bottle_pos(-17, -21))
         if self.__map.get_len_path() >= 2:
             pg.draw.lines(self.__map.surface, (Config.COLOR['path']), False, self.__map.get_path_line(), 1)
+
+        self.__map.surface.blit(self.__map.compass, (0,0))
+        self.__map.surface.blit(self.__map.question, (Config.MAP_WIDTH-70,0))
+
+
+    def draw_manual(self):
+        self.__screen.blit(self.__map.manual, ((Config.SCREEN_WIDTH - 800) / 2,(Config.SCREEN_HEIGHT - 600) / 2))
+
 
     def plot_potion(self):
         for name, pos in Config.POTION_POS.items():
@@ -116,8 +127,9 @@ class Drawer:
             self.__screen.blit(self.__customerM.current_customer.pic,
                                (self.__customerM.current_customer.x, 200))
             if self.__customerM.current_customer.reaction is not None:
-                self.__screen.blit(self.__customerM.current_customer.reaction_pic[self.__customerM.current_customer.reaction],
-                                   (self.__customerM.current_customer.x, 200))
+                self.__screen.blit(
+                    self.__customerM.current_customer.reaction_pic[self.__customerM.current_customer.reaction],
+                    (self.__customerM.current_customer.x, 200))
             # draw dialog
             for i, lines in enumerate(self.__customerM.current_customer.dialog):
                 self.draw_text(dialogBox,
@@ -157,7 +169,7 @@ class Drawer:
         txt_surface = self.__customerM.haggle.surface.copy()
 
         for i, txt in enumerate(['I', 'II', 'III']):
-            self.draw_text(txt_surface, txt, 40, 30 + (91*i) - (8*i), 40, Config.COLOR['marks'])
+            self.draw_text(txt_surface, txt, 40, 30 + (91 * i) - (8 * i), 40, Config.COLOR['marks'])
         self.draw_text(txt_surface,
                        f"+{self.__customerM.offered.get_price() * 0.5:.2f}", 20, 500 - 190, 50, Config.COLOR['marks'])
         self.draw_text(txt_surface,
@@ -221,3 +233,16 @@ class Drawer:
         # pg.draw.rect(self.__screen, Config.COLOR['red'], self.bed)
 
         self.draw_ui()
+
+    def draw_title(self):
+
+        pg.draw.rect(self.title, Config.COLOR['marks'], self.play_button, border_radius=50)
+        pg.draw.rect(self.title, Config.COLOR['haggle1'], self.play_button.inflate(-3, -3), border_radius=50)
+        self.draw_text(self.title, 'Play', 56, (Config.SCREEN_WIDTH - 400 + 275) / 2,
+                       (Config.SCREEN_HEIGHT * (2 / 3)), Config.COLOR['marks'])
+        self.draw_text(self.title, f"Username: {self.__inventory.get_name()}",
+                       y=Config.SCREEN_HEIGHT - 50, color=Config.COLOR['marks'])
+        self.__screen.blit(self.title, (0, 0))
+
+    def title_button(self, mouse):
+        pass

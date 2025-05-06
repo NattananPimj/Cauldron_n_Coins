@@ -180,4 +180,4 @@ if __name__ == "__main__":
     root.geometry("1000x720")
     app = DataApp(root)
     root.mainloop()
-    app.process_herb_use()
+    # app.process_herb_use()

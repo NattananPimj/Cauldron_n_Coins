@@ -48,6 +48,15 @@ class Map:
         self.__animateS = True
         self.spatula_hitbox = self.spatulas[0].get_rect()
         self.spatula_hitbox.topleft = ((Config.SCREEN_WIDTH - 250) / 2, Config.SCREEN_HEIGHT - 250 - 100)
+        self.compass = self.add_picture("compass.png", (120, 120))
+        self.question = self.add_picture("questionmark.png", (70, 70))
+        self.question_hitbox = self.question.get_rect()
+        self.question_hitbox.topleft = (((Config.SCREEN_WIDTH - Config.MAP_WIDTH) / 2) + Config.MAP_WIDTH-70,
+                                        (Config.SCREEN_HEIGHT - Config.MAP_HEIGHT) / 8)
+
+        self.manual = self.add_picture("manual.png", (800, 600))
+
+
         self.potion_symbol = {}
         for name, pos in Config.POTION_POS.items():
             tmp = self.add_picture('/Potion_effect/'+name+'.png', (20, 20))
@@ -151,7 +160,7 @@ class Map:
         :param key: W A S D for up, left, down and, right respectively
         :return:
         """
-        factor_x = Config.FACTOR_x * 10
+        factor_x = Config.FACTOR_x * 20
         if key[pg.K_w] and self.__originY <= ((Config.MAP_HEIGHT / 2) + 900):
             self.__originY += factor_x
         if key[pg.K_s] and self.__originY >= ((Config.MAP_HEIGHT / 2) - 900):
@@ -213,6 +222,7 @@ class Map:
                         return True
         return False
 
+
     def brewing(self, mouse_pos):
         if self.spatula_hitbox.collidepoint(mouse_pos):
             if pg.mouse.get_pressed()[0] == 1:
@@ -236,8 +246,16 @@ class Map:
                            lambda: self.change_current_water(1),
                            lambda: self.change_current_water(0))
 
+
     def change_current_water(self, to:int):
         self.current_water = to
+
+    def open_manual(self, mouse):
+        if self.question_hitbox.collidepoint(mouse):
+            if pg.mouse.get_pressed()[0] == 1:
+                return True
+        return False
+
 
     @staticmethod
     def __check_click(mouse_pos, hitbox: pg.Rect, func1_1, func1_2=None, func2=None) -> None:

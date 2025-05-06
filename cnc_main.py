@@ -17,7 +17,7 @@ class Game:
     main class for the game, run everything here
     """
 
-    def __init__(self, name: str = 'lilly'):
+    def __init__(self, name: str):
         """
         :param name: username for register the save. if not sign in yet, create new one
 
@@ -39,14 +39,14 @@ class Game:
     def user_event(self):
         for ev in pg.event.get():
             if ev.type == pg.QUIT:
-                pg.quit()
                 self.__running = False
+
             if ev.type == pg.MOUSEWHEEL:
                 self.__inventory.move_up_down(ev.y)
             if ev.type == pg.KEYDOWN:
                 if ev.key == pg.K_ESCAPE:
                     if self.__state == 'title':
-                        pg.quit()
+                        self.__running = False
                     self.__prev_state = self.__state
                     self.__state = 'title'
 
@@ -174,7 +174,8 @@ class Game:
 
 
 if __name__ == "__main__":
-    # name = input('Put ur name to log in: ')
-    name = 'lilly'
+    name = input('Put ur name to log in: ')
+    # name = 'lilly'
     game = Game(name)
     game.run()
+    pg.quit()

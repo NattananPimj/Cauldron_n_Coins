@@ -77,7 +77,7 @@ class ItemSlot:
 class Inventory:
     __instance = None
 
-    def __new__(cls, para="lilly"):
+    def __new__(cls, para):
         if cls.__instance is None:
             cls.__instance = super().__new__(cls)
             cls.__instance.__name = para
@@ -90,10 +90,12 @@ class Inventory:
         self.__inventory = []
         self.__name = None
         self.__data = None
+        self.__new = None
         self.__manager: CustomerManager = None
         self.dataCollector = DataCollector()
 
-        self.__file = "cnc_save_test.csv"
+        self.__file = "database/save_data.csv"
+        print(name)
         self.to_id(name)
         self.surface = pg.Surface((Config.INV_WIDTH, Config.INV_HEIGHT))
 
@@ -148,11 +150,13 @@ class Inventory:
             return False
         self.__day = int(data['Days'])
         self.__money = float(data['Money'])
+        self.__new = bool(data['New'])
         inv = eval(data['Inventory'][1:-1])
         # print(inv)
         # print(type(inv))
         for item in inv:
             self.__inventory.append(Potion(item['name'], (item['power']), item['ingredients']))
+        print(self.__name, self.__day, self.__money, self.__new, self.__inventory)
         return True
 
     def to_id(self, name: str):
@@ -168,6 +172,7 @@ class Inventory:
             self.__inventory = []
             self.__money = 100
             self.__day = 1
+            self.__new = 1
             self.save_data()
 
     def find_data(self, name: str) -> int:
@@ -204,6 +209,7 @@ class Inventory:
             'Name': self.__name,
             'Days': str(self.__day),
             'Money': str(self.__money),
+            'New': str(int(self.__new)),
             'Inventory': self.str_inventory()
         }
 
@@ -215,7 +221,7 @@ class Inventory:
             tmp_data.append(tmp_row)
 
         # rewrite
-        header = ["Name", "Days", "Money", "Inventory"]
+        header = ["Name", "Days", "Money",'New', "Inventory"]
         with open(self.__file, 'w') as file:
             writer = csv.DictWriter(file, fieldnames=header)
             writer.writeheader()
@@ -223,6 +229,12 @@ class Inventory:
                 writer.writerow(row)
 
         self.__data = self.__load_data()
+
+    def get_newbie(self):
+        return self.__new
+
+    def not_newbie(self):
+        self.__new = 0
 
     def get_name(self) -> str:
         return self.__name
@@ -509,7 +521,7 @@ class Customer:
 
 class CustomerManager:
     def __init__(self):
-        self.__inventory = Inventory().get_instance()
+        self.__inventory = Inventory.get_instance()
         self.__dataCollector = DataCollector()
         self.__sell_pos = Config.SCREEN_WIDTH / 8
 

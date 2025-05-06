@@ -8,14 +8,14 @@ class DataCollector:
     # database
     __filename = {
         'herb_use': 'herb_use.csv',
-        'herb_potion': 'herb_each_potion.csv',
+        'potion_profit': 'potion_profit.csv',
         'distance': 'potion_distance.csv',
         'sell_success': 'sell_success.csv',
         'haggle_fail': 'haggle_fail.csv',
     }
     __header = {
         'herb_use': ['ID', 'Herb_name', 'Direction'],
-        'herb_potion': ['Potion', 'Tier', 'Herbs'],
+        'potion_profit': ['Potion','Sellprice','Cost','Profit'],
         'distance': ['Potion', 'Tier', 'Distance'],
         'sell_success': ['Success', 'Trial'],
         'haggle_fail': ['Number_of_bar', 'Speed', 'Success'],
@@ -35,7 +35,7 @@ class DataCollector:
         self.__haggle_data = []
         self.__data = {
             'herb_use': self.__herbs_data,
-            'herb_potion': self.__potions_data,
+            'potion_profit': self.__potions_data,
             'distance': self.__distance_data,
             'sell_success': self.__sell_data,
             'haggle_fail': self.__haggle_data,
@@ -58,11 +58,12 @@ class DataCollector:
                 'Direction': Config.HERB_INFO[i]['direction'],
             })
 
-    def add_potion_data(self, potion, tier, herb_list: list):
+    def add_potion_data(self, potion, sellprice, cost):
         self.__potions_data.append({
             'Potion': potion,
-            'Tier': tier,
-            'Herbs': herb_list,
+            'Sellprice': sellprice,
+            'Cost': cost,
+            'Profit': sellprice - cost,
         })
 
     def add_distance_data(self, potion, tier, distance):

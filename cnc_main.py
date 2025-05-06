@@ -1,11 +1,13 @@
 import pygame as pg
 from pygame import mixer
 from cnc_herbs import *
+import tkinter as tk
 from cnc_classes import *
 from cnc_config import Config
 from cnc_inventory import Inventory, CustomerManager
 from cnc_map import Map
 from cnc_herbManager import HerbManager
+from datadispley import DataApp
 
 pg.init()
 
@@ -21,13 +23,14 @@ class Game:
 
         import all the class in
         """
+        pg.display.set_caption('Cauldron and Coins')
         self.__inventory = Inventory(name)
         self.__customer_manager = CustomerManager()
         self.__inventory.add_manager(self.__customer_manager)
         self.__map = Map()
         self.__herbs = HerbManager(self.__map)
         self.__drawer = Drawer(self.__map, self.__herbs, self.__customer_manager)
-        self.__state = 'shop'  # map / store
+        self.__state = 'title'  # map / store
         self.__prev_state = 'map'
         self.__music_file = 'Music/misty-wind-troubadour-164146.ogg'
 
@@ -42,6 +45,9 @@ class Game:
                 self.__inventory.move_up_down(ev.y)
             if ev.type == pg.KEYDOWN:
                 if ev.key == pg.K_ESCAPE:
+                    if self.__state == 'title':
+                        pg.quit()
+                    self.__prev_state = self.__state
                     self.__state = 'title'
 
                 if self.__state == 'map':
@@ -72,6 +78,8 @@ class Game:
 
                 if self.__state == 'bedroom':
                     if ev.key == pg.K_DOWN:
+                        if self.__prev_state == 'bedroom':
+                            self.__prev_state = 'map'
                         self.__state = self.__prev_state
 
         # hold key down
@@ -143,9 +151,14 @@ class Game:
 
             if self.__state == 'title':
                 self.__drawer.draw_title()
+                if self.__drawer.play(mouse):
+                    self.__state = self.__prev_state
+                if self.__drawer.open_stat(mouse):
+                    self.__root = tk.Tk()
+                    self.__data_display = DataApp(self.__root)
+                    self.__root.mainloop()
 
             pg.display.update()
-
 
     def music(self):
         mixer.init()

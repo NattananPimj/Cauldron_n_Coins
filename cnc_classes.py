@@ -33,6 +33,10 @@ class Drawer:
         self.bed_enable = True
         self.title = pg.image.load('IngamePic/Title.jpg')
         self.play_button = pg.Rect((Config.SCREEN_WIDTH - 400) / 2, (Config.SCREEN_HEIGHT * (2 / 3)), 400, 100)
+        self.stat_icon = pg.image.load('IngamePic/Stat_icon.png')
+        self.stat_icon = pg.transform.scale(self.stat_icon, (100, 100))
+        self.stat_rect = self.stat_icon.get_rect()
+        self.stat_rect.topleft = Config.SCREEN_WIDTH - 110, Config.SCREEN_HEIGHT - 110
 
     def check_sleep(self, mouse):
         if self.bed.collidepoint(mouse):
@@ -85,7 +89,6 @@ class Drawer:
         self.__screen.blit(self.__map.cancel, ((Config.SCREEN_WIDTH + Config.MAP_WIDTH) / 2 - 50,
                                                (Config.SCREEN_HEIGHT - Config.MAP_HEIGHT) / 8 + Config.MAP_HEIGHT - 50))
 
-
     def on_map_draw(self) -> None:
         """
         everything happen on map surface
@@ -95,18 +98,21 @@ class Drawer:
         # draw marks
         self.__map.surface.blit(self.__map.bottleShad, self.__map.get_position((-17, 21)))
         self.plot_potion()
-        # draw_bottles
-        self.__map.surface.blit(self.__map.bottle_pic, self.__map.get_bottle_pos(-17, -21))
+
         if self.__map.get_len_path() >= 2:
             pg.draw.lines(self.__map.surface, (Config.COLOR['path']), False, self.__map.get_path_line(), 1)
+        h, k = self.__map.get_slope(1)
+        l = (h ** 2 + k ** 2) ** 0.5
+        pg.draw.line(self.__map.surface, (Config.COLOR['inventory_bg']), self.__map.get_bottle_pos(),
+                     self.__map.get_bottle_pos((h / l) * 40, (-k / l) * 40))
 
-        self.__map.surface.blit(self.__map.compass, (0,0))
-        self.__map.surface.blit(self.__map.question, (Config.MAP_WIDTH-70,0))
-
+        # draw_bottles
+        self.__map.surface.blit(self.__map.bottle_pic, self.__map.get_bottle_pos(-17, -21))
+        self.__map.surface.blit(self.__map.compass, (0, 0))
+        self.__map.surface.blit(self.__map.question, (Config.MAP_WIDTH - 70, 0))
 
     def draw_manual(self):
-        self.__screen.blit(self.__map.manual, ((Config.SCREEN_WIDTH - 800) / 2,(Config.SCREEN_HEIGHT - 600) / 2))
-
+        self.__screen.blit(self.__map.manual, ((Config.SCREEN_WIDTH - 800) / 2, (Config.SCREEN_HEIGHT - 600) / 2))
 
     def plot_potion(self):
         for name, pos in Config.POTION_POS.items():
@@ -173,7 +179,7 @@ class Drawer:
         self.draw_text(txt_surface,
                        f"+{self.__customerM.offered.get_price() * 0.5:.2f}", 20, 500 - 190, 50, Config.COLOR['marks'])
         self.draw_text(txt_surface,
-                       f"-{self.__customerM.offered.get_price() * 1.5:.2f}", 20, 500 - 80, 50, Config.COLOR['marks'])
+                       f"-{self.__customerM.offered.get_price() * 0.5:.2f}", 20, 500 - 80, 50, Config.COLOR['marks'])
         self.draw_text(txt_surface, "Press Space to Haggle", 36, 50, 220, Config.COLOR['marks'])
 
         self.__customerM.haggle.surface.blit(txt_surface, (0, 0))
@@ -242,7 +248,20 @@ class Drawer:
                        (Config.SCREEN_HEIGHT * (2 / 3)), Config.COLOR['marks'])
         self.draw_text(self.title, f"Username: {self.__inventory.get_name()}",
                        y=Config.SCREEN_HEIGHT - 50, color=Config.COLOR['marks'])
+
+        pg.draw.rect(self.title, Config.COLOR['marks'], self.stat_rect, border_radius=20)
+        pg.draw.rect(self.title, Config.COLOR['map'], self.stat_rect.inflate(-5, -5), border_radius=20)
+        self.title.blit(self.stat_icon, (Config.SCREEN_WIDTH - 110, Config.SCREEN_HEIGHT - 110))
         self.__screen.blit(self.title, (0, 0))
 
-    def title_button(self, mouse):
-        pass
+    def play(self, mouse):
+        if self.play_button.collidepoint(mouse):
+            if pg.mouse.get_pressed()[0] == 1:
+                return True
+        return False
+
+    def open_stat(self, mouse):
+        if self.stat_rect.collidepoint(mouse):
+            if pg.mouse.get_pressed()[0] == 1:
+                return True
+        return False

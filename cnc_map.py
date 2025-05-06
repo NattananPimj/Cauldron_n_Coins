@@ -51,18 +51,15 @@ class Map:
         self.compass = self.add_picture("compass.png", (120, 120))
         self.question = self.add_picture("questionmark.png", (70, 70))
         self.question_hitbox = self.question.get_rect()
-        self.question_hitbox.topleft = (((Config.SCREEN_WIDTH - Config.MAP_WIDTH) / 2) + Config.MAP_WIDTH-70,
+        self.question_hitbox.topleft = (((Config.SCREEN_WIDTH - Config.MAP_WIDTH) / 2) + Config.MAP_WIDTH - 70,
                                         (Config.SCREEN_HEIGHT - Config.MAP_HEIGHT) / 8)
 
         self.manual = self.add_picture("manual.png", (800, 600))
 
-
         self.potion_symbol = {}
         for name, pos in Config.POTION_POS.items():
-            tmp = self.add_picture('/Potion_effect/'+name+'.png', (20, 20))
+            tmp = self.add_picture('/Potion_effect/' + name + '.png', (20, 20))
             self.potion_symbol[name] = tmp
-
-
 
     def reset(self):
         """
@@ -130,12 +127,7 @@ class Map:
             line.append([line[i][0] + self.__path[i][0], line[i][1] - self.__path[i][1]])
         return line
 
-    def back_to_origin(self) -> None:
-        """
-        moving bottle towards origin no matter where the bottle at
-        :return:
-        """
-        factor_x = Config.FACTOR_x
+    def get_slope(self, factor_x=Config.FACTOR_x):
         if self.__bottle[0] == 0:
             h = 0
             k = factor_x
@@ -145,14 +137,21 @@ class Map:
             k = slope * factor_x
 
         if self.__bottle[0] >= 0:
-            self.__bottle[0] -= h
-        else:
-            self.__bottle[0] += h
+            h *= -1
 
         if self.__bottle[1] >= 0:
-            self.__bottle[1] -= k
-        else:
-            self.__bottle[1] += k
+            k *= -1
+
+        return h, k
+
+    def back_to_origin(self) -> None:
+        """
+        moving bottle towards origin no matter where the bottle at
+        :return:
+        """
+        h, k = self.get_slope()
+        self.__bottle[0] += h
+        self.__bottle[1] += k
 
     def move_map(self, key) -> None:
         """
@@ -169,7 +168,6 @@ class Map:
             self.__originX -= factor_x
         if key[pg.K_a] and self.__originX <= ((Config.MAP_WIDTH / 2) + 900):
             self.__originX += factor_x
-
 
     def add_herb(self, herb: Herb):
         """
@@ -192,8 +190,8 @@ class Map:
             self.__originX -= path[0] / 3
             self.__originY += path[1] / 3
 
-            self.__traveled += ((path[0])**2 + (path[0])**2)**0.5
-            print(self.__traveled, path,':', self.__bottle,self.find_distance_btw((0,0)))
+            self.__traveled += ((path[0]) ** 2 + (path[0]) ** 2) ** 0.5
+            # print(self.__traveled, path,':', self.__bottle,self.find_distance_btw((0,0)))
 
     def find_distance_btw(self, pos: tuple[float, float]):
         return ((self.__bottle[0] - pos[0]) ** 2 + (self.__bottle[1] - pos[1]) ** 2) ** 0.5
@@ -216,12 +214,10 @@ class Map:
                         self.inventory.add_item(potion)
                         # add data
                         self.dataCollector.add_data_herb(self.__herb_used)
-                        self.dataCollector.add_distance_data(p, 3-tier, self.__traveled)
-                        self.dataCollector.add_potion_data(p, 3-tier, self.__herb_used)
+                        self.dataCollector.add_distance_data(p, 3 - tier, self.__traveled)
                         self.reset()
                         return True
         return False
-
 
     def brewing(self, mouse_pos):
         if self.spatula_hitbox.collidepoint(mouse_pos):
@@ -246,8 +242,7 @@ class Map:
                            lambda: self.change_current_water(1),
                            lambda: self.change_current_water(0))
 
-
-    def change_current_water(self, to:int):
+    def change_current_water(self, to: int):
         self.current_water = to
 
     def open_manual(self, mouse):
@@ -255,7 +250,6 @@ class Map:
             if pg.mouse.get_pressed()[0] == 1:
                 return True
         return False
-
 
     @staticmethod
     def __check_click(mouse_pos, hitbox: pg.Rect, func1_1, func1_2=None, func2=None) -> None:

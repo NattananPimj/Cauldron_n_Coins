@@ -642,7 +642,9 @@ class CustomerManager:
         """
         sell: add money, remove item and call next customer
         """
-        self.__inventory.add_money(self.offered.get_price() * self.current_customer.multiplier)
+        price = self.offered.get_price() * self.current_customer.multiplier
+        self.__inventory.add_money(price)
+        self.__dataCollector.add_potion_data(self.offered.get_name(), price, self.offered.get_cost())
         self.offered = None
         self.next_customer(True)
         return None

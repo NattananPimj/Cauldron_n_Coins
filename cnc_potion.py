@@ -16,21 +16,18 @@ class Potion:
         self.symbol = pg.transform.scale(self.symbol, (40, 40))
         self.pic.blit(self.symbol, (15, 60))
 
-    def get_name(self):
+    def get_name(self) -> str:
         return self.__name
 
-    def get_power(self):
+    def get_power(self) -> int:
         return self.__power
 
-    def get_price(self):
+    def get_price(self) -> float:
         return self.__price
 
-    def check_ingredients(self, ingredient):
-        return ingredient in self.__ingredients
-
-    def get_cost(self):
+    def get_cost(self) -> float:
         return sum([Config.HERB_INFO[i]['price'] for i in self.__ingredients])
 
-    def __str__(self):
+    def __str__(self) -> str:
         return '{' + f"'name': '{self.__name}', 'power': {self.__power}, 'ingredients': {self.__ingredients}" + '}'
 

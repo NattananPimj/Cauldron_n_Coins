@@ -182,7 +182,7 @@ class Inventory:
             self.__new = 1
             self.save_data()
 
-    def find_data(self, name: str) -> int:
+    def __find_data(self, name: str) -> int:
         """
         find data to save
         :param name:
@@ -221,14 +221,14 @@ class Inventory:
         }
 
         tmp_data = self.__data
-        index = self.find_data(self.__name)
+        index = self.__find_data(self.__name)
         if index != -1:
             tmp_data[index] = tmp_row
         else:
             tmp_data.append(tmp_row)
 
         # rewrite
-        header = ["Name", "Days", "Money",'New', "Inventory"]
+        header = ["Name", "Days", "Money", 'New', "Inventory"]
         with open(self.__file, 'w') as file:
             writer = csv.DictWriter(file, fieldnames=header)
             writer.writeheader()
@@ -333,7 +333,7 @@ class Haggling:
         },
         3: {
             'speed': 3,
-            'success': 0.07,
+            'success': 0.1,
             'fail': 0.04,
             'reduce': 0.02
         }
@@ -428,7 +428,6 @@ class Haggling:
         As the button is press, check every haggle bar if it's clicked
         if yes + 0.05
         if no - 0.03 and collect the data
-        TODO: collect haggle data here
         """
         success = False
         for r in self.hagglebar:
@@ -499,7 +498,7 @@ class Customer:
         self.pic = pic
         self.patience = random.randint(3, 10)
         self.x = 10
-        self.multiplier = 1 * round((random.randint(1, 10)/50), 2)
+        self.multiplier = 1 * round((random.randint(1, 10) / 50), 2)
         self.reaction_pic = {
             'happy': CustomerManager.add_picture('happy.png', (250, 525)),
             'sad': CustomerManager.add_picture('sad.png', (250, 525)),
@@ -557,6 +556,23 @@ class CustomerManager:
         pic = pg.transform.scale(pic, size)
         return pic
 
+    @staticmethod
+    def get_random_pic():
+        file = random.choice(Config.customer_pic)
+        pic = pg.image.load('customer/' + file)
+        pic = pg.transform.scale(pic, (250, 525))
+        return pic
+
+    def random_rq(self):
+        key = list(Config.RQ.keys())
+        weight = [3, 1, 2, 1, 6, 2, 6, 3, 3, 1, 2, 1, 6, 3, 6, 2]
+        ans = random.choices(key, weights=weight)[0]
+        rq = Config.RQ[ans][random.randint(0, len(Config.RQ[ans]) - 1)]
+        if self.prev_customer is not None:
+            while rq == self.prev_customer.get_request():
+                Config.RQ[ans][random.randint(0, len(Config.RQ[ans]) - 1)]
+        return rq
+
     def reset(self):
         self.customers_each_day = random.randint(6, 10)
         self.num_customers = 0
@@ -570,28 +586,10 @@ class CustomerManager:
         self.buttons['Sell'][2] = False
         self.buttons['Haggle'][2] = False
 
-    def random_rq(self):
-        key = list(Config.RQ.keys())
-        weight = [3, 1, 2, 1, 6, 2, 6, 3, 3, 1, 2, 1, 6, 3, 6, 2]
-        ans = random.choices(key, weights=weight)[0]
-        rq = Config.RQ[ans][random.randint(0, len(Config.RQ[ans]) - 1)]
-        if self.prev_customer is not None:
-            while rq == self.prev_customer.get_request():
-                Config.RQ[ans][random.randint(0, len(Config.RQ[ans]) - 1)]
-        return rq
-
-    @staticmethod
-    def get_random_pic():
-        file = random.choice(Config.customer_pic)
-        pic = pg.image.load('customer/' + file)
-        pic = pg.transform.scale(pic, (250, 525))
-        return pic
-
     def create(self):
         """
         create a new customer as long as the customer create is not reach amount of customer per day
         """
-        # TODO: pic = get_random_pic()
         if self.num_customers < self.customers_each_day:
             self.current_customer = Customer(self.random_rq(), self.get_random_pic())
             self.num_customers += 1
@@ -669,7 +667,6 @@ class CustomerManager:
         activate haggle by sent the str to main
         """
         self.haggle.reset()
-        print('HAGGLE')
         return 'haggle'
 
     def doing_haggle(self):

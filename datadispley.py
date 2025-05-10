@@ -12,7 +12,6 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.figure import Figure
 
 
-# TODO: process data here
 class DataApp(ttk.Frame):
     __herb_id = ['01', '02', '03', '04', '05', '06', '07', '08',
                  '09', '10', '11', '12', '13', '14', '15', '16']
@@ -24,8 +23,6 @@ class DataApp(ttk.Frame):
         'haggle_information': 'haggle_fail.csv',
         'sell_success': 'sell_success.csv',
     }
-
-    # TODO: add sell info
 
     def __init__(self, parent):
         super().__init__(parent)
@@ -147,7 +144,6 @@ class DataApp(ttk.Frame):
         self.fig_canvas.draw()
 
     def process_potion_distance(self):
-        # TODO: add axis label and ticks
         self.ax_graph.clear()
         dfline = pd.DataFrame.from_dict(Config.POTION_DISPLACEMENT, orient="index")
         self.ax_graph.plot(dfline.index, dfline[0], color='m', label='Displacement from start')
@@ -170,16 +166,16 @@ class DataApp(ttk.Frame):
         self.fig_canvas.draw()
 
     def process_haggle_information(self):
-        # TODO: set axis and label
         self.ax_graph.clear()
         data = self.__data_base['haggle_information'].groupby('Speed')['Success'].mean()
         speed = ['1', '2', '3']
         percent = [data[int(i)] for i in speed]
-        self.ax_graph.bar(speed, percent, color='m')
+        bar = self.ax_graph.bar(speed, percent, color='m')
 
         self.ax_graph.set_title("Haggle Success Rate in each speed")
         self.ax_graph.set_xlabel("speed")
         self.ax_graph.set_ylabel("Success percent")
+        self.ax_graph.bar_label(bar, fmt='%.2f')
 
         self.fig_canvas.draw()
 

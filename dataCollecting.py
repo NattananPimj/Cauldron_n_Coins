@@ -99,6 +99,3 @@ class DataCollector:
             writer.writeheader()
             for row in tmp:
                 writer.writerow(row)
-
-    def get_data(self):
-        return self.__data

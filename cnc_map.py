@@ -1,5 +1,5 @@
 import time
-from typing import List
+from typing import List, Any, Tuple
 import random
 import pygame as pg
 
@@ -11,12 +11,12 @@ from dataCollecting import DataCollector
 
 
 class Obstacle:
-    def __init__(self, size, x, y, txture:pg.Surface):
+    def __init__(self, size, x, y, texture: pg.Surface):
         self.danger_zone = size
         self.dead_zone = size - 20
         self.x = x
         self.y = y
-        self.txture = txture
+        self.__texture = texture
 
     def __find_distance(self, pos) -> float:
         return ((pos[0] - self.x) ** 2 + (pos[1] - self.y) ** 2) ** 0.5
@@ -38,14 +38,13 @@ class Obstacle:
             return True
         return False
 
-    def get_position(self):
-        return (self.x, self.y)
+    def get_position(self) -> tuple[float, float]:
+        return self.x, self.y
 
     def draw_obs(self, screen, pos):
-        self.txture.convert_alpha()
+        self.__texture.convert_alpha()
         pg.draw.circle(screen, Config.COLOR['obs'], pos, self.danger_zone)
-        screen.blit(self.txture, (pos[0] - 80, pos[1] - 80))
-
+        screen.blit(self.__texture, (pos[0] - 80, pos[1] - 80))
 
 
 class Map:
@@ -59,11 +58,10 @@ class Map:
 
         self.surface = pg.Surface((Config.MAP_WIDTH, Config.MAP_HEIGHT))
         self.rect = self.surface.get_rect()
-        self.rect.topleft = (0,0)
+        self.rect.topleft = (0, 0)
         self.__time = time.time()
         self.__cancel_time = time.time()
         self.__shake_time = time.time()
-
 
         # brewing elements
         self.bottle_pic = self.add_picture('bottle.png', (36, 36))
@@ -104,8 +102,15 @@ class Map:
             tmp = self.add_picture('/Potion_effect/' + name + '.png', (20, 20))
             self.potion_symbol[name] = tmp
 
+    @staticmethod
+    def find_distance(pos1, pos2) -> float:
+        return ((pos1[0] - pos2[0]) ** 2 + (pos1[1] - pos2[1]) ** 2) ** 0.5
 
-
+    @staticmethod
+    def add_picture(filename: str, size: tuple) -> pg.Surface:
+        pic = pg.image.load('IngamePic/' + filename)
+        pic = pg.transform.scale(pic, size)
+        return pic
 
     def reset(self):
         """
@@ -121,41 +126,39 @@ class Map:
         self.__herb_used = []
         self.__traveled = 0
         self.obstacles: List[Obstacle] = []
-        self.danger = False
-        self.shaking = [0, 0]
+        self.__danger = False
+        self.__shaking = [0, 0]
         for obs in range(Config.NUM_OBS):
             self.create_obstacles()
 
-    def get_bottle(self):
+    def get_bottle(self) -> List[int]:
         return self.__bottle
 
     def check_shaking(self):
-        if self.danger:
+        if self.__danger:
             t = time.time()
             if t - self.__shake_time >= 0.1:
-                self.shaking = [random.randint(0,8)-4, random.randint(0,8)-4]
+                self.__shaking = [random.randint(0, 8) - 4, random.randint(0, 8) - 4]
                 self.__shake_time = t
                 # print(self.shaking)
         else:
-            self.shaking = [0,0]
-
-
+            self.__shaking = [0, 0]
 
     def create_obstacles(self):
         x, y = random.randint(-900, 900), random.randint(-900, 900)
         size = random.randint(50, 70)
-        while self.collide_aim((x,y),size) or self.collide_obstruct((x,y),size):
+        while self.collide_aim((x, y), size) or self.collide_obstruct((x, y), size):
             x, y = random.randint(-900, 900), random.randint(-900, 900)
         obstacle = Obstacle(size, x, y, self.obs_texture)
         self.obstacles.append(obstacle)
 
-    def collide_obstruct(self, pos, size):
+    def collide_obstruct(self, pos, size) -> bool:
         for obs in self.obstacles:
             if obs.check_collidable(pos, size):
                 return True
         return False
 
-    def collide_aim(self, pos, size):
+    def collide_aim(self, pos, size) -> bool:
         for potion in Config.POTION_POS.values():
             if self.find_distance(potion, pos) <= size + 60:
                 return True
@@ -163,40 +166,24 @@ class Map:
             return True
         return False
 
-    def check_obs(self):
+    def check_obs(self) -> None:
         for obs in self.obstacles:
             if obs.check_dead_zone(self.__bottle):
                 self.reset()
                 return None
             if obs.check_danger_zone(self.__bottle):
                 # print('danger zone')
-                self.danger = True
+                self.__danger = True
                 return None
         else:
             # print('safe')
-            self.danger = False
+            self.__danger = False
 
-
-    @staticmethod
-    def find_distance(pos1, pos2) -> float:
-        return ((pos1[0] - pos2[0]) ** 2 + (pos1[1] - pos2[1]) ** 2)**0.5
-
-    @staticmethod
-    def add_picture(filename: str, size: tuple):
-        pic = pg.image.load('IngamePic/' + filename)
-        pic = pg.transform.scale(pic, size)
-        return pic
-
-    def get_len_path(self):
+    def get_len_path(self) -> int:
         return len(self.__path)
 
-    def get_origin(self):
-        return self.__originX, self.__originY
-
-    def get_traveled(self):
-        return self.__traveled
-
-    def get_position(self, coordinate: tuple[float, float], mod_x: float = 0, mod_y: float = 0) -> tuple[float, float]:
+    def get_position(self, coordinate: list[float, float] | tuple[float, float] | List[int], mod_x: float = 0,
+                     mod_y: float = 0) -> tuple[float, float]:
         """
 
         :param coordinate: the coordinate on map (0, 0) as origin
@@ -207,7 +194,7 @@ class Map:
         return (self.__originX + coordinate[0] + mod_x,
                 self.__originY - coordinate[1] + mod_y)
 
-    def get_bottle_pos(self, mod_x=0, mod_y=0):
+    def get_bottle_pos(self, mod_x=0, mod_y=0) -> tuple[float, float]:
         """
         for adding stuff that come and stick with bottle
         :param mod_x: modifying x, positive to the right
@@ -216,7 +203,7 @@ class Map:
         """
         return self.get_position(self.__bottle, mod_x=mod_x, mod_y=mod_y)
 
-    def get_path_line(self) -> List[tuple[float, float]]:
+    def get_path_line(self) -> list[list[float] | list[Any]]:
         """
         getting path line, for drawing path
         :return list:
@@ -226,33 +213,6 @@ class Map:
         for i in range(len(self.__path)):
             line.append([line[i][0] + self.__path[i][0], line[i][1] - self.__path[i][1]])
         return line
-
-    def get_slope(self, factor_x=Config.FACTOR_x):
-        if self.__bottle[0] == 0:
-            h = 0
-            k = factor_x
-        else:
-            slope = abs(self.__bottle[1] / self.__bottle[0])
-            h = factor_x
-            k = slope * factor_x
-
-        if self.__bottle[0] >= 0:
-            h *= -1
-
-        if self.__bottle[1] >= 0:
-            k *= -1
-
-        return h, k
-
-    def back_to_origin(self) -> None:
-        """
-        moving bottle towards origin no matter where the bottle at
-        :return:
-        """
-        h, k = self.get_slope()
-        self.__bottle[0] += h
-        self.__bottle[1] += k
-        self.check_obs()
 
     def move_map(self, key) -> None:
         """
@@ -294,7 +254,34 @@ class Map:
             self.__traveled += ((path[0]) ** 2 + (path[0]) ** 2) ** 0.5
         self.check_obs()
 
-    def find_distance_btw(self, pos: tuple[float, float]):
+    def get_slope(self, factor_x=Config.FACTOR_x) -> tuple[int | Any, float | Any]:
+        if self.__bottle[0] == 0:
+            h = 0
+            k = factor_x / 2
+        else:
+            slope = abs(self.__bottle[1] / self.__bottle[0])
+            h = factor_x
+            k = slope * factor_x
+
+        if self.__bottle[0] >= 0:
+            h *= -1
+
+        if self.__bottle[1] >= 0:
+            k *= -1
+
+        return h, k
+
+    def back_to_origin(self) -> None:
+        """
+        moving bottle towards origin no matter where the bottle at
+        :return:
+        """
+        h, k = self.get_slope()
+        self.__bottle[0] += h
+        self.__bottle[1] += k
+        self.check_obs()
+
+    def find_distance_btw(self, pos: tuple[float, float]) -> float:
         return ((self.__bottle[0] - pos[0]) ** 2 + (self.__bottle[1] - pos[1]) ** 2) ** 0.5
 
     def done_brewing(self) -> bool:
@@ -320,7 +307,7 @@ class Map:
                         return True
         return False
 
-    def brewing(self, mouse_pos):
+    def brewing(self, mouse_pos) -> None:
         if self.spatula_hitbox.collidepoint(mouse_pos):
             if pg.mouse.get_pressed()[0] == 1:
                 if self.__animateS:
@@ -332,11 +319,11 @@ class Map:
         if time.time() - self.__time > 0.15:
             self.__animateS = True
 
-    def set_cancel_time(self):
-        self.__cancel_time = time.time()
-
     def bottlingUp(self, mouse_pos):
         self.__check_click(mouse_pos, self.bottleup_hitbox, self.done_brewing)
+
+    def set_cancel_time(self):
+        self.__cancel_time = time.time()
 
     def cancel_brewing(self, mose_pos):
         t = time.time()
@@ -351,7 +338,7 @@ class Map:
     def change_current_water(self, to: int):
         self.current_water = to
 
-    def open_manual(self, mouse):
+    def open_manual(self, mouse) -> bool:
         if self.question_hitbox.collidepoint(mouse):
             if pg.mouse.get_pressed()[0] == 1:
                 return True

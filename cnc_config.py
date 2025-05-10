@@ -8,6 +8,7 @@ class Config:
     SCREEN_HEIGHT = 700
     MAP_WIDTH = 700
     MAP_HEIGHT = 400
+    NUM_OBS = 18
 
     HERB_WIDTH = 200
     HERB_HEIGHT = 640
@@ -29,12 +30,13 @@ class Config:
         'brown': (54, 34, 25),
         'background': (212, 198, 169),
         'map': (212, 188, 159),
-        'path': (94, 90, 78),
+        'path': (120, 90, 78),
         'marks': (50, 50, 50),
         'inventory_bg': (150, 125, 90),
         'haggle1': (160, 135, 114),
         'haggle2': (163, 111, 88),
-        'hagglebar': (217, 169, 147)
+        'hagglebar': (217, 169, 147),
+        'obs': (92, 85, 74)
     }
     '''
     HERB PATTERN

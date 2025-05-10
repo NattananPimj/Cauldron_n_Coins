@@ -3,13 +3,6 @@
   <component name="CsvFileAttributes">
     <option name="attributeMap">
       <map>
-        <entry key="\cnc_save_test.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
         <entry key="\database\haggle_fail.csv">
           <value>
             <Attribute>
@@ -32,6 +25,20 @@
           </value>
         </entry>
         <entry key="\database\potion_distance.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="\database\potion_profit.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="\database\save_data.csv">
           <value>
             <Attribute>
               <option name="separator" value="," />

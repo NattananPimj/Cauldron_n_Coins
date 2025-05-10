@@ -1,8 +1,7 @@
 import pygame as pg
 from pygame import mixer
-from cnc_herbs import *
 import tkinter as tk
-from cnc_classes import *
+from cnc_classes import Drawer
 from cnc_config import Config
 from cnc_inventory import Inventory, CustomerManager
 from cnc_map import Map
@@ -30,7 +29,7 @@ class Game:
         self.__map = Map()
         self.__herbs = HerbManager(self.__map)
         self.__drawer = Drawer(self.__map, self.__herbs, self.__customer_manager)
-        self.__state = 'title'  # map / store
+        self.__state = 'title'  # title
         self.__prev_state = 'map'
         self.__music_file = 'Music/misty-wind-troubadour-164146.ogg'
 
@@ -82,6 +81,12 @@ class Game:
                             self.__prev_state = 'map'
                         self.__state = self.__prev_state
 
+                if self.__state == 'restart':
+                    if ev.key == pg.K_SPACE:
+                        self.__inventory.restart()
+                        self.__inventory.save_data()
+                        self.__state = 'title'
+
         # hold key down
         key = pg.key.get_pressed()
         # self.move_to_origin()
@@ -108,8 +113,15 @@ class Game:
                 self.__map.bottlingUp(mouse)
                 self.__map.cancel_brewing(mouse)
                 self.__map.add_water(mouse)
+                self.__map.check_shaking()
+                if self.__inventory.check_bankrupt(self.__map):
+                    print('bankrupt')
+                    self.__state = 'restart'
                 if self.__map.open_manual(mouse):
                     self.__state = 'manual'
+            if self.__state == 'restart':
+                self.__drawer.draw_brewing_screen()
+                self.__drawer.pop_up()
 
             if self.__state == 'manual':
                 self.__drawer.draw_brewing_screen()
@@ -158,6 +170,9 @@ class Game:
                     self.__data_display = DataApp(self.__root)
                     self.__root.mainloop()
 
+            if self.__state == 'tutorial':
+                pass
+
             pg.display.update()
 
     def music(self):
@@ -174,8 +189,8 @@ class Game:
 
 
 if __name__ == "__main__":
-    name = input('Put ur name to log in: ')
-    # name = 'lilly'
+    # name = input('Put ur name to log in: ')
+    name = 'anna'
     game = Game(name)
     game.run()
     pg.quit()

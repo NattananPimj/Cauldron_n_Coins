@@ -124,6 +124,17 @@ class Inventory:
     def get_manager(self):
         return self.__manager
 
+    def check_money(self, price):
+        return self.__money >= price
+
+    def check_bankrupt(self, m):
+        return self.__money < 2 and len(self.__inventory) == 0 and m.get_bottle() == [0, 0] and m.get_len_path() == 0
+
+    def restart(self):
+        self.__inventory = []
+        self.__money = 100
+        self.__day = 1
+
     def __load_data(self) -> List[dict]:
         """
         get all data from csv file
@@ -169,9 +180,7 @@ class Inventory:
         self.__data = self.__load_data()
 
         if not self.__process(name):
-            self.__inventory = []
-            self.__money = 100
-            self.__day = 1
+            self.restart()
             self.__new = 1
             self.save_data()
 

@@ -37,6 +37,8 @@ class Drawer:
         self.stat_icon = pg.transform.scale(self.stat_icon, (100, 100))
         self.stat_rect = self.stat_icon.get_rect()
         self.stat_rect.topleft = Config.SCREEN_WIDTH - 110, Config.SCREEN_HEIGHT - 110
+        self.pop_up_rect = pg.Rect((Config.SCREEN_WIDTH - 500)/2, (Config.SCREEN_HEIGHT - 300)/2,
+                                   500, 300)
 
     def check_sleep(self, mouse):
         if self.bed.collidepoint(mouse):
@@ -95,21 +97,29 @@ class Drawer:
         """
         self.__map.surface.fill((Config.COLOR['black']))
         self.__map.surface.fill((Config.COLOR['map']), self.__map.rect.inflate(-5, -5))
+        # draw obs
+        for obs in self.__map.obstacles:
+            obs.draw_obs(self.__map.surface, self.__map.get_position(obs.get_position()))
+
         # draw marks
         self.__map.surface.blit(self.__map.bottleShad, self.__map.get_position((-17, 21)))
         self.plot_potion()
 
         if self.__map.get_len_path() >= 2:
-            pg.draw.lines(self.__map.surface, (Config.COLOR['path']), False, self.__map.get_path_line(), 1)
+            pg.draw.lines(self.__map.surface, (Config.COLOR['path']), False, self.__map.get_path_line(), 2)
         h, k = self.__map.get_slope(1)
         l = (h ** 2 + k ** 2) ** 0.5
         pg.draw.line(self.__map.surface, (Config.COLOR['inventory_bg']), self.__map.get_bottle_pos(),
                      self.__map.get_bottle_pos((h / l) * 40, (-k / l) * 40))
 
         # draw_bottles
-        self.__map.surface.blit(self.__map.bottle_pic, self.__map.get_bottle_pos(-17, -21))
+        # pg.draw.circle(self.__map.surface, (Config.COLOR['red']), self.__map.get_bottle_pos(),15)
+        self.__map.surface.blit(self.__map.bottle_pic, self.__map.get_bottle_pos(-17 + self.__map.shaking[0],
+                                                                                 -21+ self.__map.shaking[0]))
         self.__map.surface.blit(self.__map.compass, (0, 0))
         self.__map.surface.blit(self.__map.question, (Config.MAP_WIDTH - 70, 0))
+
+        pg.draw.rect(self.__map.surface, Config.COLOR['black'], self.__map.rect, width=3)
 
     def draw_manual(self):
         self.__screen.blit(self.__map.manual, ((Config.SCREEN_WIDTH - 800) / 2, (Config.SCREEN_HEIGHT - 600) / 2))
@@ -117,6 +127,7 @@ class Drawer:
     def plot_potion(self):
         for name, pos in Config.POTION_POS.items():
             self.__map.surface.blit(self.__map.bottleShad, self.__map.get_position((pos[0] - 15, pos[1] + 21)))
+            self.__map.potion_symbol[name].convert_alpha(self.__map.surface)
             self.__map.surface.blit(self.__map.potion_symbol[name], self.__map.get_position((pos[0] - 7, pos[1] + 10)))
 
     def draw_shop_screen(self):
@@ -253,6 +264,17 @@ class Drawer:
         pg.draw.rect(self.title, Config.COLOR['map'], self.stat_rect.inflate(-5, -5), border_radius=20)
         self.title.blit(self.stat_icon, (Config.SCREEN_WIDTH - 110, Config.SCREEN_HEIGHT - 110))
         self.__screen.blit(self.title, (0, 0))
+
+    def pop_up(self):
+        pg.draw.rect(self.__screen, Config.COLOR['marks'], self.pop_up_rect)
+        pg.draw.rect(self.__screen, Config.COLOR['map'], self.pop_up_rect.inflate(-5, -5))
+        self.draw_text(self.__screen, "Look like you use all your money?",
+                       20, (Config.SCREEN_WIDTH - 500)/2 + 100, (Config.SCREEN_HEIGHT - 300)/2 + 50)
+        self.draw_text(self.__screen, "You already went bankrupt",
+                       20, (Config.SCREEN_WIDTH - 500) / 2 + 120, (Config.SCREEN_HEIGHT - 300) / 2 + 100)
+        self.draw_text(self.__screen, "Press Space to restart",
+                       20, (Config.SCREEN_WIDTH - 500) / 2 + 140, (Config.SCREEN_HEIGHT - 300) / 2 + 180)
+
 
     def play(self, mouse):
         if self.play_button.collidepoint(mouse):

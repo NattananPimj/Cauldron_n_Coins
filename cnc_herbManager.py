@@ -35,7 +35,8 @@ class HerbCabinet:
         :return None:
         """
         if self.hitbox.collidepoint(mouse_pos):
-            if pg.mouse.get_pressed()[0] == 1 and self.enable:
+            if (pg.mouse.get_pressed()[0] == 1 and self.enable
+                    and Inventory.get_instance().check_money(self.price)):
                 self.enable = False
                 print(self.name, 1)
                 self.sent_herb()

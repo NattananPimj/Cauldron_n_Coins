@@ -1,6 +1,6 @@
 import time
 from typing import List
-
+import random
 import pygame as pg
 
 from cnc_config import Config
@@ -10,17 +10,60 @@ from cnc_inventory import Inventory
 from dataCollecting import DataCollector
 
 
+class Obstacle:
+    def __init__(self, size, x, y, txture:pg.Surface):
+        self.danger_zone = size
+        self.dead_zone = size - 20
+        self.x = x
+        self.y = y
+        self.txture = txture
+
+    def __find_distance(self, pos) -> float:
+        return ((pos[0] - self.x) ** 2 + (pos[1] - self.y) ** 2) ** 0.5
+
+    def check_dead_zone(self, pos) -> bool:
+        dist = self.__find_distance(pos)
+        if dist <= self.dead_zone + 15:
+            return True
+        return False
+
+    def check_danger_zone(self, pos) -> bool:
+        distance = self.__find_distance(pos)
+        if distance < self.danger_zone + 20:
+            return True
+        return False
+
+    def check_collidable(self, pos, size) -> bool:
+        if self.__find_distance(pos) < size + self.danger_zone:
+            return True
+        return False
+
+    def get_position(self):
+        return (self.x, self.y)
+
+    def draw_obs(self, screen, pos):
+        self.txture.convert_alpha()
+        pg.draw.circle(screen, Config.COLOR['obs'], pos, self.danger_zone)
+        screen.blit(self.txture, (pos[0] - 80, pos[1] - 80))
+
+
+
 class Map:
     def __init__(self):
 
         self.inventory = Inventory.get_instance()
         self.dataCollector = DataCollector()
+        self.obs_texture = self.add_picture('Obs_texture.png', (150, 150))
 
         self.reset()
 
         self.surface = pg.Surface((Config.MAP_WIDTH, Config.MAP_HEIGHT))
         self.rect = self.surface.get_rect()
+        self.rect.topleft = (0,0)
         self.__time = time.time()
+        self.__cancel_time = time.time()
+        self.__shake_time = time.time()
+
 
         # brewing elements
         self.bottle_pic = self.add_picture('bottle.png', (36, 36))
@@ -61,6 +104,9 @@ class Map:
             tmp = self.add_picture('/Potion_effect/' + name + '.png', (20, 20))
             self.potion_symbol[name] = tmp
 
+
+
+
     def reset(self):
         """
         reset to origin and delete all path
@@ -74,9 +120,66 @@ class Map:
         self.__originY = Config.MAP_HEIGHT / 2
         self.__herb_used = []
         self.__traveled = 0
+        self.obstacles: List[Obstacle] = []
+        self.danger = False
+        self.shaking = [0, 0]
+        for obs in range(Config.NUM_OBS):
+            self.create_obstacles()
 
-    def get_herb_used_data(self):
-        return self.__herb_used
+    def get_bottle(self):
+        return self.__bottle
+
+    def check_shaking(self):
+        if self.danger:
+            t = time.time()
+            if t - self.__shake_time >= 0.1:
+                self.shaking = [random.randint(0,8)-4, random.randint(0,8)-4]
+                self.__shake_time = t
+                # print(self.shaking)
+        else:
+            self.shaking = [0,0]
+
+
+
+    def create_obstacles(self):
+        x, y = random.randint(-900, 900), random.randint(-900, 900)
+        size = random.randint(50, 70)
+        while self.collide_aim((x,y),size) or self.collide_obstruct((x,y),size):
+            x, y = random.randint(-900, 900), random.randint(-900, 900)
+        obstacle = Obstacle(size, x, y, self.obs_texture)
+        self.obstacles.append(obstacle)
+
+    def collide_obstruct(self, pos, size):
+        for obs in self.obstacles:
+            if obs.check_collidable(pos, size):
+                return True
+        return False
+
+    def collide_aim(self, pos, size):
+        for potion in Config.POTION_POS.values():
+            if self.find_distance(potion, pos) <= size + 60:
+                return True
+        if self.find_distance((0, 0), pos) <= size + 60:
+            return True
+        return False
+
+    def check_obs(self):
+        for obs in self.obstacles:
+            if obs.check_dead_zone(self.__bottle):
+                self.reset()
+                return None
+            if obs.check_danger_zone(self.__bottle):
+                print('danger zone')
+                self.danger = True
+                return None
+        else:
+            print('safe')
+            self.danger = False
+
+
+    @staticmethod
+    def find_distance(pos1, pos2) -> float:
+        return ((pos1[0] - pos2[0]) ** 2 + (pos1[1] - pos2[1]) ** 2)**0.5
 
     @staticmethod
     def add_picture(filename: str, size: tuple):
@@ -86,9 +189,6 @@ class Map:
 
     def get_len_path(self):
         return len(self.__path)
-
-    def get_distance(self):
-        return [int(self.__distance[0]), int(self.__distance[1])]
 
     def get_origin(self):
         return self.__originX, self.__originY
@@ -152,6 +252,7 @@ class Map:
         h, k = self.get_slope()
         self.__bottle[0] += h
         self.__bottle[1] += k
+        self.check_obs()
 
     def move_map(self, key) -> None:
         """
@@ -191,7 +292,7 @@ class Map:
             self.__originY += path[1] / 3
 
             self.__traveled += ((path[0]) ** 2 + (path[0]) ** 2) ** 0.5
-            # print(self.__traveled, path,':', self.__bottle,self.find_distance_btw((0,0)))
+        self.check_obs()
 
     def find_distance_btw(self, pos: tuple[float, float]):
         return ((self.__bottle[0] - pos[0]) ** 2 + (self.__bottle[1] - pos[1]) ** 2) ** 0.5
@@ -231,11 +332,16 @@ class Map:
         if time.time() - self.__time > 0.15:
             self.__animateS = True
 
+    def set_cancel_time(self):
+        self.__cancel_time = time.time()
+
     def bottlingUp(self, mouse_pos):
         self.__check_click(mouse_pos, self.bottleup_hitbox, self.done_brewing)
 
     def cancel_brewing(self, mose_pos):
-        self.__check_click(mose_pos, self.cancel_hitbox, self.reset)
+        t = time.time()
+        if t - self.__cancel_time > 0.5:
+            self.__check_click(mose_pos, self.cancel_hitbox, self.reset, self.set_cancel_time)
 
     def add_water(self, mouse_pos):
         self.__check_click(mouse_pos, self.water_hitbox, self.back_to_origin,

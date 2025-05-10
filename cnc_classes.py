@@ -40,6 +40,9 @@ class Drawer:
         self.pop_up_rect = pg.Rect((Config.SCREEN_WIDTH - 500)/2, (Config.SCREEN_HEIGHT - 300)/2,
                                    500, 300)
 
+        self.__tutorial = [pg.image.load('IngamePic/Tutorials/tutorial'+str(i)+'.png') for i in range(1, 6)]
+        self.__tutorial_page = 0
+
     def check_sleep(self, mouse):
         if self.bed.collidepoint(mouse):
             if pg.mouse.get_pressed()[0] == 1 and self.bed_enable:
@@ -287,3 +290,23 @@ class Drawer:
             if pg.mouse.get_pressed()[0] == 1:
                 return True
         return False
+
+    def draw_tutorial(self):
+        self.__screen.blit(self.__tutorial[self.__tutorial_page],
+                           ((Config.SCREEN_WIDTH - 800) / 2, (Config.SCREEN_HEIGHT - 600) / 2))
+
+    def next_page(self):
+        if self.__tutorial_page == 4:
+            return False
+        self.__tutorial_page += 1
+        return True
+
+    def prev_page(self):
+        if self.__tutorial_page > 0:
+            self.__tutorial_page -= 1
+
+    def set_zero(self):
+        self.__tutorial_page = 0
+
+
+

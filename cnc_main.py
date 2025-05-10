@@ -49,11 +49,24 @@ class Game:
                     self.__prev_state = self.__state
                     self.__state = 'title'
 
+                if self.__state == 'tutorial':
+                    if ev.key == pg.K_SPACE or ev.key == pg.K_RIGHT:
+                        if not self.__drawer.next_page():
+                            self.__state = self.__prev_state
+                    if ev.key == pg.K_LEFT:
+                        self.__drawer.prev_page()
+                    if ev.key == pg.K_ESCAPE:
+                        self.__state = self.__prev_state
+
                 if self.__state == 'map':
                     if ev.key == pg.K_LEFT:
                         self.__state = 'shop'
                     if ev.key == pg.K_UP:
                         self.__state = 'bedroom'
+                        self.__prev_state = 'map'
+                    if ev.key == pg.K_t:
+                        self.__drawer.set_zero()
+                        self.__state = 'tutorial'
                         self.__prev_state = 'map'
 
                 if self.__state == 'manual':
@@ -65,6 +78,10 @@ class Game:
                         self.__state = 'map'
                     if ev.key == pg.K_UP:
                         self.__state = 'bedroom'
+                        self.__prev_state = 'shop'
+                    if ev.key == pg.K_t:
+                        self.__drawer.set_zero()
+                        self.__state = 'tutorial'
                         self.__prev_state = 'shop'
 
                 if self.__state == 'haggle':
@@ -80,6 +97,10 @@ class Game:
                         if self.__prev_state == 'bedroom':
                             self.__prev_state = 'map'
                         self.__state = self.__prev_state
+                    if ev.key == pg.K_t:
+                        self.__drawer.set_zero()
+                        self.__state = 'tutorial'
+                        self.__prev_state = 'bedroom'
 
                 if self.__state == 'restart':
                     if ev.key == pg.K_SPACE:
@@ -105,6 +126,7 @@ class Game:
             self.__inventory.check_arrow(mouse)
 
             if self.__state == 'map':
+                self.check_tutorial()
                 self.__drawer.draw_brewing_screen()
                 for block in self.__herbs.herb_blocks:
                     block.check_hover(mouse, self.__drawer.get_screen())
@@ -171,7 +193,14 @@ class Game:
                     self.__root.mainloop()
 
             if self.__state == 'tutorial':
-                pass
+                if self.__prev_state == 'map':
+                    self.__drawer.draw_brewing_screen()
+                if self.__prev_state == 'bedroom':
+                    self.__drawer.draw_bedroom()
+                if self.__prev_state == 'shop':
+                    self.__drawer.draw_shop_screen()
+
+                self.__drawer.draw_tutorial()
 
             pg.display.update()
 
@@ -186,6 +215,13 @@ class Game:
         self.__customer_manager.reset()
         self.__inventory.next_day()
         self.__inventory.save_data()
+
+
+    def check_tutorial(self):
+        print(self.__inventory.get_newbie())
+        if self.__inventory.get_newbie():
+            self.__state = 'tutorial'
+            self.__inventory.not_newbie()
 
 
 if __name__ == "__main__":

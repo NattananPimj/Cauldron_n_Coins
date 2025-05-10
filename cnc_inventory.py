@@ -161,7 +161,7 @@ class Inventory:
             return False
         self.__day = int(data['Days'])
         self.__money = float(data['Money'])
-        self.__new = bool(data['New'])
+        self.__new = int(data['New'])
         inv = eval(data['Inventory'][1:-1])
         # print(inv)
         # print(type(inv))

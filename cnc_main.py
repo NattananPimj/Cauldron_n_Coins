@@ -23,6 +23,7 @@ class Game:
         import all the class in
         """
         pg.display.set_caption('Cauldron and Coins')
+        pg.display.set_icon(pg.image.load('IngamePic/Cauldron.png'))
         self.__inventory = Inventory(name)
         self.__customer_manager = CustomerManager()
         self.__inventory.add_manager(self.__customer_manager)
@@ -137,7 +138,7 @@ class Game:
                 self.__map.add_water(mouse)
                 self.__map.check_shaking()
                 if self.__inventory.check_bankrupt(self.__map):
-                    print('bankrupt')
+                    # print('bankrupt')
                     self.__state = 'restart'
                 if self.__map.open_manual(mouse):
                     self.__state = 'manual'
@@ -218,15 +219,15 @@ class Game:
 
 
     def check_tutorial(self):
-        print(self.__inventory.get_newbie())
+        # print(self.__inventory.get_newbie())
         if self.__inventory.get_newbie():
             self.__state = 'tutorial'
             self.__inventory.not_newbie()
 
 
 if __name__ == "__main__":
-    # name = input('Put ur name to log in: ')
-    name = 'anna'
+    name = input('Put ur name to log in: ')
+    # name = 'anna'
     game = Game(name)
     game.run()
     pg.quit()

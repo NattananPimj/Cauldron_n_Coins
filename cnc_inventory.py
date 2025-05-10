@@ -95,7 +95,7 @@ class Inventory:
         self.dataCollector = DataCollector()
 
         self.__file = "database/save_data.csv"
-        print(name)
+        # print(name)
         self.to_id(name)
         self.surface = pg.Surface((Config.INV_WIDTH, Config.INV_HEIGHT))
 
@@ -161,10 +161,8 @@ class Inventory:
             return False
         self.__day = int(data['Days'])
         self.__money = float(data['Money'])
-        self.__new = int(data['New'])
+        self.__new = (int(data['New']))
         inv = eval(data['Inventory'][1:-1])
-        # print(inv)
-        # print(type(inv))
         for item in inv:
             self.__inventory.append(Potion(item['name'], (item['power']), item['ingredients']))
         print(self.__name, self.__day, self.__money, self.__new, self.__inventory)
@@ -282,10 +280,6 @@ class Inventory:
             self.slots[-1].remove_item()  # Last slot becomes empty
             return True
         return False
-
-    def print_slot(self):
-        for i in self.slots:
-            print(i)
 
     def get_inventory(self):
         return self.__inventory

@@ -169,11 +169,11 @@ class Map:
                 self.reset()
                 return None
             if obs.check_danger_zone(self.__bottle):
-                print('danger zone')
+                # print('danger zone')
                 self.danger = True
                 return None
         else:
-            print('safe')
+            # print('safe')
             self.danger = False
 
 
@@ -260,7 +260,7 @@ class Map:
         :param key: W A S D for up, left, down and, right respectively
         :return:
         """
-        factor_x = Config.FACTOR_x * 20
+        factor_x = Config.FACTOR_x * 30
         if key[pg.K_w] and self.__originY <= ((Config.MAP_HEIGHT / 2) + 900):
             self.__originY += factor_x
         if key[pg.K_s] and self.__originY >= ((Config.MAP_HEIGHT / 2) - 900):
@@ -311,7 +311,7 @@ class Map:
                 for tier, distance in enumerate([3, 5, 25]):
                     if dis <= distance:
                         potion = Potion(p, 3 - tier, self.__herb_used)
-                        print(potion)
+                        # print(potion)
                         self.inventory.add_item(potion)
                         # add data
                         self.dataCollector.add_data_herb(self.__herb_used)

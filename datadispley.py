@@ -32,6 +32,7 @@ class DataApp(ttk.Frame):
         parent.rowconfigure(0, weight=1)
         parent.columnconfigure(0, weight=1)
         self.__parent = parent
+        self.__parent.title("Game Statistics")
         self.grid(row=0, column=0, sticky="news")
         self.rowconfigure(0, weight=1)
         self.rowconfigure(1, weight=1)
@@ -128,8 +129,8 @@ class DataApp(ttk.Frame):
         gb = df.groupby('Potion')
         # print(df['Potion'].unique())
 
-        columns = ['Potion', 'Average Price', 'Average Cost', 'Average Profit']
-        data = [[p, f'{gb['Sellprice'].mean()[p]:.2f}', f"{gb['Cost'].mean()[p]:.2f}", f"{gb['Profit'].mean()[p]:.2f}"]
+        columns = ['Potion', 'Average Price($)', 'Average Cost($)', 'Average Profit($)']
+        data = [[p, f"{gb['Sellprice'].mean()[p]:.2f}", f"{gb['Cost'].mean()[p]:.2f}", f"{gb['Profit'].mean()[p]:.2f}"]
                 for p in df.Potion.unique()]
 
         # Hide the axes

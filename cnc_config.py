@@ -139,9 +139,9 @@ class Config:
     HERB_INFO = {
         '01': {
             'name': 'Moonveil',
-            'funcX': lambda t: 5 * t + 10 * math.cos(t),
-            'funcY': lambda t: 10 * math.sin(t),
-            't': 75,
+            'funcX': lambda t: 5 * (5/3)*t + 10 * math.cos((5/3)*t),
+            'funcY': lambda t: 10 * math.sin((5/3)*t),
+            't': 60,
             'direction': 'E',
             'pic': 'H01.JPG',
             'price': 5
@@ -219,9 +219,9 @@ class Config:
 
         '09': {
             'name': 'Stormsage',
-            'funcX': lambda t: (-4 * t) - 10 * math.sin(t),
-            'funcY': lambda t: 10 * math.cos(t / 2),
-            't': 50,
+            'funcX': lambda t: (-4 * (5/4)*t) - 10 * math.sin((5/4)*t),
+            'funcY': lambda t: 10 * math.cos((5/4)*t / 2),
+            't': 40,
             'direction': 'W',
             'pic': 'H09.JPG',
             'price': 2

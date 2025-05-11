@@ -3,7 +3,7 @@
 # Table of Contents
 
 - [Installation](#Installation)
-- [A list of files and a brief description of classes it contains](#A list of files and a brief description of classes it contains)
+- [A list of files and a brief description of classes it contains](#a-list-of-files-and-a-brief-description-of-classes-it-contains)
   - [Python file](#python-file)
     - [cnc_main.py](#cnc_mainpy)
     - [cnc_config.py](#cnc_configpy)

@@ -10,13 +10,6 @@
             </Attribute>
           </value>
         </entry>
-        <entry key="\database\herb_each_potion.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
         <entry key="\database\herb_use.csv">
           <value>
             <Attribute>

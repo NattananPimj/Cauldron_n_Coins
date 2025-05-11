@@ -1,5 +1,5 @@
 # Cauldron & Coins
-
+finals project of Computer Programming II (01219116 and 01219117) 
 # Table of Contents
 
 - [Installation](#Installation)

@@ -41,20 +41,19 @@ class DataApp(ttk.Frame):
         self.load_data_base()
 
     def create_widgets(self):
-        # creating a row with combobox widgets for filters
-        self.frame_dist = ttk.LabelFrame(self, text="Select Statistic")
-        self.frame_dist.grid(row=1, column=0, sticky="NEWS")
+        self.frame_graph = ttk.LabelFrame(self, text="Select Statistic")
+        self.frame_graph.grid(row=1, column=0, sticky="NEWS")
 
-        self.cb_dist = ttk.Combobox(self.frame_dist, state="readonly")
-        self.cb_dist['values'] = (
+        self.choice = ttk.Combobox(self.frame_graph, state="readonly")
+        self.choice['values'] = (
             'herb use',
             'potion profit',
             'distance',
             'sell success',
             'haggle information'
         )
-        self.cb_dist.bind('<<ComboboxSelected>>', self.update_dist)
-        self.cb_dist.grid(row=0, column=0, padx=10, pady=10)
+        self.choice.bind('<<ComboboxSelected>>', self.update_dist)
+        self.choice.grid(row=0, column=0, padx=10, pady=10)
 
         self.btn_quit = ttk.Button(self, text="Quit", command=self.__parent.destroy)
         self.btn_quit.grid(row=2, column=0, pady=10)
@@ -65,13 +64,13 @@ class DataApp(ttk.Frame):
         self.fig_graph.set_size_inches(10, 6)
         self.ax_graph = self.fig_graph.add_subplot()
 
-        # create a canvas to host the figure and place it into the main window
+        # create a canvas
         self.fig_canvas = FigureCanvasTkAgg(self.fig_graph, master=self)
         self.fig_canvas.get_tk_widget().grid(row=0, column=0,
                                              sticky="news", padx=10, pady=10)
 
     def update_dist(self, ev):
-        dist = self.cb_dist.get()
+        dist = self.choice.get()
         if dist == 'herb use':
             self.process_herb_use()
         elif dist == 'potion profit':
@@ -108,6 +107,7 @@ class DataApp(ttk.Frame):
             self.ax_graph.bar(tmpx[i], tmpy[i], color=color[i], width=0.6, label=lb[i])
             self.ax_graph.bar(tmpx[i+1], tmpy[i+1], color=color[i+1], width=0.6)
 
+        self.ax_graph.set_xticks(tmpx)
         self.ax_graph.set_xticklabels(tmpx, rotation=75, ha='right')
         self.ax_graph.set_xlabel("Herbs")
         self.ax_graph.set_ylabel("frequency")
@@ -148,10 +148,11 @@ class DataApp(ttk.Frame):
         self.ax_graph.plot(dfline.index, dfline[0], color='m', label='Displacement from start')
 
         df = self.__data_base['distance']
-        for tier in df['Tier'].unique():
+        for tier in [1, 2, 3]:
             subset = df[df['Tier'] == tier]
             self.ax_graph.scatter(subset['Potion'], subset['Distance'],
                                   label=tier)
+        self.ax_graph.set_xticks(dfline.index)
         self.ax_graph.set_xticklabels(dfline.index, rotation=45, ha='right')
         self.ax_graph.legend(title='Tier of potion')
         self.ax_graph.set_title("Distance in each potion")

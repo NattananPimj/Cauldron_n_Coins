@@ -1,4 +1,4 @@
 Name,Days,Money,New,Inventory
-lilly,45,1450.3076666666664,0,"""[{'name': 'LIGHT', 'power': 3, 'ingredients': ['01', '16', '02', '05']},{'name': 'SLEEP', 'power': 3, 'ingredients': ['12', '09', '12', '14']},{'name': 'SLOW', 'power': 2, 'ingredients': ['11', '11', '10', '12', '05', '11', '12', '10']},{'name': 'EXPLOSION', 'power': 3, 'ingredients': ['03', '01', '03']}]"""
+lilly,54,2135.929666666667,0,"""[{'name': 'LIGHTNING', 'power': 1, 'ingredients': ['08', '07', '09', '04']}]"""
 anna,4,95.1,0,"""[]"""
 abby,1,100,1,"""[]"""

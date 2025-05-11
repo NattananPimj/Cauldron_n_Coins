@@ -128,7 +128,7 @@ class Config:
         },
         "POISON": {
             'pic': '',
-            'price': 12,
+            'price': 9,
         },
         "RAGE": {
             'pic': '',
@@ -327,7 +327,9 @@ class Config:
             "My farm tools are stuck behind a rockslide—something to clear that?",
             "I heard a thief ran into the mountain caves. Any explosive potions?",
             "I want to impress someone by lighting up the sky—safely, of course.",
-            "A giant boulder is blocking my way—got a potion to help me break it?"
+            "A giant boulder is blocking my way—got a potion to help me break it?",
+            "I need something to burn through these vines blocking my way.",
+            "I want to scare off some bandits—anything fiery?"
         ],
         "FIRE": [
             "It's freezing! I need to start a fire but lost my flint.",

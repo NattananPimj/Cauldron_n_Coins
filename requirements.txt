@@ -1,2 +1,4 @@
-Library Needed:
-
+pygame~=2.6.0
+numpy~=2.2.1
+matplotlib~=3.10.1
+pandas~=2.2.3

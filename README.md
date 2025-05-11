@@ -25,8 +25,8 @@
     - [DESCRIPTION.md](#descriptionmd)
     - [LICENSE](#license-file)
     - [requirement.txt](#requirementtxt)
-  - [Usage](#usage)
-  - [Known Bugs](#known-bugs)
+- [Usage](#usage)
+- [Known Bugs](#known-bugs)
 
 
 

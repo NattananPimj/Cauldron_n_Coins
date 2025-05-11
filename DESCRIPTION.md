@@ -1,4 +1,6 @@
 GitHub repo: [https://github.com/NattananPimj/Cauldron_n_Coins](https://github.com/NattananPimj/Cauldron_n_Coins)
+Presentation VDP: [https://youtu.be/7NU-JjIIUY4](https://youtu.be/7NU-JjIIUY4)
+
 # Project Overview
 Players play as the alchemist who makes the potion and sells it. Explore the world of brewing by moving the bottle around and find the perfect recipe while trying to make money to be the greatest alchemist.
 

@@ -1,3 +1,4 @@
 Name,Days,Money,New,Inventory
 lilly,42,1295.3816666666667,0,"""[{'name': 'STRENGTH', 'power': 1, 'ingredients': ['14', '13', '13', '14']}]"""
 anna,4,95.1,0,"""[]"""
+abby,1,100,1,"""[]"""

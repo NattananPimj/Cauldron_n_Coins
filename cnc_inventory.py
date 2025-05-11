@@ -1,4 +1,4 @@
-import copy
+
 import random
 import time
 from typing import List
@@ -12,9 +12,9 @@ import csv
 
 
 class ItemSlot:
-    def __init__(self, id, inv: "Inventory"):
+    def __init__(self, _id, inv: "Inventory"):
         self.__enable = True
-        self.id = id
+        self.id = _id
         self.item = None
 
         self.check_position()
@@ -92,7 +92,7 @@ class Inventory:
         self.__data = None
         self.__new = None
         self.__manager: CustomerManager = None
-        self.dataCollector = DataCollector()
+        self.__dataCollector = DataCollector()
 
         self.__file = "database/save_data.csv"
         # print(name)
@@ -121,13 +121,13 @@ class Inventory:
         if self.__manager is None:
             self.__manager = manager
 
-    def get_manager(self):
+    def get_manager(self) -> "CustomerManager":
         return self.__manager
 
-    def check_money(self, price):
+    def check_money(self, price) -> bool:
         return self.__money >= price
 
-    def check_bankrupt(self, m):
+    def check_bankrupt(self, m) -> bool:
         return self.__money < 2 and len(self.__inventory) == 0 and m.get_bottle() == [0, 0] and m.get_len_path() == 0
 
     def restart(self):
@@ -135,7 +135,7 @@ class Inventory:
         self.__money = 100
         self.__day = 1
 
-    def __load_data(self) -> List[dict]:
+    def __load_data(self) -> list[dict]:
         """
         get all data from csv file
         :return:
@@ -193,7 +193,7 @@ class Inventory:
                 return self.__data.index(row)
         return -1
 
-    def str_inventory(self) -> str:
+    def __str_inventory(self) -> str:
         """
         make the inventory output that readable and re-use able
         :return str:
@@ -217,7 +217,7 @@ class Inventory:
             'Days': str(self.__day),
             'Money': str(self.__money),
             'New': str(int(self.__new)),
-            'Inventory': self.str_inventory()
+            'Inventory': self.__str_inventory()
         }
 
         tmp_data = self.__data
@@ -237,7 +237,7 @@ class Inventory:
 
         self.__data = self.__load_data()
 
-    def get_newbie(self):
+    def get_newbie(self) -> bool:
         return self.__new
 
     def not_newbie(self):
@@ -253,7 +253,7 @@ class Inventory:
         self.__inventory.append(item)
         self.add_to_slot(item)
 
-    def add_to_slot(self, item: Potion):
+    def add_to_slot(self, item: Potion) -> bool:
         for slot in self.slots:
             if slot.is_empty():
                 slot.add_item(item)
@@ -267,7 +267,7 @@ class Inventory:
             return True
         return False
 
-    def remove_slot(self, slot_id):
+    def remove_slot(self, slot_id) -> bool:
         if 1 <= slot_id <= len(self.slots):
             # Remove the item in the specified slot
             self.slots[slot_id - 1].remove_item()
@@ -281,15 +281,12 @@ class Inventory:
             return True
         return False
 
-    def get_inventory(self):
-        return self.__inventory
-
-    def get_day(self):
+    def get_day(self) -> int:
         return self.__day
 
     def next_day(self):
         self.save_data()
-        self.dataCollector.end_day()
+        self.__dataCollector.end_day()
         self.__day += 1
 
     def get_money(self) -> float:
@@ -342,14 +339,14 @@ class Haggling:
     def __init__(self):
         self.__level = 1
         self.set_difficulty(self.__level)
-        self.movement = None
+        self.__movement = None
         self.__dataCollector = DataCollector()
         self.surface = pg.Surface((self.Haggle_WIN_W, self.Haggle_WIN_H))
         self.surfaceR = self.surface.get_rect()
         self.reset()
         self.done_rect = [pg.Rect(10, 150, 40, 50), pg.Rect(self.Haggle_WIN_W - 50, 150, 40, 50)]
         self.done = False
-        self.timer = time.time()
+        self.__timer = time.time()
 
         self.details = pg.image.load('IngamePic/DealDetails.png')
         self.details = pg.transform.scale(self.details, (225, 145))
@@ -364,7 +361,7 @@ class Haggling:
             3: pg.Rect(184 + 400, 2 + 100, 91, 145),
         }
 
-    def get_level(self):
+    def get_level(self) -> int:
         return self.__level
 
     def set_difficulty(self, difficulty):
@@ -392,11 +389,11 @@ class Haggling:
         """
         move the triangle left and right
         """
-        self.haggle_pos[0] += self.movement * self.__haggle_speed
+        self.haggle_pos[0] += self.__movement * self.__haggle_speed
         if self.haggle_pos[0] > self.Haggle_WIN_W - 15:
-            self.movement = -1
+            self.__movement = -1
         if self.haggle_pos[0] < 15:
-            self.movement = 1
+            self.__movement = 1
 
     def create_rect(self) -> pg.Rect:
         """
@@ -413,7 +410,7 @@ class Haggling:
                            tmpw, 50)
         return tmpr
 
-    def check_haggle(self, r: pg.Rect):
+    def check_haggle(self, r: pg.Rect) -> bool:
         """
         Check if the haggle rectangle was clicked
         """
@@ -445,9 +442,9 @@ class Haggling:
         make when the time goes by the multiplier is reduced; 0.005 per 0.5s
         """
         t = time.time()
-        if t - self.timer >= 0.5:
+        if t - self.__timer >= 0.5:
             self.multiplier -= self.__reduce_add
-            self.timer = t
+            self.__timer = t
 
     def click_done(self):
         """
@@ -484,9 +481,8 @@ class Haggling:
         self.num_hagglebar = 5
         for i in range(self.num_hagglebar):
             self.hagglebar.append(self.create_rect())
-        self.haggling_left = 30
         self.haggle_pos = [20, 180]
-        self.movement = 1
+        self.__movement = 1
         self.done = False
         self.start = False
 
@@ -527,12 +523,12 @@ class CustomerManager:
         self.__dataCollector = DataCollector()
         self.__sell_pos = Config.SCREEN_WIDTH / 8
 
-        self.customers_each_day = random.randint(6, 10)
+        self.__customers_each_day = random.randint(6, 10)
         self.num_customers = 0
         self.current_customer = None
         self.prev_customer = None
         self.offered = None
-        self.create()
+        self.__create()
         self.startday = False
 
         self.offering_hitbox = pg.Rect(720, 420, 120, 180)  # +25 +30
@@ -574,23 +570,23 @@ class CustomerManager:
         return rq
 
     def reset(self):
-        self.customers_each_day = random.randint(6, 10)
+        self.__customers_each_day = random.randint(6, 10)
         self.num_customers = 0
         self.current_customer = None
         self.prev_customer = None
         self.offered = None
-        self.create()
+        self.__create()
         self.startday = False
 
         self.buttons['Reject'][2] = False
         self.buttons['Sell'][2] = False
         self.buttons['Haggle'][2] = False
 
-    def create(self):
+    def __create(self) -> bool:
         """
         create a new customer as long as the customer create is not reach amount of customer per day
         """
-        if self.num_customers < self.customers_each_day:
+        if self.num_customers < self.__customers_each_day:
             self.current_customer = Customer(self.random_rq(), self.get_random_pic())
             self.num_customers += 1
             return True
@@ -645,7 +641,7 @@ class CustomerManager:
         move the customer to prev for animation and create new one
         """
         self.prev_customer = self.current_customer
-        self.create()
+        self.__create()
         self.__dataCollector.add_sell_data(success, self.trail)
         self.trail = 1
 
@@ -662,7 +658,7 @@ class CustomerManager:
         self.next_customer(True)
         return None
 
-    def sent_haggle(self):
+    def sent_haggle(self) -> str:
         """
         activate haggle by sent the str to main
         """
@@ -702,7 +698,7 @@ class CustomerManager:
 
         return output
 
-    def offered_not_none(self):
+    def offered_not_none(self) -> bool:
         """
         check if the offer is none
         """
@@ -720,14 +716,14 @@ class CustomerManager:
     def click_sent(self, mouse):
         if self.offering_hitbox.collidepoint(mouse):
             if pg.mouse.get_pressed()[0] == 1 and self.offered_not_none():
-                self.sent_back()
+                self.__sent_back()
 
-    def sent_back(self):
+    def __sent_back(self):
         """
         send back the offer to inventory
         """
         self.__inventory.add_item(self.offered)
         self.offered = None
 
-    def get_price(self):
+    def get_price(self) -> float:
         return self.offered.get_price() * self.haggle.multiplier

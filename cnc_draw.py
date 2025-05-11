@@ -1,7 +1,5 @@
 import pygame as pg
-
 from cnc_config import Config
-from cnc_herbs import *
 from cnc_inventory import Inventory, CustomerManager, Customer
 from cnc_map import Map
 from cnc_herbManager import HerbManager
@@ -15,13 +13,11 @@ class Drawer:
     """
 
     def __init__(self, m: Map, h: HerbManager, c: CustomerManager):
-        self.__gameinfo = None
         self.__screen = pg.display.set_mode((Config.SCREEN_WIDTH, Config.SCREEN_HEIGHT))
         self.__mapsize = pg.Rect((Config.SCREEN_WIDTH - Config.MAP_WIDTH) / 2,
                                  (Config.SCREEN_HEIGHT - Config.MAP_HEIGHT) / 4,
                                  Config.MAP_WIDTH, Config.MAP_HEIGHT)
         self.__screen.fill(Config.COLOR['background'])
-        self.__clock = pg.time.Clock()
         self.__map = m
         self.__herb = h
         self.__customerM = c
@@ -43,14 +39,14 @@ class Drawer:
         self.__tutorial = [pg.image.load('IngamePic/Tutorials/tutorial' + str(i) + '.png') for i in range(1, 6)]
         self.__tutorial_page = 0
 
-    def get_screen(self):
-        return self.__screen
-
     @staticmethod
     def __draw_text(screen, txt, size=36, x=0, y=0, color=Config.COLOR['black']):
         font = pg.font.SysFont('comicsansms', size)
         text = font.render(txt, True, color)
         screen.blit(text, (x, y))
+
+    def get_screen(self):
+        return self.__screen
 
     def draw_brewing_screen(self) -> None:
         """
@@ -61,7 +57,7 @@ class Drawer:
         self.__screen.blit(self.__map.surface,
                            ((Config.SCREEN_WIDTH - Config.MAP_WIDTH) / 2,
                             (Config.SCREEN_HEIGHT - Config.MAP_HEIGHT) / 8,))
-        for block in self.__herb.__herb_blocks:
+        for block in self.__herb.herb_blocks:
             block.draw(self.__herb.surface)
         self.__screen.blit(self.__herb.surface,
                            ((((Config.SCREEN_WIDTH - Config.MAP_WIDTH) / 2) - Config.HERB_WIDTH) / 2
@@ -114,8 +110,8 @@ class Drawer:
 
         # draw_bottles
         # pg.draw.circle(self.__map.surface, (Config.COLOR['red']), self.__map.get_bottle_pos(),15)
-        self.__map.surface.blit(self.__map.bottle_pic, self.__map.get_bottle_pos(-17 + self.__map.__shaking[0],
-                                                                                 -21 + self.__map.__shaking[0]))
+        self.__map.surface.blit(self.__map.bottle_pic, self.__map.get_bottle_pos(-17 + self.__map.shaking[0],
+                                                                                 -21 + self.__map.shaking[0]))
         self.__map.surface.blit(self.__map.compass, (0, 0))
         self.__map.surface.blit(self.__map.question, (Config.MAP_WIDTH - 70, 0))
 

@@ -29,7 +29,7 @@
    git clone https://github.com/NattananPimj/Cauldron_n_Coins.git
     ```
    
-4. hit run on file **[cnc_main.py](cnc_main.py)**
+4. hit run on file **[cnc_main.py](cnc_game.py)**
 
 Enjoy
 

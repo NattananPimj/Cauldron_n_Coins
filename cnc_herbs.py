@@ -15,7 +15,7 @@ class Herb:
         self.path = self.get_path()
         self.id = id
 
-    def get_path(self):
+    def get_path(self) -> list[list[float]]:
         path = []
         for i in range(1, len(self.__factor_t)):
             path.append(

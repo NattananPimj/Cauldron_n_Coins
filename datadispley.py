@@ -36,7 +36,6 @@ class DataApp(ttk.Frame):
         self.rowconfigure(2, weight=1)
         self.columnconfigure(0, weight=1)
         self.create_widgets()
-        self.data = None
 
         self.__data_base = {}
         self.load_data_base()
@@ -202,13 +201,6 @@ class DataApp(ttk.Frame):
         self.ax_graph.set_xticks(range(1, 11))  # Ensures clear labeling of bins 1-10
         self.ax_graph.legend()
 
-        self.fig_canvas.draw()
-
-    def update_plot(self):
-        self.ax_graph.clear()
-        self.ax_graph.hist(self.data, bins=20)
-        self.ax_graph.set_xlabel("x")
-        self.ax_graph.set_ylabel("frequency")
         self.fig_canvas.draw()
 
 

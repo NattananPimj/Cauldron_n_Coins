@@ -103,7 +103,7 @@ class Map:
             self.potion_symbol[name] = tmp
 
     @staticmethod
-    def find_distance(pos1, pos2) -> float:
+    def __find_distance(pos1, pos2) -> float:
         return ((pos1[0] - pos2[0]) ** 2 + (pos1[1] - pos2[1]) ** 2) ** 0.5
 
     @staticmethod
@@ -119,19 +119,18 @@ class Map:
         """
 
         self.__path = []
-        self.__distance = 0
         self.__bottle = [0, 0]
         self.__originX = Config.MAP_WIDTH / 2
         self.__originY = Config.MAP_HEIGHT / 2
         self.__herb_used = []
         self.__traveled = 0
-        self.obstacles: List[Obstacle] = []
+        self.obstacles: list[Obstacle] = []
         self.__danger = False
-        self.__shaking = [0, 0]
+        self.shaking = [0, 0]
         for obs in range(Config.NUM_OBS):
             self.create_obstacles()
 
-    def get_bottle(self) -> List[int]:
+    def get_bottle(self) -> list[int]:
         return self.__bottle
 
     def check_shaking(self):
@@ -147,26 +146,26 @@ class Map:
     def create_obstacles(self):
         x, y = random.randint(-900, 900), random.randint(-900, 900)
         size = random.randint(50, 70)
-        while self.collide_aim((x, y), size) or self.collide_obstruct((x, y), size):
+        while self.__collide_aim((x, y), size) or self.__collide_obstruct((x, y), size):
             x, y = random.randint(-900, 900), random.randint(-900, 900)
         obstacle = Obstacle(size, x, y, self.obs_texture)
         self.obstacles.append(obstacle)
 
-    def collide_obstruct(self, pos, size) -> bool:
+    def __collide_obstruct(self, pos, size) -> bool:
         for obs in self.obstacles:
             if obs.check_collidable(pos, size):
                 return True
         return False
 
-    def collide_aim(self, pos, size) -> bool:
+    def __collide_aim(self, pos, size) -> bool:
         for potion in Config.POTION_POS.values():
-            if self.find_distance(potion, pos) <= size + 60:
+            if self.__find_distance(potion, pos) <= size + 60:
                 return True
-        if self.find_distance((0, 0), pos) <= size + 60:
+        if self.__find_distance((0, 0), pos) <= size + 60:
             return True
         return False
 
-    def check_obs(self) -> None:
+    def __check_obs(self) -> None:
         for obs in self.obstacles:
             if obs.check_dead_zone(self.__bottle):
                 self.reset()
@@ -252,7 +251,7 @@ class Map:
             self.__originY += path[1] / 3
 
             self.__traveled += ((path[0]) ** 2 + (path[0]) ** 2) ** 0.5
-        self.check_obs()
+        self.__check_obs()
 
     def get_slope(self, factor_x=Config.FACTOR_x) -> tuple[int | Any, float | Any]:
         if self.__bottle[0] == 0:
@@ -279,7 +278,7 @@ class Map:
         h, k = self.get_slope()
         self.__bottle[0] += h
         self.__bottle[1] += k
-        self.check_obs()
+        self.__check_obs()
 
     def find_distance_btw(self, pos: tuple[float, float]) -> float:
         return ((self.__bottle[0] - pos[0]) ** 2 + (self.__bottle[1] - pos[1]) ** 2) ** 0.5
@@ -322,13 +321,13 @@ class Map:
     def bottlingUp(self, mouse_pos):
         self.__check_click(mouse_pos, self.bottleup_hitbox, self.done_brewing)
 
-    def set_cancel_time(self):
+    def __set_cancel_time(self):
         self.__cancel_time = time.time()
 
     def cancel_brewing(self, mose_pos):
         t = time.time()
         if t - self.__cancel_time > 0.5:
-            self.__check_click(mose_pos, self.cancel_hitbox, self.reset, self.set_cancel_time)
+            self.__check_click(mose_pos, self.cancel_hitbox, self.reset, self.__set_cancel_time)
 
     def add_water(self, mouse_pos):
         self.__check_click(mouse_pos, self.water_hitbox, self.back_to_origin,

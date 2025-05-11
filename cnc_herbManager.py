@@ -38,7 +38,7 @@ class HerbCabinet:
             if (pg.mouse.get_pressed()[0] == 1 and self.__enable
                     and Inventory.get_instance().check_money(self.__price)):
                 self.__enable = False
-                print(self.__name, 1)
+                # print(self.__name, 1)
                 self.sent_herb()
             if pg.mouse.get_pressed()[0] == 0:
                 self.__enable = True
@@ -87,7 +87,7 @@ class HerbManager:
     def __init__(self, m: Map):
         self.surface = pg.Surface((Config.HERB_WIDTH, Config.HERB_HEIGHT))
         self.__map = m
-        self.__herb_blocks = []
+        self.herb_blocks = []
         self.add_herb_block()
 
     def add_herb_block(self):
@@ -97,4 +97,4 @@ class HerbManager:
             for x in range(1, Config.HERB_WIDTH + 1, Config.HERB_WIDTH // 2):
                 tmpR = HerbCabinet(ids[i], x, y, self.__map)
                 i += 1
-                self.__herb_blocks.append(tmpR)
+                self.herb_blocks.append(tmpR)

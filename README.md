@@ -25,18 +25,26 @@
     - [DESCRIPTION.md](#descriptionmd)
     - [LICENSE](#license-file)
     - [requirement.txt](#requirementtxt)
+  - [Usage](#usage)
+  - [Known Bugs](#known-bugs)
 
 
 
 # Installation
-1. download or clone the project. (cloning using this command)
-    ```githubexpressionlanguage
-   git clone https://github.com/NattananPimj/Cauldron_n_Coins.git
+
+1. Install all package and library
+    ```bash
+    pip install -r requirements.txt
     ```
+  If there are problems with pygame installation, more instruction from the _[pygame website](https://www.pygame.org/wiki/GettingStarted)_
 
-2. download all the library and package following in **[requirement.txt]()** 
+2. download or clone the project. (cloning using this command)
+    ```bash
+   git clone https://github.com/NattananPimj/Cauldron_n_Coins.git
 
-3. run the **[cnc_main.py](cnc_main.py)**
+3. run the _**[cnc_main.py](cnc_main.py)**_ or `python cnc_main.py`
+
+4. insert your username then, enjoy
 
 # A list of files and a brief description of classes it contains
 
@@ -86,17 +94,19 @@ create customer and request, responsible for all shop system
 ### [cnc_map.py](cnc_map.py)
 #### Class Map:
 responsible for all brewing system, including create a Potion
+#### Class Obstacle:
+create the obstacle that will obstruct the brewing gameplay
 
 ### [cnc_potion.py](cnc_potion.py)
 #### Class Potion:
 store potion information
 
 ### [dataCollecting.py](dataCollecting.py)
-#### class DataCollector: (Singleton)
-storing all the statistic data and save it to csv when the game is save
+#### Class DataCollector: (Singleton)
+storing all the statistic data and save it to csv when the game is saved
 
 ### [datadisplay.py](datadisplay.py)
-#### class DataApp:
+#### Class DataApp:
 display all the data collected
 
 ## Folders
@@ -106,6 +116,9 @@ containing all assets of customer
 
 ### [IngamePic folder](IngamePic)
 containing all assets in game
+
+### [ReadmePic folder](ReadmePic)
+storing readme and information data
 
 ### [Music folder](Music)
 containing game's background music with its license certificate
@@ -122,3 +135,22 @@ the details of the project
 the project License
 
 ### [requirement.txt](requirements.txt)
+requirement version of library and package
+
+### [6710545601 Project Proposal4.pdf](6710545601%20Project%20Proposal%204.pdf)
+original project proposal
+
+# Usage
+- When you start the program, you will see the title screen
+  ![title.png](ReadmePic/title.png)
+
+- When you click play (red rectangle), you will go in the game with tutorials if your account is new.
+You can press T again for tutorials
+![tutorials.png](ReadmePic/tutorials.png)
+
+- When the green rectangle is click, the statistic are shown. choose the drop-down to show the data
+![data_display.png](ReadmePic/data_display.png)
+
+# Known Bugs
+- the water and spatula hitbox is collided. if you click at the curtain area, both will work at the same time
+- the bottle can go out of bond

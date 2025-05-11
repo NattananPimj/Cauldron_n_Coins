@@ -71,6 +71,7 @@ class DataApp(ttk.Frame):
 
     def update_dist(self, ev):
         dist = self.choice.get()
+        self.fig_graph.subplots_adjust(top=0.85, bottom=0.15)
         if dist == 'herb use':
             self.process_herb_use()
         elif dist == 'potion profit':
@@ -81,7 +82,7 @@ class DataApp(ttk.Frame):
             self.process_sell_success()
         elif dist == 'haggle information':
             self.process_haggle_information()
-        # self.update_plot()
+
 
     def load_data_base(self):
         for key, value in self.__filename.items():
@@ -121,7 +122,7 @@ class DataApp(ttk.Frame):
         self.ax_graph.clear()
 
         df = self.__data_base['potion_profit']
-        self.ax_graph.set_title("Potion Profit")
+        self.ax_graph.set_title("Potion Profit",  y=1.0, pad=20)
         gb = df.groupby('Potion')
         # print(df['Potion'].unique())
 
@@ -139,6 +140,7 @@ class DataApp(ttk.Frame):
         table.auto_set_font_size(False)
         table.set_fontsize(10)
         table.scale(1, 1.5)
+
 
         self.fig_canvas.draw()
 

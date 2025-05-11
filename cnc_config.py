@@ -139,8 +139,8 @@ class Config:
     HERB_INFO = {
         '01': {
             'name': 'Moonveil',
-            'funcX': lambda t: 5 * (5/3)*t + 10 * math.cos((5/3)*t),
-            'funcY': lambda t: 10 * math.sin((5/3)*t),
+            'funcX': lambda t: 5 * (5 / 3) * t + 10 * math.cos((5 / 3) * t),
+            'funcY': lambda t: 10 * math.sin((5 / 3) * t),
             't': 60,
             'direction': 'E',
             'pic': 'H01.JPG',
@@ -149,9 +149,9 @@ class Config:
 
         '02': {
             'name': 'Emberroot',
-            'funcX': lambda t: 5 * t,
-            'funcY': lambda t: 10 * math.sin(t / 2),
-            't': 50,
+            'funcX': lambda t: 5 * (10 / 7) * t,
+            'funcY': lambda t: 10 * math.sin((10 / 7) * t / 2),
+            't': 35,
             'direction': 'E',
             'pic': 'H02.JPG',
             'price': 3
@@ -159,9 +159,9 @@ class Config:
 
         '03': {
             'name': 'Whisperleaf',
-            'funcX': lambda t: 5 * t,
-            'funcY': lambda t: 10 * (t / 2 + abs((t / 2 % 5) - 2.5)),
-            't': 40,
+            'funcX': lambda t: 5 * (4 / 3) * t,
+            'funcY': lambda t: 10 * ((4 / 3) * t / 2 + abs(((4 / 3) * t / 2 % 5) - 2.5)),
+            't': 30,
             'direction': 'NE',
             'pic': 'H03.JPG',
             'price': 3.25
@@ -179,9 +179,9 @@ class Config:
 
         '05': {
             'name': 'Gloamhollow',
-            'funcX': lambda t: t / 2 * math.cos(t / 2),
-            'funcY': lambda t: 5 * (t + math.cos(t)),
-            't': 50,
+            'funcX': lambda t: (10 / 7) * t / 2 * math.cos((10 / 7) * t / 2),
+            'funcY': lambda t: 5 * ((10 / 7) * t + math.cos((10 / 7) * t)),
+            't': 35,
             'direction': 'N',
             'pic': 'H05.JPG',
             'price': 3.25
@@ -199,9 +199,9 @@ class Config:
 
         '07': {
             'name': 'Eldersap',
-            'funcX': lambda t: -5 * t,
-            'funcY': lambda t: (2 * t) - 10 * abs(math.sin(t / 5)),
-            't': int(15 * math.pi),
+            'funcX': lambda t: -5 * (3/2)*t,
+            'funcY': lambda t: (2 * (3/2)*t) - 10 * abs(math.sin((3/2)*t / 5)),
+            't': int(10 * math.pi),
             'direction': 'NW',
             'pic': 'H07.JPG',
             'price': 3.25
@@ -209,9 +209,9 @@ class Config:
 
         '08': {
             'name': 'Echolily',
-            'funcX': lambda t: (-2 * t) - 10 * math.cos(t),
-            'funcY': lambda t: (5 * t) + -15 * math.sin(t),
-            't': 50,
+            'funcX': lambda t: (-2 * (10 / 7) * t) - 10 * math.cos((10 / 7) * t),
+            'funcY': lambda t: (5 * (10 / 7) * t) + -15 * math.sin((10 / 7) * t),
+            't': 35,
             'direction': 'NW',
             'pic': 'H08.JPG',
             'price': 5
@@ -219,8 +219,8 @@ class Config:
 
         '09': {
             'name': 'Stormsage',
-            'funcX': lambda t: (-4 * (5/4)*t) - 10 * math.sin((5/4)*t),
-            'funcY': lambda t: 10 * math.cos((5/4)*t / 2),
+            'funcX': lambda t: (-4 * (5 / 4) * t) - 10 * math.sin((5 / 4) * t),
+            'funcY': lambda t: 10 * math.cos((5 / 4) * t / 2),
             't': 40,
             'direction': 'W',
             'pic': 'H09.JPG',
@@ -230,9 +230,9 @@ class Config:
 
         '10': {
             'name': 'Frostvine',
-            'funcX': lambda t: -5 * t,
-            'funcY': lambda t: 10 * math.sin(t / 2),
-            't': 50,
+            'funcX': lambda t: -5 * (10 / 7) * t,
+            'funcY': lambda t: 10 * math.sin((10 / 7) * t / 2),
+            't': 35,
             'direction': 'W',
             'pic': 'H10.JPG',
             'price': 3.25
@@ -271,9 +271,9 @@ class Config:
 
         '14': {
             'name': 'Silvershroud',
-            'funcX': lambda t: 20 * math.sin(t / 2),
-            'funcY': lambda t: (-5 * t) + (10 * math.cos(t)),
-            't': 50,
+            'funcX': lambda t: 20 * math.sin((10 / 7) * t / 2),
+            'funcY': lambda t: (-5 * (10 / 7) * t) + (10 * math.cos((10 / 7) * t)),
+            't': 35,
             'direction': 'S',
             'pic': 'H14.JPG',
             'price': 3
@@ -281,8 +281,8 @@ class Config:
 
         '15': {
             'name': 'Mirththorn',
-            'funcX': lambda t: (10 * math.sin(2*t / 3)) + 2*t,
-            'funcY': lambda t: 4 - (((2*t - 2) ** 2) / 25),
+            'funcX': lambda t: (10 * math.sin(2 * t / 3)) + 2 * t,
+            'funcY': lambda t: 4 - (((2 * t - 2) ** 2) / 25),
             't': 25,
             'direction': 'SE',
             'pic': 'H15.JPG',
@@ -291,9 +291,9 @@ class Config:
 
         '16': {
             'name': "Bird's heart",
-            'funcX': lambda t: 5 * t + 10 * math.cos(t),
-            'funcY': lambda t: -5 * t + 10 * math.sin(t),
-            't': 50,
+            'funcX': lambda t: 5 * (10 / 7) * t + 10 * math.cos((10 / 7) * t),
+            'funcY': lambda t: -5 * (10 / 7) * t + 10 * math.sin((10 / 7) * t),
+            't': 35,
             'direction': 'SE',
             'pic': 'H16.JPG',
             'price': 4.5
@@ -326,14 +326,16 @@ class Config:
             "The enemy’s barricade is too strong. I need to create an entrance!",
             "My farm tools are stuck behind a rockslide—something to clear that?",
             "I heard a thief ran into the mountain caves. Any explosive potions?",
-            "I want to impress someone by lighting up the sky—safely, of course."
+            "I want to impress someone by lighting up the sky—safely, of course.",
+            "A giant boulder is blocking my way—got a potion to help me break it?"
         ],
         "FIRE": [
             "It's freezing! I need to start a fire but lost my flint.",
             "I’m camping and need to cook—any fire-starting potions?",
             "I need something to burn through these vines blocking my way.",
             "My forge went cold. Can you help reignite it?",
-            "I want to scare off some bandits—anything fiery?"
+            "I want to scare off some bandits—anything fiery?",
+            "I'm going to fight the Ice Monster, do you have anything that could help?"
         ],
         "LIGHT": [
             "The caves are too dark—I need to brighten my path!",
@@ -383,7 +385,8 @@ class Config:
             "My opponent is too quick during our duel—any potions for that?",
             "The river currents are too swift. Can you slow them?",
             "Those thieves always outrun me. Do you have a remedy for that?",
-            "I need the workers to slow down—pace themselves. Anything helpful?"
+            "I need the workers to slow down—pace themselves. Anything helpful?",
+            "We’re chasing a monster. Frost tracks would slow it, right?",
         ],
         "FROST": [
             "The river’s melted, and I need to cross. Got an ice potion?",
@@ -415,7 +418,7 @@ class Config:
         ]
     }
 
-    customer_pic = ['Customer'+str(i)+'.png' for i in range(1, 13)]
+    customer_pic = ['Customer' + str(i) + '.png' for i in range(1, 13)]
 
 
 if __name__ == '__main__':

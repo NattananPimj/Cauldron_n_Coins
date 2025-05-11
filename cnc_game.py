@@ -238,11 +238,3 @@ class Game:
                 self.__run_tutorial()
 
             pg.display.update()
-
-
-if __name__ == "__main__":
-    name = input('Put ur name to log in: ')
-    # name = 'anna'
-    game = Game(name)
-    game.run()
-    pg.quit()

@@ -1,7 +1,5 @@
-
 import random
 import time
-from typing import List
 
 import pygame as pg
 from cnc_config import Config
@@ -91,7 +89,7 @@ class Inventory:
         self.__name = None
         self.__data = None
         self.__new = None
-        self.__manager: CustomerManager = None
+        self.__manager: CustomerManager | None = None
         self.__dataCollector = DataCollector()
 
         self.__file = "database/save_data.csv"
@@ -135,7 +133,7 @@ class Inventory:
         self.__money = 100
         self.__day = 1
 
-    def __load_data(self) -> list[dict]:
+    def __load_data(self) -> list[str]:
         """
         get all data from csv file
         :return:
@@ -165,7 +163,7 @@ class Inventory:
         inv = eval(data['Inventory'][1:-1])
         for item in inv:
             self.__inventory.append(Potion(item['name'], (item['power']), item['ingredients']))
-        print(self.__name, self.__day, self.__money, self.__new, self.__inventory)
+        # print(self.__name, self.__day, self.__money, self.__new, self.__inventory)
         return True
 
     def to_id(self, name: str):
@@ -260,7 +258,7 @@ class Inventory:
                 return True
 
         if len(self.slots) % 2 == 0:  # Check if the number of slots is even
-            new_slots = [ItemSlot(self.next_id + i) for i in range(2)]  # Create two new slots
+            new_slots = [ItemSlot(self.next_id + i, self) for i in range(2)]  # Create two new slots
             self.slots.extend(new_slots)
             self.next_id += 2
             self.slots[-2].add_item(item)  # Add the item to the first new slot
@@ -298,7 +296,7 @@ class Inventory:
     def deduct_money(self, money: float):
         self.__money -= money
 
-    def move_up_down(self, num: int):
+    def move_up_down(self, num: float):
         tmp = self.upperline + (num * 10)
         if 0 >= tmp >= (-150 * (self.next_id // 2 - 4)):
             self.upperline = tmp
@@ -566,7 +564,7 @@ class CustomerManager:
         rq = Config.RQ[ans][random.randint(0, len(Config.RQ[ans]) - 1)]
         if self.prev_customer is not None:
             while rq == self.prev_customer.get_request():
-                Config.RQ[ans][random.randint(0, len(Config.RQ[ans]) - 1)]
+                rq = Config.RQ[ans][random.randint(0, len(Config.RQ[ans]) - 1)]
         return rq
 
     def reset(self):
@@ -693,7 +691,7 @@ class CustomerManager:
                 self.buttons['Reject'][2] = False
                 self.buttons['Haggle'][2] = False
                 self.buttons['Sell'][2] = False
-                print(key)
+                # print(key)
                 output = self.buttons[key][1]()
 
         return output
